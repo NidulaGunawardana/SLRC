@@ -9,9 +9,9 @@
 // Variable to store time taken to the pulse
 // to reach receiver
 
-int distanceLeft;
-int distanceRight;
-int distanceCent;
+// int distanceLeft;
+// int distanceRight;
+// int distanceCent;
 
 int getLeftDistance() {
   long duration;
