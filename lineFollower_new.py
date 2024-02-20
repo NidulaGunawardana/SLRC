@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
 video_capture.set(3, 160)
 video_capture.set(4, 120)
 
@@ -19,7 +19,7 @@ while True:
 
     # Convert to grayscale
 
-    gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Gaussian blur
 
@@ -45,11 +45,11 @@ while True:
 
         cy = int(M["m01"] / M["m00"])
 
-        cv2.line(crop_img, (cx, 0), (cx, 720), (255, 0, 0), 1)
+        cv2.line(frame, (cx, 0), (cx, 720), (255, 0, 0), 1)
 
-        cv2.line(crop_img, (0, cy), (1280, cy), (255, 0, 0), 1)
+        cv2.line(frame, (0, cy), (1280, cy), (255, 0, 0), 1)
 
-        cv2.drawContours(crop_img, contours, -1, (0, 255, 0), 1)
+        cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
 
         if cx >= 120:
 
@@ -69,7 +69,7 @@ while True:
 
     # Display the resulting frame
 
-    cv2.imshow("frame", crop_img)
+    cv2.imshow("frame", frame)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
 
