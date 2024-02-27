@@ -27,7 +27,8 @@ while True:
 
     # Color thresholding
 
-    ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
+    ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY)
+    # ret, thresh = cv2.threshold(blur, 0, 60, cv2.THRESH_BINARY_INV)
 
     # Find the contours of the frame
 
@@ -44,6 +45,7 @@ while True:
         cx = int(M["m10"] / M["m00"])
 
         cy = int(M["m01"] / M["m00"])
+        print(cx)
 
         cv2.line(frame, (cx, 0), (cx, 720), (255, 0, 0), 1)
 
@@ -51,17 +53,17 @@ while True:
 
         cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
 
-        if cx >= 120:
+        # if cx >= 120:
 
-            print("Turn Left!")
+        #     print("Turn Left!")
 
-        if cx < 120 and cx > 50:
+        # if cx < 120 and cx > 50:
 
-            print("On Track!")
+        #     print("On Track!")
 
-        if cx <= 50:
+        # if cx <= 50:
 
-            print("Turn Right")
+        #     print("Turn Right")
 
     else:
 
