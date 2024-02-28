@@ -30,18 +30,18 @@ while True:
     GPIO.output(rightMotor1,GPIO.HIGH)
     GPIO.output(rightMotor2,GPIO.LOW)
 
-    GPIO.output(rightMotor1,GPIO.HIGH)
-    GPIO.output(rightMotor2,GPIO.LOW)
+    GPIO.output(leftMotor1,GPIO.HIGH)
+    GPIO.output(leftMotor2,GPIO.LOW)
 
     for dc in range(101):
         pwm1.ChangeDutyCycle(dc)
         pwm2.ChangeDutyCycle(dc)
 
-        sleep(0.01)
+        sleep(0.05)
         
     for dc in range(100,0,-1):
         pwm1.ChangeDutyCycle(dc)
         pwm2.ChangeDutyCycle(dc)
 
-        sleep(0.01)
+        sleep(0.05)
 
