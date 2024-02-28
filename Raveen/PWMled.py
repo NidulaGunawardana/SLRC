@@ -6,7 +6,7 @@ GPIO.setwarnings(False)
 
 GPIO.setup(23, GPIO.OUT)
 pwm = GPIO.PWM(23, 100)
-pwm.start(20)
+pwm.start(0)
 
 while True:
     for dc in range(101):
