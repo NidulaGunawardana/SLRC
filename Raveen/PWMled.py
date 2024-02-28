@@ -4,11 +4,18 @@ from time import sleep
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-GPIO.setup(18, GPIO.OUT)
-pwm = GPIO.PWM(18, 100)
+GPIO.setup(23, GPIO.OUT)
+pwm = GPIO.PWM(23, 100)
 pwm.start(20)
 
-for dc in range(101):
-    pwm.ChangeDutyCycle(dc)
-    print(dc)
-    sleep(0.01)
+while True:
+    for dc in range(101):
+        pwm.ChangeDutyCycle(dc)
+
+        sleep(0.01)
+        
+    for dc in range(100,0,-1):
+        pwm.ChangeDutyCycle(dc)
+
+        sleep(0.01)
+    
