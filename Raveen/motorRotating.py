@@ -126,9 +126,9 @@ def goBackword(duty):
 while True:
     goForward(50)
     sleep(5)
-    goBackword(50)
-    sleep(5)
     turnLeft(50)
+    sleep(5)
+    goBackword(50)
     sleep(5)
     turnRight(50)
     sleep(5)
