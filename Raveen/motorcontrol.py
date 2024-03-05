@@ -111,8 +111,8 @@ def goforward(duty):
         GPIO.output(rightMotor21,GPIO.HIGH)
         GPIO.output(rightMotor22,GPIO.LOW)
 
-        GPIO.output(leftMotor12,GPIO.HIGH)
-        GPIO.output(leftMotor12,GPIO.LOW)
+        GPIO.output(leftMotor21,GPIO.HIGH)
+        GPIO.output(leftMotor22,GPIO.LOW)
 
         pwm1.ChangeDutyCycle(duty)
         pwm2.ChangeDutyCycle(duty)
