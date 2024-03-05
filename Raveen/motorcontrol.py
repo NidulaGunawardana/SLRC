@@ -5,16 +5,16 @@ rightMotor11 = 6
 rightMotor12 = 13
 rightPWM1 = 5
 
-rightMotor11 = 16
-rightMotor12 = 20
+rightMotor21 = 16
+rightMotor22 = 20
 rightPWM2 = 12
 
-leftMotor1 = 27
-leftMotor2 = 22
+leftMotor11 = 27
+leftMotor12 = 22
 leftPWM1 = 17
 
-leftMotor1 = 10
-leftMotor2 = 9
+leftMotor21 = 10
+leftMotor22 = 9
 leftPWM2 = 11
 
 GPIO.setmode(GPIO.BCM)
