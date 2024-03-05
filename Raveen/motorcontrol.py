@@ -65,10 +65,10 @@ def turnleft(duty):
         sleep(0.05)
 
 def turnright(duty):
-        pwm1 = GPIO.PWM(rightPWM, 100)
-        pwm2 = GPIO.PWM(leftPWM,100)
-        pwm3 = GPIO.PWM(rightPWM, 100)
-        pwm4 = GPIO.PWM(leftPWM,100)
+        pwm1 = GPIO.PWM(rightPWM1, 100)
+        pwm2 = GPIO.PWM(leftPWM1,100)
+        pwm3 = GPIO.PWM(rightPWM2, 100)
+        pwm4 = GPIO.PWM(leftPWM2,100)
         pwm1.start(duty)
         pwm2.start(duty)
         pwm3.start(duty)
