@@ -9,8 +9,8 @@ rightBack1 = 20
 rightBack2 = 16
 rightPWM2 = 12
 
-leftBak2 = 24
-leftBak1 = 23
+leftBack2 = 24
+leftBack1 = 23
 leftPWM1 = 18
 
 leftFront1 = 10
@@ -23,8 +23,8 @@ GPIO.setwarnings(False)
 GPIO.setup(rightFront1, GPIO.OUT)
 GPIO.setup(rightFront2, GPIO.OUT)
 GPIO.setup(rightPWM1, GPIO.OUT)
-GPIO.setup(leftBak2, GPIO.OUT)
-GPIO.setup(leftBak1, GPIO.OUT)
+GPIO.setup(leftBack2, GPIO.OUT)
+GPIO.setup(leftBack1, GPIO.OUT)
 GPIO.setup(leftPWM1, GPIO.OUT)
 
 GPIO.setup(rightBack1, GPIO.OUT)
@@ -48,8 +48,8 @@ def turnleft(duty):
         GPIO.output(rightFront1,GPIO.HIGH)
         GPIO.output(rightFront2,GPIO.LOW)
 
-        GPIO.output(leftBak2,GPIO.HIGH)
-        GPIO.output(leftBak1,GPIO.LOW)
+        GPIO.output(leftBack2,GPIO.HIGH)
+        GPIO.output(leftBack1,GPIO.LOW)
 
         GPIO.output(rightBack1,GPIO.LOW)
         GPIO.output(rightBack2,GPIO.HIGH)
@@ -78,8 +78,8 @@ def turnright(duty):
             GPIO.output(rightFront1,GPIO.LOW)
             GPIO.output(rightFront2,GPIO.HIGH)
 
-            GPIO.output(leftBak1,GPIO.HIGH)
-            GPIO.output(leftBak2,GPIO.LOW)
+            GPIO.output(leftBack1,GPIO.LOW)
+            GPIO.output(leftBack2,GPIO.HIGH)
 
             GPIO.output(rightBack1,GPIO.HIGH)
             GPIO.output(rightBack2,GPIO.LOW)
@@ -106,11 +106,11 @@ def goforward(duty):
         GPIO.output(rightFront1,GPIO.LOW)
         GPIO.output(rightFront2,GPIO.HIGH)
 
-        GPIO.output(leftBak2,GPIO.HIGH)
-        GPIO.output(leftBak1,GPIO.LOW)
+        GPIO.output(leftBack2,GPIO.HIGH)
+        GPIO.output(leftBack1,GPIO.LOW)
 
-        GPIO.output(rightBack1,GPIO.LOW)
-        GPIO.output(rightBack2,GPIO.HIGH)
+        GPIO.output(rightBack1,GPIO.HIGH)
+        GPIO.output(rightBack2,GPIO.LOW)
 
         GPIO.output(leftFront1,GPIO.LOW)
         GPIO.output(leftFront22,GPIO.HIGH)
@@ -134,14 +134,14 @@ def goBackward(duty):
         GPIO.output(rightFront1,GPIO.HIGH)
         GPIO.output(rightFront2,GPIO.LOW)
 
-        GPIO.output(leftBak1,GPIO.LOW)
-        GPIO.output(leftBak1,GPIO.HIGH)
+        GPIO.output(leftBack1,GPIO.LOW)
+        GPIO.output(leftBack2,GPIO.HIGH)
 
-        GPIO.output(rightBack1,GPIO.HIGH)
-        GPIO.output(rightBack2,GPIO.LOW)
+        GPIO.output(rightBack1,GPIO.LOW)
+        GPIO.output(rightBack2,GPIO.HIGH)
 
-        GPIO.output(leftBak1,GPIO.HIGH)
-        GPIO.output(leftBak1,GPIO.LOW)
+        GPIO.output(leftFront1,GPIO.HIGH)
+        GPIO.output(leftFront22,GPIO.LOW)
 
         pwm1.ChangeDutyCycle(duty)
         pwm2.ChangeDutyCycle(duty)
