@@ -150,4 +150,4 @@ def goBackward(duty):
 
         sleep(0.05)
 
-goforward(50)
+turnleft(50)
