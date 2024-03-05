@@ -95,7 +95,7 @@ def turnright(duty):
 def goforward(duty):
     pwm1 = GPIO.PWM(rightPWM1, 100)
     pwm2 = GPIO.PWM(leftPWM1,100)
-    pwm3 = GPIO.PWM(rightPWM1, 100)
+    pwm3 = GPIO.PWM(rightPWM2, 100)
     pwm4 = GPIO.PWM(leftPWM2,100)
     pwm1.start(0)
     pwm2.start(0)
