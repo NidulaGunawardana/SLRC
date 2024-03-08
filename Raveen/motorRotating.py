@@ -51,7 +51,7 @@ pwm2.start(0)
 pwm3.start(0)
 pwm4.start(0)
 
-def turnLeft(duty):
+def goLeft(duty):
     GPIO.output(rightFront1,GPIO.HIGH)
     GPIO.output(rightFront2,GPIO.LOW)
 
@@ -71,7 +71,7 @@ def turnLeft(duty):
 
     #sleep(0.05)
 
-def turnRight(duty):
+def goRight(duty):
     GPIO.output(rightFront1,GPIO.LOW)
     GPIO.output(rightFront2,GPIO.HIGH)
 
@@ -148,15 +148,123 @@ def stop():
     pwm2.ChangeDutyCycle(0)
     pwm3.ChangeDutyCycle(0)
     pwm4.ChangeDutyCycle(0)
+    
+def turnRight(duty):
+    GPIO.output(rightFront1,GPIO.HIGH)
+    GPIO.output(rightFront2,GPIO.LOW)
+
+    GPIO.output(leftBack1,GPIO.LOW)
+    GPIO.output(leftBack2,GPIO.HIGH)
+
+    GPIO.output(rightBack1,GPIO.HIGH)
+    GPIO.output(rightBack2,GPIO.LOW)
+
+    GPIO.output(leftFront1,GPIO.LOW)
+    GPIO.output(leftFront22,GPIO.HIGH)
+
+    pwm1.ChangeDutyCycle(duty)
+    pwm2.ChangeDutyCycle(duty)
+    pwm3.ChangeDutyCycle(duty)
+    pwm4.ChangeDutyCycle(duty)  
+    
+def turnLeft(duty):
+    GPIO.output(rightFront1,GPIO.LOW)
+    GPIO.output(rightFront2,GPIO.HIGH)
+
+    GPIO.output(leftBack1,GPIO.HIGH)
+    GPIO.output(leftBack2,GPIO.LOW)
+
+    GPIO.output(rightBack1,GPIO.LOW)
+    GPIO.output(rightBack2,GPIO.HIGH)
+
+    GPIO.output(leftFront1,GPIO.HIGH)
+    GPIO.output(leftFront22,GPIO.LOW)
+
+    pwm1.ChangeDutyCycle(duty)
+    pwm2.ChangeDutyCycle(duty)
+    pwm3.ChangeDutyCycle(duty)
+    pwm4.ChangeDutyCycle(duty)    
+
+def frontRight(duty):
+    GPIO.output(rightFront1,GPIO.LOW)
+    GPIO.output(rightFront2,GPIO.HIGH)
+
+    GPIO.output(leftBack1,GPIO.LOW)
+    GPIO.output(leftBack2,GPIO.LOW)
+
+    GPIO.output(rightBack1,GPIO.LOW)
+    GPIO.output(rightBack2,GPIO.LOW)
+
+    GPIO.output(leftFront1,GPIO.LOW)
+    GPIO.output(leftFront22,GPIO.HIGH)
+
+    pwm1.ChangeDutyCycle(duty)
+    pwm2.ChangeDutyCycle(duty)
+    pwm3.ChangeDutyCycle(duty)
+    pwm4.ChangeDutyCycle(duty) 
+    
+def frontLeft(duty):
+    GPIO.output(rightFront1,GPIO.LOW)
+    GPIO.output(rightFront2,GPIO.LOW)
+
+    GPIO.output(leftBack1,GPIO.LOW)
+    GPIO.output(leftBack2,GPIO.HIGH)
+
+    GPIO.output(rightBack1,GPIO.LOW)
+    GPIO.output(rightBack2,GPIO.HIGH)
+
+    GPIO.output(leftFront1,GPIO.LOW)
+    GPIO.output(leftFront22,GPIO.LOW)
+
+    pwm1.ChangeDutyCycle(duty)
+    pwm2.ChangeDutyCycle(duty)
+    pwm3.ChangeDutyCycle(duty)
+    pwm4.ChangeDutyCycle(duty) 
+    
+def backRight(duty):
+    GPIO.output(rightFront1,GPIO.LOW)
+    GPIO.output(rightFront2,GPIO.LOW)
+
+    GPIO.output(leftBack1,GPIO.HIGH)
+    GPIO.output(leftBack2,GPIO.LOW)
+
+    GPIO.output(rightBack1,GPIO.HIGH)
+    GPIO.output(rightBack2,GPIO.LOW)
+
+    GPIO.output(leftFront1,GPIO.LOW)
+    GPIO.output(leftFront22,GPIO.LOW)
+
+    pwm1.ChangeDutyCycle(duty)
+    pwm2.ChangeDutyCycle(duty)
+    pwm3.ChangeDutyCycle(duty)
+    pwm4.ChangeDutyCycle(duty) 
+    
+def backLeft(duty):
+    GPIO.output(rightFront1,GPIO.HIGH)
+    GPIO.output(rightFront2,GPIO.LOW)
+
+    GPIO.output(leftBack1,GPIO.LOW)
+    GPIO.output(leftBack2,GPIO.LOW)
+
+    GPIO.output(rightBack1,GPIO.LOW)
+    GPIO.output(rightBack2,GPIO.LOW)
+
+    GPIO.output(leftFront1,GPIO.HIGH)
+    GPIO.output(leftFront22,GPIO.LOW)
+
+    pwm1.ChangeDutyCycle(duty)
+    pwm2.ChangeDutyCycle(duty)
+    pwm3.ChangeDutyCycle(duty)
+    pwm4.ChangeDutyCycle(duty) 
 
 while True:
     # goForward(40)
     # sleep(2)
-    # turnLeft(40)
+    # goLeft(40)
     # sleep(2)
     # goBackword(40)
     # sleep(2)
-    # turnRight(40)
+    # goRight(40)
     # sleep(2)
     x=sys.stdin.read(1)[0]
     print("You pressed", x)
@@ -169,12 +277,36 @@ while True:
         sleep(1)
         stop()
     elif x == "a":
-        turnLeft(40)
+        goLeft(40)
         sleep(1)
         stop()
     elif x == "d":
-        turnRight(40)
+        goRight(40)
         sleep(1)
+        stop()
+    elif x == "e":
+        turnRight(40)
+        sleep(0.5)
+        stop()
+    elif x == "q":
+        turnLeft(40)
+        sleep(0.5)
+        stop()
+    elif x == "x":
+        frontRight(40)
+        sleep(0.5)
+        stop()
+    elif x == "c":
+        backLeft(40)
+        sleep(0.5)
+        stop()
+    elif x == "z":
+        frontLeft(40)
+        sleep(0.5)
+        stop()
+    elif x == "v":
+        backRight(40)
+        sleep(0.5)
         stop()
     elif x == "r":
         break

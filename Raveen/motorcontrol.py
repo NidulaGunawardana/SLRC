@@ -35,7 +35,7 @@ GPIO.setup(leftFront22, GPIO.OUT)
 GPIO.setup(leftPWM2, GPIO.OUT)
 
 
-def turnleft(duty):
+def goLeft(duty):
     pwm1 = GPIO.PWM(rightPWM1, 100)
     pwm2 = GPIO.PWM(leftPWM1,100)
     pwm3 = GPIO.PWM(rightPWM2, 100)
@@ -150,4 +150,4 @@ def goBackward(duty):
 
         sleep(0.05)
 
-turnleft(50)
+goLeft(50)

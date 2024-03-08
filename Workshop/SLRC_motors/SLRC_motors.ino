@@ -108,7 +108,7 @@ void turnLeft(int turnDelay) {
   analogWrite(in4, 0);
 }
 
-void turnRight(int turnDelay) {
+void goLeft(int turnDelay) {
   double MSpeedA = turnSpeed + offset;  //
   double MSpeedB = turnSpeed - offset;
   analogWrite(in1, MSpeedA);
@@ -171,7 +171,7 @@ void loop() {
       turnLeft(500);
       Serial.println("inthe loop");
     } else if (distanceRight > 10) {
-      turnRight(500);
+      goLeft(500);
     }
   } else {
     goForward();
