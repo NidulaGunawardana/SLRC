@@ -1,10 +1,5 @@
 import RPi.GPIO as GPIO
 from time import sleep
-import tty, sys, termios
-
-filedescriptors = termios.tcgetattr(sys.stdin)
-tty.setcbreak(sys.stdin)
-x = 0
 
 
 rightFront1 = 6
@@ -257,58 +252,3 @@ def backLeft(duty):
     pwm3.ChangeDutyCycle(duty)
     pwm4.ChangeDutyCycle(duty) 
 
-while True:
-    # goForward(40)
-    # sleep(2)
-    # goLeft(40)
-    # sleep(2)
-    # goBackword(40)
-    # sleep(2)
-    # goRight(40)
-    # sleep(2)
-    x=sys.stdin.read(1)[0]
-    print("You pressed", x)
-    if x == "w":
-        goForward(40)
-        sleep(1)
-        stop()
-    elif x == "s":
-        goBackword(40)
-        sleep(1)
-        stop()
-    elif x == "a":
-        goLeft(40)
-        sleep(1)
-        stop()
-    elif x == "d":
-        goRight(40)
-        sleep(1)
-        stop()
-    elif x == "e":
-        turnRight(40)
-        sleep(0.5)
-        stop()
-    elif x == "q":
-        turnLeft(40)
-        sleep(0.5)
-        stop()
-    elif x == "x":
-        frontRight(40)
-        sleep(0.5)
-        stop()
-    elif x == "c":
-        backLeft(40)
-        sleep(0.5)
-        stop()
-    elif x == "z":
-        frontLeft(40)
-        sleep(0.5)
-        stop()
-    elif x == "v":
-        backRight(40)
-        sleep(0.5)
-        stop()
-    elif x == "r":
-        break
-        
-termios.tcsetattr(sys.stdin, termios.TCSADRAIN, filedescriptors)
