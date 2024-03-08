@@ -69,8 +69,8 @@ def turnRight(duty):
     GPIO.output(rightFront1,GPIO.LOW)
     GPIO.output(rightFront2,GPIO.HIGH)
 
-    GPIO.output(leftBack1,GPIO.LOW)
-    GPIO.output(leftBack2,GPIO.HIGH)
+    GPIO.output(leftBack1,GPIO.HIGH)
+    GPIO.output(leftBack2,GPIO.LOW)
 
     GPIO.output(rightBack1,GPIO.HIGH)
     GPIO.output(rightBack2,GPIO.LOW)
@@ -92,8 +92,8 @@ def goForward(duty):
     GPIO.output(leftBack2,GPIO.HIGH)
     GPIO.output(leftBack1,GPIO.LOW)
 
-    GPIO.output(rightBack1,GPIO.HIGH)
-    GPIO.output(rightBack2,GPIO.LOW)
+    GPIO.output(rightBack1,GPIO.LOW)
+    GPIO.output(rightBack2,GPIO.HIGH)
 
     GPIO.output(leftFront1,GPIO.LOW)
     GPIO.output(leftFront22,GPIO.HIGH)
@@ -109,11 +109,11 @@ def goBackword(duty):
     GPIO.output(rightFront1,GPIO.HIGH)
     GPIO.output(rightFront2,GPIO.LOW)
 
-    GPIO.output(leftBack1,GPIO.LOW)
-    GPIO.output(leftBack2,GPIO.HIGH)
+    GPIO.output(leftBack1,GPIO.HIGH)
+    GPIO.output(leftBack2,GPIO.LOW)
 
-    GPIO.output(rightBack1,GPIO.LOW)
-    GPIO.output(rightBack2,GPIO.HIGH)
+    GPIO.output(rightBack1,GPIO.HIGH)
+    GPIO.output(rightBack2,GPIO.LOW)
 
     GPIO.output(leftFront1,GPIO.HIGH)
     GPIO.output(leftFront22,GPIO.LOW)
@@ -126,11 +126,11 @@ def goBackword(duty):
     #sleep(0.05)
 
 while True:
-    goForward(50)
-    sleep(5)
-    turnLeft(50)
-    sleep(5)
-    goBackword(50)
-    sleep(5)
-    turnRight(50)
-    sleep(5)
+    goForward(40)
+    sleep(2)
+    turnLeft(40)
+    sleep(2)
+    goBackword(40)
+    sleep(2)
+    turnRight(40)
+    sleep(2)
