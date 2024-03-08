@@ -1,5 +1,11 @@
 import RPi.GPIO as GPIO
 from time import sleep
+import tty, sys, termios
+
+filedescriptors = termios.tcgetattr(sys.stdin)
+tty.setcbreak(sys.stdin)
+x = 0
+
 
 rightFront1 = 6
 rightFront2 = 13
@@ -125,12 +131,52 @@ def goBackword(duty):
 
     #sleep(0.05)
 
+def stop():
+    GPIO.output(rightFront1,GPIO.LOW)
+    GPIO.output(rightFront2,GPIO.LOW)
+
+    GPIO.output(leftBack1,GPIO.LOW)
+    GPIO.output(leftBack2,GPIO.LOW)
+
+    GPIO.output(rightBack1,GPIO.LOW)
+    GPIO.output(rightBack2,GPIO.LOW)
+
+    GPIO.output(leftFront1,GPIO.LOW)
+    GPIO.output(leftFront22,GPIO.LOW)
+
+    pwm1.ChangeDutyCycle(0)
+    pwm2.ChangeDutyCycle(0)
+    pwm3.ChangeDutyCycle(0)
+    pwm4.ChangeDutyCycle(0)
+
 while True:
-    goForward(40)
-    sleep(2)
-    turnLeft(40)
-    sleep(2)
-    goBackword(40)
-    sleep(2)
-    turnRight(40)
-    sleep(2)
+    # goForward(40)
+    # sleep(2)
+    # turnLeft(40)
+    # sleep(2)
+    # goBackword(40)
+    # sleep(2)
+    # turnRight(40)
+    # sleep(2)
+    x=sys.stdin.read(1)[0]
+    print("You pressed", x)
+    if x == "w":
+        goForward(40)
+        sleep(1)
+        stop()
+    elif x == "s":
+        goBackword(40)
+        sleep(1)
+        stop()
+    elif x == "a":
+        turnLeft(40)
+        sleep(1)
+        stop()
+    elif x == "d":
+        turnRight(40)
+        sleep(1)
+        stop()
+    elif x == "r":
+        break
+        
+termios.tcsetattr(sys.stdin, termios.TCSADRAIN, filedescriptors)
