@@ -13,17 +13,17 @@ while (True):
     '''
 import RPi.GPIO as GPIO  
 from time import sleep   
-GPIO.setmode(GPIO.BOARD) 
+GPIO.setmode(GPIO.BCM) 
 
 GPIO.setup(19,GPIO.OUT)  
-p = GPIO.PWM(19, 50)     
+p = GPIO.PWM(19, 100)     
 p.start(0)               
 
 while(True):
     
-    p.ChangeDutyCycle(3)    
+    p.ChangeDutyCycle(50)    
     sleep(1)                 
-    p.ChangeDutyCycle(12)   
+    p.ChangeDutyCycle(100)   
     sleep(1)
 
 p.stop()                 
