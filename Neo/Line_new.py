@@ -1,11 +1,14 @@
 import numpy as np
 import cv2
 
+from Raveen.motorRotating import *
 
 video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
 video_capture.set(3, 160)
 video_capture.set(4, 120)
 
+kp = 0.04
+base_speed = 30
 
 while True:
 
@@ -45,12 +48,18 @@ while True:
         cx = int(M["m10"] / M["m00"])
 
         cy = int(M["m01"] / M["m00"])
-        print(cx)
 
+        # PID control
+        error = 1280/2 - cx
+        speed = base_speed + error*kp
+        left_speed = base_speed + speed
+        right_speed = base_speed - speed
+        leftrightMotor_Forward(left_speed,right_speed)
+        print(cx, left_speed, right_speed)
+
+        # Drawing the lines
         cv2.line(frame, (cx, 0), (cx, 720), (255, 0, 0), 1)
-
         cv2.line(frame, (0, cy), (1280, cy), (255, 0, 0), 1)
-
         cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
 
         # if cx >= 120:
