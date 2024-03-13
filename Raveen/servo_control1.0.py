@@ -1,7 +1,11 @@
-'''from gpiozero import AngularServo
+from gpiozero import AngularServo
 from time import  sleep
 
-servo = AngularServo(19,min_pulse_width=0.0006,max_pulse_width=0.0023)
+from gpiozero.pins.pigpio import PiGPIOFactory
+
+factory = PiGPIOFactory()
+
+servo = AngularServo(19,min_pulse_width = 0.0005,max_pulse_width = 2.5/1000,pin_factory = factory)
 
 while (True):
     servo.angle = 90
@@ -10,7 +14,11 @@ while (True):
     sleep(2)
     servo.angle = -90
     sleep(2)
-    '''
+
+
+ ########################################################################
+    ######Code2##############   
+"""
 import RPi.GPIO as GPIO  
 from time import sleep   
 GPIO.setmode(GPIO.BCM) 
@@ -38,3 +46,4 @@ while(True):
     
 pwm.stop()                 
 GPIO.cleanup() 
+"""
