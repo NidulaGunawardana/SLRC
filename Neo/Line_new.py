@@ -28,7 +28,7 @@ while True:
     # Color thresholding
 
     # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY)
-    ret, thresh = cv2.threshold(blur, 0, 60, cv2.THRESH_BINARY_INV)
+    ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
 
     # Find the contours of the frame
 
