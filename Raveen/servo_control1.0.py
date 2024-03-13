@@ -21,10 +21,10 @@ pwm.start(0)
 
 def SetAngle(angle):
 	duty = angle / 18 + 2
-	GPIO.output(03, True)
+	GPIO.output(19, True)
 	pwm.ChangeDutyCycle(duty)
 	sleep(1)
-	GPIO.output(03, False)
+	GPIO.output(19, False)
 	pwm.ChangeDutyCycle(0)
 
 while(True):
@@ -34,7 +34,7 @@ while(True):
     sleep(1)
     SetAngle(-90)
     sleep(1)
-    
+
     
 pwm.stop()                 
 GPIO.cleanup() 
