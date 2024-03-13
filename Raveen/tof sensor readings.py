@@ -1,37 +1,41 @@
-import VL53L0X
 import time
+import VL53L0X
 
-tof = VL53L0X.VL53L0X(i2c_bus=1, i2c_address=0x29)
-print("Python: Initialized")
-tof.open()
-print("Python: Opened")
+# Create a VL53L0X object for device on TCA9548A bus 1
+tof1 = VL53L0X.VL53L0X(tca9548a_num=0, tca9548a_addr=0x70)
+# Create a VL53L0X object for device on TCA9548A bus 2
+tof2 = VL53L0X.VL53L0X(tca9548a_num=1, tca9548a_addr=0x70)
+tof1.open()
+tof2.open()
 
+# Start ranging on TCA9548A bus 1
+tof1.start_ranging(VL53L0X.Vl53l0xAccuracyMode.BETTER)
+# Start ranging on TCA9548A bus 2
+tof2.start_ranging(VL53L0X.Vl53l0xAccuracyMode.BETTER)
 
-time_start = time.time()
+timing = tof1.get_timing()
+if timing < 20000:
+    timing = 20000
+print("Timing %d ms" % (timing/1000))
 
 while True:
-    time_end = time.time()
-    time_elapsed = time_end - time_start
+    # Get distance from VL53L0X  on TCA9548A bus 1
+    tof1.start_ranging(1)
+    tof2.start_ranging(1)
+    distance1 = tof1.get_distance()
+    distance2 = tof2.get_distance()
+    if distance1 > 0:
+        print("1: %d mm, %d mm "% (distance1, (distance2)))
 
-    print("")
-    print("--- Time : {:.1f}s ---".format(time_elapsed))
+    # Get distance from VL53L0X  on TCA9548A bus 2
 
-    # tof.start_ranging(1)    # 1 = Short Range
-    # distance_mm = tof.get_distance()
-    # print("Short Range Distance: {}mm".format(distance_mm))
-    # tof.stop_ranging()
+    # if distance2 > 0:
+    #     print("2: %d mm, %d cm"% (distance2, (distance2/10)))
 
-    ### --- Medium Range --- ###
-    tof.start_ranging(2)    # 2 = Medium Range
-    distance_mm = tof.get_distance()
-    print("Medium Range Distance: {}mm".format(distance_mm))
-    tof.stop_ranging()
+    time.sleep(timing/10000000.00)
 
-    # ### --- Long Range --- ###
-    # tof.start_ranging(3)    # 3 = Long Range
-    # distance_mm = tof.get_distance()
-    # print("Long Range Distance: {}mm".format(distance_mm))
-    # tof.stop_ranging()
+tof1.stop_ranging()
+tof2.stop_ranging()
 
-
-    time.sleep(1)
+tof1.close()
+tof2.close()
