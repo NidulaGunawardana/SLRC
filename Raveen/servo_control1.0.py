@@ -16,11 +16,11 @@ while (True):
     sleep(2)
     for i in range(-90,90,1):
         servo.angle = i
-        sleep(0.05)
+        sleep(0.01)
     
     for i in range(90,-90,-1):
         servo.angle = i
-        sleep(0.05)
+        sleep(0.01)
 
 
  ########################################################################
