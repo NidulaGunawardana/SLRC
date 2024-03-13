@@ -106,7 +106,7 @@ def goForward(duty):
 
     #sleep(0.05)
 
-def goBackword(duty):
+def goBackward(duty):
     GPIO.output(rightFront1,GPIO.HIGH)
     GPIO.output(rightFront2,GPIO.LOW)
 
@@ -252,3 +252,20 @@ def backLeft(duty):
     pwm3.ChangeDutyCycle(duty)
     pwm4.ChangeDutyCycle(duty) 
 
+def leftrightMotor_Forward(dutyLeft,dutyRight):
+    GPIO.output(rightFront1,GPIO.LOW)
+    GPIO.output(rightFront2,GPIO.HIGH)
+
+    GPIO.output(leftBack2,GPIO.HIGH)
+    GPIO.output(leftBack1,GPIO.LOW)
+
+    GPIO.output(rightBack1,GPIO.LOW)
+    GPIO.output(rightBack2,GPIO.HIGH)
+
+    GPIO.output(leftFront1,GPIO.LOW)
+    GPIO.output(leftFront22,GPIO.HIGH)
+
+    pwm1.ChangeDutyCycle(dutyRight)
+    pwm2.ChangeDutyCycle(dutyLeft)
+    pwm3.ChangeDutyCycle(dutyRight)
+    pwm4.ChangeDutyCycle(dutyLeft)
