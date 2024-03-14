@@ -5,9 +5,9 @@ import cv2
 import numpy as np
 import RPi.GPIO as GPIO
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(40, GPIO.OUT)
-GPIO.output(40, GPIO.HIGH)
+# GPIO.setmode(GPIO.BOARD)
+# GPIO.setup(40, GPIO.OUT)
+# GPIO.output(40, GPIO.HIGH)
 
 # camera = PiCamera()
 # camera.resolution = (640, 360)
@@ -19,16 +19,16 @@ video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
 video_capture.set(3, 160)
 video_capture.set(4, 120)
 
-kp = 0.04
-base_speed = 40
 
 while True:
 	ret, image = video_capture.read()
-	Blackline = cv2.inRange(image, (0,0,0), (60,60,60))	
+	Blackline = cv2.inRange(image, (60,60,60), (255,255,255))	
 	kernel = np.ones((3,3), np.uint8)
 	Blackline = cv2.erode(Blackline, kernel, iterations=5)
 	Blackline = cv2.dilate(Blackline, kernel, iterations=9)	
-	img_blk,contours_blk, hierarchy_blk = cv2.findContours(Blackline.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+	contours_blk, hierarchy_blk = cv2.findContours(Blackline.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+ 
+	print(contours_blk[0])
 	
 	if len(contours_blk) > 0:	 
 		blackbox = cv2.minAreaRect(contours_blk[0])
@@ -50,8 +50,7 @@ while True:
 		cv2.line(image, (int(x_min),200 ), (int(x_min),250 ), (255,0,0),3)
 	 
 	  	
-	cv2.imshow("orginal with line", image)	
-	rawCapture.truncate(0)	
+	cv2.imshow("orginal with line", imageq)	
 	key = cv2.waitKey(1) & 0xFF	
 	if key == ord("q"):
 		break
