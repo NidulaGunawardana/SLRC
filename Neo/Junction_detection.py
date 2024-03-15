@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 
+from Raveen.motorRotating import *
+
 def junction_matrix(disp,image,size):
     x_mat = list()
     y_mat = list()
@@ -126,6 +128,14 @@ while True:
         cx = int(M["m10"] / M["m00"])
 
         cy = int(M["m01"] / M["m00"])
+
+        # PID control
+        error = 1280/2 - cx
+        speed = base_speed + error*kp
+        left_speed = base_speed + speed
+        right_speed = base_speed - speed
+        leftrightMotor_Forward(left_speed,right_speed)
+        print(cx, left_speed, right_speed)
 
         # Drawing the lines
         cv2.line(frame, (cx, 0), (cx, 720), (255, 0, 0), 1)
