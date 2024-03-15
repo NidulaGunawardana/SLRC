@@ -3,6 +3,8 @@ import cv2
 
 from Raveen.motorRotating import *
 
+base_speed = 40
+
 def junction_matrix(disp,image,size):
     x_mat = list()
     y_mat = list()
