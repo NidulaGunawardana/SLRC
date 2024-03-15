@@ -76,15 +76,23 @@ def junction_matrix(disp,image,size):
         return None
 
 # Main code
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
 video_capture.set(3, 320) # Set the width of the frame
 video_capture.set(4, 240) # Set the height of the frame
+
+
 
 while True:
 
     # Capture the frames
 
     ret, frame = video_capture.read()
+    width = int(320)
+    height = int(240)
+    
+    dimentions = (width,height)
+    frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
+
 
     # Crop the image
 
@@ -100,8 +108,8 @@ while True:
 
     # Color thresholding
 
-    # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY)
-    ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
+    ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY)
+    # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
 
     # Find the contours of the frame
 
@@ -129,7 +137,7 @@ while True:
         print("I don't see the line")
 
     # Need to pass the frame to draw, frame to process and the size of the squares in that order
-    print(junction_matrix(frame,thresh,8))
+    print(junction_matrix(frame,thresh,10))
 
     # Display the resulting frame
     cv2.imshow("frame", frame)
