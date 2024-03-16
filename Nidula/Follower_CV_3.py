@@ -19,6 +19,8 @@ video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
 video_capture.set(3, 160)
 video_capture.set(4, 120)
 
+kp = 0.04
+base_speed = 40
 
 while True:
 	ret, image = video_capture.read()
