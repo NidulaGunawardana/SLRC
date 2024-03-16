@@ -1,10 +1,10 @@
 import numpy as np
 import cv2
 
-from ..Raveen.motorRotating import *
+from Raveen.motorRotating import *
 
 base_speed = 40
-kp = 0.05
+kp = 0.56
 
 def junction_matrix(disp,image,size):
     x_mat = list()
@@ -73,9 +73,14 @@ def junction_matrix(disp,image,size):
     elif (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:2] == [0,0] and ex_mat[0:2] == [0,0]):
         return 'T junction' # T junction
     elif (x_mat[0:4] == [1,1,1,1] and x_mat[5:7] == [0,0] and ex_mat[0:2] == [0,0] and y_mat[0] == 0):
+        stop()
+        sleep(5)
         return 'left right angle' # left right angle
     elif (x_mat[3:7] == [1,1,1,1] and x_mat[0:2] == [0,0] and ex_mat[0:2] == [0,0] and y_mat[0] == 0):
+        stop()
+        sleep(5)
         return 'right right angle' # right right angle
+
   
     else:
         return None
@@ -85,13 +90,16 @@ video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
 video_capture.set(3, 320) # Set the width of the frame
 video_capture.set(4, 240) # Set the height of the frame
 
-
+video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 200)
+print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
 while True:
 
     # Capture the frames
 
     ret, frame = video_capture.read()
+    frame = cv2.flip(frame,0)
     width = int(320)
     height = int(240)
     
@@ -128,21 +136,36 @@ while True:
 
         M = cv2.moments(c)
 
-        cx = int(M["m10"] / M["m00"])
-
-        cy = int(M["m01"] / M["m00"])
+        try:
+            cx = int(M["m10"] / M["m00"])
+        except:
+            cx = 1280/2
+        try:
+            cy = int(M["m01"] / M["m00"])
+        except:
+            cy = 720/2
 
         # PID control
-        error = 1280/2 - cx
-        speed = base_speed + error*kp
+        error = 320/2 - cx
+        speed =  error*kp
         left_speed = base_speed + speed
         right_speed = base_speed - speed
+        if left_speed>100:
+            left_speed = 100
+        elif left_speed <0:
+            left_speed = 0
+        
+        if right_speed>100:
+            right_speed = 100
+        elif right_speed<0:
+            right_speed = 0
+
         leftrightMotor_Forward(left_speed,right_speed)
-        print(cx, left_speed, right_speed)
+        # print(cx, left_speed, right_speed)
 
         # Drawing the lines
-        cv2.line(frame, (cx, 0), (cx, 720), (255, 0, 0), 1)
-        cv2.line(frame, (0, cy), (1280, cy), (255, 0, 0), 1)
+        cv2.line(frame, (cx, 0), (cx, 240), (255, 0, 0), 1)
+        cv2.line(frame, (0, cy), (320, cy), (255, 0, 0), 1)
         cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
 
     else:
@@ -150,7 +173,7 @@ while True:
         print("I don't see the line")
 
     # Need to pass the frame to draw, frame to process and the size of the squares in that order
-    print(junction_matrix(frame,thresh,10))
+    print(junction_matrix(frame,thresh,8))
 
     # Display the resulting frame
     cv2.imshow("frame", frame)
