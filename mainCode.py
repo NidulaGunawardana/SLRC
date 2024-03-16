@@ -25,7 +25,7 @@ while True:
         sleep(1)
         stop()
     elif x == "2":
-        goBackword(duty)
+        goBackward(duty)
         sleep(1)
         stop()
     elif x == "4":
