@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 base_speed = 30
-kp = 0.1
+kp = 0.13
 
 def junction_matrix(disp,image,size):
     x_mat = list()
@@ -95,17 +95,21 @@ video_capture = cv2.VideoCapture(0)
 video_capture.set(3, 640) # Set the width of the frame
 video_capture.set(4, 480) # Set the height of the frame
 
+video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 200)
+print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
 while True:
 
     # Capture the frames
 
     ret, frame = video_capture.read()
-    # width = int(640)
-    # height = int(480)
+    frame = cv2.flip(frame,0)
+    width = int(640)
+    height = int(480)
     
-    # dimentions = (width,height)
-    # frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
+    dimentions = (width,height)
+    frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
 
 
     # Crop the image
@@ -147,6 +151,16 @@ while True:
         speed = error*kp
         left_speed = base_speed + speed
         right_speed = base_speed - speed
+        
+        if left_speed>100:
+            left_speed = 100
+        elif left_speed <0:
+            left_speed = 0
+        
+        if right_speed>100:
+            right_speed = 100
+        elif right_speed<0:
+            right_speed = 0
         # leftrightMotor_Forward(left_speed,right_speed)
         print(error, left_speed, right_speed)
 

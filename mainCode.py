@@ -6,7 +6,7 @@ tty.setcbreak(sys.stdin)
 x = 0
 
 
-duty = 30
+duty = 40
 
 
 while True:
