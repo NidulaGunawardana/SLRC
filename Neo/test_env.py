@@ -1,22 +1,23 @@
 import numpy as np
 import cv2
 
-# from Raveen.motorRotating import *
+base_speed = 30
+kp = 0.1
 
 def junction_matrix(disp,image,size):
     x_mat = list()
     y_mat = list()
     ex_mat = list()
 
-    th = 127
+    th = 127 # Pixel value threshold to detect black and white
 
-    i = 40
-    while i <= 280:
+    i = 80
+    while i <= 560:
         # Top-left and bottom-right coordinates of the rectangle
-        start_point = (i - size, 120 - size)
-        end_point = (i + size, 120 + size)
+        start_point = (i - size, 240 - size)
+        end_point = (i + size, 240 + size)
 
-        crop_img = image[120 - size:120 + size, i - size: i + size]
+        crop_img = image[240 - size:240 + size, i - size: i + size]
 
         mean_value = cv2.mean(crop_img)[0] 
 
@@ -27,16 +28,16 @@ def junction_matrix(disp,image,size):
             x_mat.append(1)
             cv2.rectangle(disp, start_point, end_point, (0, 0, 255), thickness=cv2.FILLED)
 
-        i += 40
+        i += 80
 
-    j = 30
-    while j <= 210:
-        if j != 120:
+    j = 60
+    while j <= 420:
+        if j != 240:
             # Top-left and bottom-right coordinates of the rectangle
-            start_point = (160 - size, j - size)
-            end_point = (160 + size, j + size)
+            start_point = (320 - size, j - size)
+            end_point = (320 + size, j + size)
 
-            crop_img = image[j - size:  j + size, 160 - size: 160 + size]
+            crop_img = image[j - size:  j + size, 320 - size: 320 + size]
 
             mean_value = cv2.mean(crop_img)[0] 
 
@@ -47,23 +48,29 @@ def junction_matrix(disp,image,size):
                 y_mat.append(1)
                 cv2.rectangle(disp, start_point, end_point, (0, 0, 255), thickness=cv2.FILLED)
 
-        j += 30
+        j += 60
 
-    mean_value = cv2.mean(image[60 - size:60 + size,40 - size:40 + size])[0]
+    mean_value = cv2.mean(image[120 - size:120 + size,80 - size:80 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (40 - size,60 - size), (40 + size,60 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (80 - size,120 - size), (80 + size,120 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (40 - size,60 - size), (40 + size,60 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (80 - size,120 - size), (80 + size,120 + size), (0, 0, 255), thickness=cv2.FILLED)
 
-    mean_value = cv2.mean(image[60 - size:60 + size,280 - size:280 + size])[0]
+    mean_value = cv2.mean(image[120 - size:120 + size,560 - size:560 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (280 - size,60 - size), (280 + size,60 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (560 - size,120 - size), (560 + size,120 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (280 - size,60 - size), (280 + size,60 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (560 - size,120 - size), (560 + size,120 + size), (0, 0, 255), thickness=cv2.FILLED)
+
+    return x_mat,y_mat,ex_mat
+
+
+def junction_detection(x_mat,y_mat,ex_mat): 
+    """ 1 is referred to white color while 0 is reffered to the black color"""
 
     if (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:6] == [1,1,1,1,1,1] and ex_mat[0:2] == [0,0]):
         return 'cross junction' # cross junction
@@ -73,9 +80,14 @@ def junction_matrix(disp,image,size):
         return 'left right angle' # left right angle
     elif (x_mat[3:7] == [1,1,1,1] and x_mat[0:2] == [0,0] and ex_mat[0:2] == [0,0] and y_mat[0] == 0):
         return 'right right angle' # right right angle
-  
     else:
         return None
+
+def center_line(x_mat):
+    while x_mat[3] == 1:
+        # Do what you need to do untill the robo detect the line and alligned with the centre
+        pass
+    # Stop what you are doing
 
 # Main code
 # video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
@@ -84,22 +96,20 @@ video_capture.set(3, 640) # Set the width of the frame
 video_capture.set(4, 480) # Set the height of the frame
 
 
-
 while True:
 
     # Capture the frames
 
     ret, frame = video_capture.read()
-    # width = int(1280)
-    # height = int(720)
+    # width = int(640)
+    # height = int(480)
     
     # dimentions = (width,height)
     # frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
 
 
     # Crop the image
-
-    crop_img = frame[60:120, 0:160]
+    # crop_img = frame[60:120, 0:160]
 
     # Convert to grayscale
 
@@ -111,7 +121,7 @@ while True:
 
     # Color thresholding
 
-    ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY)
+    ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY) # For the white line
     # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
 
     # Find the contours of the frame
@@ -126,32 +136,36 @@ while True:
 
         M = cv2.moments(c)
 
-        cx = int(M["m10"] / M["m00"])
+        try:
+            cx = int(M["m10"] / M["m00"])
+            cy = int(M["m01"] / M["m00"])
+        except:
+            continue
 
-        cy = int(M["m01"] / M["m00"])
-
-        # # PID control
-        # error = 640/2 - cx
-        # speed = base_speed + error*kp
-        # left_speed = base_speed + speed
-        # right_speed = base_speed - speed
+        # PID control
+        error = 640/2 - cx
+        speed = error*kp
+        left_speed = base_speed + speed
+        right_speed = base_speed - speed
         # leftrightMotor_Forward(left_speed,right_speed)
-        # print(cx, left_speed, right_speed)
+        print(error, left_speed, right_speed)
 
         # Drawing the lines
         cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
         cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
         cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
-        print(cx)
+        # print(cx)
 
     else:
 
-        print("I don't see the line")
+        print("I don't see the line") # pass
 
     # Need to pass the frame to draw, frame to process and the size of the squares in that order
-    temp = junction_matrix(frame,thresh,10)
+    row,column,ex = junction_matrix(frame,thresh,10)
+    
+    temp = junction_detection(row,column,ex)
 
-    if temp != None:
+    if temp != None: # print if there is a pre defined junction
         print(temp)
 
     # Display the resulting frame
