@@ -3,8 +3,8 @@ import cv2
 
 from Raveen.motorRotating import *
 
-base_speed = 40
-kp = 0.56
+base_speed = 35
+kp = 0.55
 
 def junction_matrix(disp,image,size):
     x_mat = list()
@@ -84,7 +84,6 @@ def junction_matrix(disp,image,size):
   
     else:
         return None
-
 # Main code
 video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
 video_capture.set(3, 320) # Set the width of the frame
