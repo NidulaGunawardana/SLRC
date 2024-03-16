@@ -3,7 +3,7 @@ import cv2
 
 from Raveen.motorRotating import *
 
-base_speed = 30
+base_speed = 35
 kp = 0.13
 
 left_turn = False
@@ -219,20 +219,20 @@ def lineFollowing():
 def rightJunct():
     goForward(30)
     sleep(2)
-    turnRight(30)
-    sleep(2)
+    turnRight(40)
+    sleep(1)
     global right_turn
     right_turn = False
-    lineFollowing()
+    # lineFollowing()
     
 def leftJunct():
     goForward(30)
     sleep(2)
-    turnLeft(30)
-    sleep(2)
+    turnLeft(40)
+    sleep(1)
     global left_turn
     left_turn = False
-    lineFollowing()
+    # lineFollowing()
     
 while True:
     
