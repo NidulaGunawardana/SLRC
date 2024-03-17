@@ -11,18 +11,10 @@ video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
 video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
 print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
-green = [0, 255, 0]  # green in BGR colorspace
-blue = [255, 0, 0]  # blue in BGR colorspace
-red = [0, 0, 255]  # red in BGR colorspace
-
-while True:
-    
-    ret, frame = video_capture.read()
-    width = int(640)
-    height = int(480)
-
-    dimentions = (width,height)
-    frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
+def capture_circle_pattern(frame):
+    green = [0, 255, 0]  # green in BGR colorspace
+    blue = [255, 0, 0]  # blue in BGR colorspace
+    red = [0, 0, 255]  # red in BGR colorspace
 
     hsvImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -69,11 +61,20 @@ while True:
     elif y_blue<y_red and x_blue < x_red:
         order = ["blue","green","white","red"] #top,down,left,right
     else:
-        print("Unidentified pattern")
+        return None
     
-    cv2.imshow("color circle", frame)
+    return order
 
-    print(order)
+while True:
+    
+    ret, frame = video_capture.read()
+    width = int(640)
+    height = int(480)
+
+    dimentions = (width,height)
+    frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
+
+    print(capture_circle_pattern(frame))
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
 
