@@ -22,9 +22,9 @@ while True:
 
     hsvImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    lowerLimit_green, upperLimit_green = get_limits(color=green)
-    lowerLimit_blue, upperLimit_blue = get_limits(color=blue)
-    lowerLimit_red, upperLimit_red = get_limits(color=red)
+    lowerLimit_green, upperLimit_green = np.array([57,134,96]), np.array([104,255,130])
+    lowerLimit_blue, upperLimit_blue = np.array([100,79,223]), np.array([116,146,255])
+    lowerLimit_red, upperLimit_red = np.array([0,108,85]), np.array([255,255,255])
 
     mask_green = cv2.inRange(hsvImage, lowerLimit_green, upperLimit_green)
     mask_blue = cv2.inRange(hsvImage, lowerLimit_blue, upperLimit_blue)
