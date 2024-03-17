@@ -8,10 +8,14 @@ video_capture.set(3, 640) # Set the width of the frame
 video_capture.set(4, 480) # Set the height of the frame
 
 video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
-video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 400)
 print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
 def capture_circle_pattern(frame):
+    x_blue = 0
+    y_blue = 0
+    x_red = 0
+    y_red = 0
     green = [0, 255, 0]  # green in BGR colorspace
     blue = [255, 0, 0]  # blue in BGR colorspace
     red = [0, 0, 255]  # red in BGR colorspace
@@ -68,6 +72,8 @@ def capture_circle_pattern(frame):
 while True:
     
     ret, frame = video_capture.read()
+    frame = cv2.flip(frame,0)
+    frame = cv2.flip(frame,1)
     width = int(640)
     height = int(480)
 
@@ -75,6 +81,7 @@ while True:
     frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
 
     print(capture_circle_pattern(frame))
+    cv2.imshow("Frame",frame)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
 
