@@ -14,17 +14,17 @@ while (True):
     # sleep(2)
     # servo.angle = -90
     # sleep(2)
-    # for i in range(-90,40,1):
-    #     servo.angle = i
-    #     print(i)
-    #     sleep(0.01)
+    for i in range(-90,40,1):
+        servo.angle = i
+        print(i)
+        sleep(0.01)
         
     
-    # for i in range(40,-90,-1):
-    #     servo.angle = i
-    #     print(i)
-    #     sleep(0.01)
-    servo.angle = 30
+    for i in range(40,-90,-1):
+        servo.angle = i
+        print(i)
+        sleep(0.01)
+    # servo.angle = 30
     # sleep(2)
     # servo.angle = 35
     # sleep(2)
