@@ -44,8 +44,6 @@ while True:
     
     if bbox_green is not None:
         x1, y1, x2, y2 = bbox_green
-        x_green = (x1+x2)/2
-        y_green = (y1+y2)/2
         frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
 
     if bbox_blue is not None:
@@ -61,6 +59,17 @@ while True:
         frame = cv2.rectangle(frame, (x1_, y1_), (x2_, y2_), (0, 0, 255), 3)
     
     order = list()
+
+    if y_red < y_blue:
+        if x_red < x_blue:
+            order = ["red","white","green","blue"] #top,down,left,right
+        else:
+            order = ["red","white","blue","green"] #top,down,left,right
+    else:
+        if x_red < x_blue:
+            order = ["white","red","green","blue"] #top,down,left,right
+        else:
+            order = ["white","red","blue","green"] #top,down,left,right
     
     cv2.imshow("color circle", frame)
 
