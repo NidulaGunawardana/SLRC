@@ -3,7 +3,7 @@ import cv2
 from PIL import Image
 from util import get_limits
 
-video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
+video_capture = cv2.VideoCapture(0)
 video_capture.set(3, 640) # Set the width of the frame
 video_capture.set(4, 480) # Set the height of the frame
 
@@ -44,20 +44,24 @@ while True:
     
     if bbox_green is not None:
         x1, y1, x2, y2 = bbox_green
-
+        x_green = (x1+x2)/2
+        y_green = (y1+y2)/2
         frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
 
     if bbox_blue is not None:
         x_1, y_1, x_2, y_2 = bbox_blue
-
+        x_blue = (x_1+x_2)/2
+        y_blue = (y_1+y_2)/2
         frame = cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (255, 0, 0), 3)
 
     if bbox_red is not None:
         x1_, y1_, x2_, y2_ = bbox_red
-
+        x_red = (x1_+x2_)/2
+        y_red = (y1_+y2_)/2
         frame = cv2.rectangle(frame, (x1_, y1_), (x2_, y2_), (0, 0, 255), 3)
     
-
+    order = list()
+    
     cv2.imshow("color circle", frame)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
