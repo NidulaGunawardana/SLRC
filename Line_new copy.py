@@ -6,9 +6,13 @@ from Raveen.motorRotating import *
 video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
 video_capture.set(3, 160)
 video_capture.set(4, 120)
+# video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 3) # auto mode
+video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 400)
+print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
-kp = 0.04
-base_speed = 40
+kp = 0.07
+base_speed = 35
 
 while True:
 
@@ -27,11 +31,12 @@ while True:
     # Gaussian blur
 
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    
 
     # Color thresholding
 
-    # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY)
-    ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
+    ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY)
+    # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
 
     # Find the contours of the frame
 
@@ -44,16 +49,30 @@ while True:
         c = max(contours, key=cv2.contourArea)
 
         M = cv2.moments(c)
-
-        cx = int(M["m10"] / M["m00"])
-
-        cy = int(M["m01"] / M["m00"])
+        try:
+            cx = int(M["m10"] / M["m00"])
+        except:
+            cx = 1280/2
+        try:
+            cy = int(M["m01"] / M["m00"])
+        except:
+            cy = 720/2
 
         # PID control
         error = 1280/2 - cx
         speed =  error*kp
         left_speed = base_speed + speed
         right_speed = base_speed - speed
+        if left_speed>100:
+            left_speed = 100
+        elif left_speed <0:
+            left_speed = 0
+        
+        if right_speed>100:
+            right_speed = 100
+        elif right_speed<0:
+            right_speed = 0
+        
         
         leftrightMotor_Forward(left_speed,right_speed)
         print(cx, left_speed, right_speed,error)

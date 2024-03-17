@@ -8,12 +8,12 @@ factory = PiGPIOFactory()
 servo = AngularServo(19,min_pulse_width = 0.0005,max_pulse_width = 2.5/1000,pin_factory = factory)
 
 while (True):
-    servo.angle = 90
-    sleep(2)
-    servo.angle = 0
-    sleep(2)
-    servo.angle = -90
-    sleep(2)
+    # servo.angle = 90
+    # sleep(2)
+    # servo.angle = 0
+    # sleep(2)
+    # servo.angle = -90
+    # sleep(2)
     for i in range(-90,90,1):
         servo.angle = i
         sleep(0.01)

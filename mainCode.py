@@ -6,7 +6,7 @@ tty.setcbreak(sys.stdin)
 x = 0
 
 
-duty = 30
+duty = 40
 
 
 while True:
@@ -25,7 +25,7 @@ while True:
         sleep(1)
         stop()
     elif x == "2":
-        goBackword(duty)
+        goBackward(duty)
         sleep(1)
         stop()
     elif x == "4":
