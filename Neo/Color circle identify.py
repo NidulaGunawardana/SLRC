@@ -66,7 +66,7 @@ while True:
         order = ["green","blue","red","white"] #top,down,left,right
     elif y_blue < y_red and x_red < x_blue:
         order = ["white","red","green","blue"] #top,down,left,right
-    elif y_red<y_blue and x_blue < x_red:
+    elif y_blue<y_red and x_blue < x_red:
         order = ["blue","green","white","red"] #top,down,left,right
     else:
         print("Unidentified pattern")
