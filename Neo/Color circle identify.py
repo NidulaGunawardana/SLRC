@@ -3,9 +3,13 @@ import cv2
 from PIL import Image
 from util import get_limits
 
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
 video_capture.set(3, 640) # Set the width of the frame
 video_capture.set(4, 480) # Set the height of the frame
+
+video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
+print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
 green = [0, 255, 0]  # green in BGR colorspace
 blue = [255, 0, 0]  # blue in BGR colorspace
@@ -22,9 +26,9 @@ while True:
 
     hsvImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    lowerLimit_green, upperLimit_green = np.array([57,134,96]), np.array([104,255,130])
-    lowerLimit_blue, upperLimit_blue = np.array([100,79,223]), np.array([116,146,255])
-    lowerLimit_red, upperLimit_red = np.array([0,108,85]), np.array([255,255,255])
+    lowerLimit_green, upperLimit_green = get_limits(green)
+    lowerLimit_blue, upperLimit_blue = get_limits(blue)
+    lowerLimit_red, upperLimit_red = get_limits(red)
 
     mask_green = cv2.inRange(hsvImage, lowerLimit_green, upperLimit_green)
     mask_blue = cv2.inRange(hsvImage, lowerLimit_blue, upperLimit_blue)

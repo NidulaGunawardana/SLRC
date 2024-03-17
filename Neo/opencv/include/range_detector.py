@@ -80,6 +80,9 @@ def main():
             frame_to_thresh = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     else:
         camera = cv2.VideoCapture(0,cv2.CAP_V4L2)
+        camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
+        camera.set(cv2.CAP_PROP_EXPOSURE, 300)   
+        print(camera.get(cv2.CAP_PROP_EXPOSURE))
 
     setup_trackbars(range_filter)
 
