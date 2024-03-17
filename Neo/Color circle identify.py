@@ -8,14 +8,11 @@ video_capture.set(3, 640) # Set the width of the frame
 video_capture.set(4, 480) # Set the height of the frame
 
 video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
-video_capture.set(cv2.CAP_PROP_EXPOSURE, 400)
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
 print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
 def capture_circle_pattern(frame):
-    x_blue = 0
-    y_blue = 0
-    x_red = 0
-    y_red = 0
+
     green = [0, 255, 0]  # green in BGR colorspace
     blue = [255, 0, 0]  # blue in BGR colorspace
     red = [0, 0, 255]  # red in BGR colorspace
@@ -41,18 +38,22 @@ def capture_circle_pattern(frame):
     if bbox_green is not None:
         x1, y1, x2, y2 = bbox_green
         frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
-
+ 
     if bbox_blue is not None:
         x_1, y_1, x_2, y_2 = bbox_blue
         x_blue = (x_1+x_2)/2
         y_blue = (y_1+y_2)/2
         frame = cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (255, 0, 0), 3)
+    else:
+        return None
 
     if bbox_red is not None:
         x1_, y1_, x2_, y2_ = bbox_red
         x_red = (x1_+x2_)/2
         y_red = (y1_+y2_)/2
         frame = cv2.rectangle(frame, (x1_, y1_), (x2_, y2_), (0, 0, 255), 3)
+    else:
+        return None
     
     order = list()
 
