@@ -60,16 +60,16 @@ while True:
     
     order = list()
 
-    if y_red < y_blue:
-        if x_red < x_blue:
-            order = ["red","white","green","blue"] #top,down,left,right
-        else:
-            order = ["red","white","blue","green"] #top,down,left,right
+    if y_red < y_blue and x_blue<x_red:
+        order = ["red","white","blue","green"] #top,down,left,right
+    elif y_red < y_blue and x_red<x_blue:
+        order = ["green","blue","red","white"] #top,down,left,right
+    elif y_blue < y_red and x_red < x_blue:
+        order = ["white","red","green","blue"] #top,down,left,right
+    elif y_red<y_blue and x_blue < x_red:
+        order = ["blue","green","white","red"] #top,down,left,right
     else:
-        if x_red < x_blue:
-            order = ["white","red","green","blue"] #top,down,left,right
-        else:
-            order = ["white","red","blue","green"] #top,down,left,right
+        print("Unidentified pattern")
     
     cv2.imshow("color circle", frame)
 
