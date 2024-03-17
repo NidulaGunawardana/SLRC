@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 
 from Raveen.motorRotating import *
+from Neo.Colorcircleidentify import *
 
 base_speed = 35
 kp = 0.13
@@ -96,7 +97,8 @@ def center_line(x_mat):
 
 
 def lineFollowing():
-
+    global left_turn
+    global right_turn 
     # Main code
     video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -104,7 +106,7 @@ def lineFollowing():
     video_capture.set(4, 480) # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 600)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 400)
     print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
@@ -140,26 +142,40 @@ def lineFollowing():
         # Find the contours of the frame
 
         contours, hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
-
+        colour_junct = capture_circle_pattern(frame)
         row,column,ex = junction_matrix(frame,thresh,8)
         
         temp = junction_detection(row,column,ex)
 
-        if temp != None: # print if there is a pre defined junction
-            print(temp)
-            if temp == "left right angle":
+        
+        if colour_junct != None:
+            print(colour_junct)
+            if colour_junct[2] == "blue":
+                goForward(30)
+                sleep(1)
                 stop()
-                global left_turn 
-                left_turn = True
-                # leftJunct()
-                break
 
-            elif temp == "right right angle":
-                stop()
-                global right_turn
-                right_turn = True
+                left_turn = True
                 # rightJunct()
                 break
+        else:
+
+            if temp != None: # print if there is a pre defined junction
+                print(temp)
+                if temp == "left right angle":
+                    stop()
+                    # global left_turn 
+                    left_turn = True
+                    # leftJunct()
+                    
+                    break
+
+                elif temp == "right right angle":
+                    stop()
+                    # global right_turn
+                    right_turn = True
+                    # rightJunct()
+                    break
 
         # Find the biggest contour (if detected)
 
