@@ -1,3 +1,5 @@
+from motorRotating import *
+
 # let center of the video frame 
 video_frame_center_x = 320  
 video_frame_center_y = 240  
@@ -18,9 +20,9 @@ speedX = 10 + delta_y * 0.5
 
 def alignMotor():
     if(delta_x<0):
-        turnLeft(speedS)
+        goLeft(speedS)
     else:
-        turnRight(speedS)
+        goRight(speedS)
 
     if(delta_y<0):
         goForward(speedX)
