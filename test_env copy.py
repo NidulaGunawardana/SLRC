@@ -104,7 +104,7 @@ def lineFollowing():
     video_capture.set(4, 480) # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 200)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 600)
     print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
