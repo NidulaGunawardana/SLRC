@@ -155,12 +155,12 @@ def lineFollowing():
         
         if colour_junct != None:
             # print(colour_junct)
-            if colour_junct[2] == "blue":
+            if colour_junct[3] == "green":
                 goForward(30)
                 sleep(1)
                 stop()
 
-                left_turn = True
+                right_turn = True
                 # rightJunct()
                 break
             elif colour_junct[2] == "red":
@@ -201,7 +201,8 @@ def lineFollowing():
 
                 elif temp == "cross junction":
                     stop()
-                    turn_180 = True
+                    # turn_180 = True
+                    left_turn = True
                     break
 
         # Find the biggest contour (if detected)
@@ -276,7 +277,7 @@ def leftJunct():
     left_turn = False
     # lineFollowing()
 
-def turn_180():
+def turn180():
     turnLeft(40)
     sleep(2)
     global turn_180
@@ -293,7 +294,7 @@ while True:
     elif right_turn:
         rightJunct()
     elif turn_180:
-        turn_180()
+        turn180()
     lineFollowing()
     if 0xFF == ord("q"):
         break
