@@ -3,6 +3,7 @@ import cv2
 
 from Raveen.motorRotating import *
 from Neo.Colorcircleidentify import *
+from Raveen.servo_COntrol_rasberry import *
 
 base_speed = 35
 kp = 0.13
@@ -106,7 +107,7 @@ def lineFollowing():
     video_capture.set(4, 480) # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 400)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 350)
     print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
@@ -136,7 +137,7 @@ def lineFollowing():
 
         # Color thresholding
 
-        ret, thresh = cv2.threshold(blur, 70, 255, cv2.THRESH_BINARY) # For the white line
+        ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
         # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
 
         # Find the contours of the frame
@@ -149,7 +150,7 @@ def lineFollowing():
 
         
         if colour_junct != None:
-            print(colour_junct)
+            # print(colour_junct)
             if colour_junct[2] == "blue":
                 goForward(30)
                 sleep(1)
@@ -161,7 +162,7 @@ def lineFollowing():
         else:
 
             if temp != None: # print if there is a pre defined junction
-                print(temp)
+                # print(temp)
                 if temp == "left right angle":
                     stop()
                     # global left_turn 
@@ -208,7 +209,7 @@ def lineFollowing():
             elif right_speed<0:
                 right_speed = 0
             leftrightMotor_Forward(left_speed,right_speed)
-            print(error, left_speed, right_speed)
+            # print(error, left_speed, right_speed)
 
             # Drawing the lines
             cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
@@ -218,7 +219,8 @@ def lineFollowing():
 
         else:
 
-            print("I don't see the line") # pass
+            # print("I don't see the line") #
+            pass
 
         # Need to pass the frame to draw, frame to process and the size of the squares in that order
 
@@ -252,6 +254,8 @@ def leftJunct():
     # lineFollowing()
     
 while True:
+    servo_3_rotate(-30)
+    servo_2_rotate(32)
     
     if left_turn:
         leftJunct()
