@@ -18,35 +18,39 @@ def servo_2_rotate(angle):
     servo2.angle = angle
 
 def servo_3_rotate(angle):
-    servo3.angle = angle-90
+    servo3.angle = angle
         
 def servo_4_rotate(angle):
     servo4.angle = angle-90
 
 # servo_1_rotate(180)    
 while True:
-    for i in range(-90,40,1):
-        servo_1_rotate(i)
+    servo_2_rotate(32)
+    sleep(2)
+    for i in range(-30,40,1):
+        servo_3_rotate(i)
         print(i)
-        sleep(0.01)
+        sleep(0.1)
             
         
-    for i in range(40,-90,-1):
-        servo_1_rotate(i)
+    for i in range(40,-30,-1):
+        servo_3_rotate(i)
         print(i)
-        sleep(0.01) 
+        sleep(0.1) 
+    # servo_3_rotate(0)
+    # sleep(2)
 
 
-    servo_2_rotate(32)
-    sleep(2)
+    # servo_2_rotate(32)
+    # sleep(2)
 
-    servo_2_rotate(35)
-    sleep(2)
+    # servo_2_rotate(35)
+    # sleep(2)
 
-    servo_2_rotate(32)
-    sleep(2)
+    # servo_2_rotate(32)
+    # sleep(2)
 
-    servo_2_rotate(29)
-    sleep(1.8)
-    servo_2_rotate(32)
-    sleep(2)
+    # servo_2_rotate(29)
+    # sleep(1.8)
+    # servo_2_rotate(32)
+    # sleep(2)

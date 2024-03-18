@@ -178,6 +178,7 @@ def lineFollowing():
                     break
 
         # Find the biggest contour (if detected)
+        
 
         if len(contours) > 0:
 
