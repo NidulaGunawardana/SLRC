@@ -146,9 +146,9 @@ def lineFollowing():
 
         # Find the contours of the frame
 
-        contours, hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
+        contours, hierarchy = cv2.findContours(thresh.copy()[120:360,40:600], 1, cv2.CHAIN_APPROX_NONE)
         colour_junct = capture_circle_pattern(frame)
-        row,column,ex = junction_matrix(frame[120:360,40:600],thresh,8)
+        row,column,ex = junction_matrix(frame,thresh,8)
         cv2.rectangle(frame, (40,120), (600,360), (0, 0, 255), 1)
         
         temp = junction_detection(row,column,ex)
