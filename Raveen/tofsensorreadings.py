@@ -43,7 +43,8 @@ def tof1Readings():
     tof1.start_ranging(1)
     distance1 = tof1.get_distance()
     if distance1 > 0:
-        print("1: %d mm, %d mm "% (distance1))
+        # print("1: %d mm% (distance1))
+        pass
 
     # Get distance from VL53L0X  on TCA9548A bus 2
 
