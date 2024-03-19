@@ -14,7 +14,6 @@ turn_180= False
 
 def junction_matrix(disp,image,size):
     x_mat = list()
-    x_mat_above = list()
     y_mat = list()
     ex_mat = list()
 
@@ -58,25 +57,6 @@ def junction_matrix(disp,image,size):
                 cv2.rectangle(disp, start_point, end_point, (0, 0, 255), thickness=cv2.FILLED)
 
         j += 60
-
-    k = 80 # x_above
-    while i <= 560:
-        # Top-left and bottom-right coordinates of the rectangle
-        start_point = (i - size, 120 - size)
-        end_point = (i + size, 120 + size)
-
-        crop_img = image[120 - size:120 + size, i - size: i + size]
-
-        mean_value = cv2.mean(crop_img)[0] 
-
-        if mean_value<th:
-            x_mat_above.append(0)
-            cv2.rectangle(disp, start_point, end_point, (0, 0, 255), 1)
-        else:
-            x_mat_above.append(1)
-            cv2.rectangle(disp, start_point, end_point, (0, 0, 255), thickness=cv2.FILLED)
-
-        i += 80
 
     mean_value = cv2.mean(image[120 - size:120 + size,80 - size:80 + size])[0]
     if mean_value<th:
@@ -168,7 +148,8 @@ def lineFollowing():
 
         contours, hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
         colour_junct = capture_circle_pattern(frame)
-        row,column,ex = junction_matrix(frame,thresh,8)
+        row,column,ex = junction_matrix(frame[120:360,40:600],thresh,8)
+        cv2.rectangle(frame, (40,120), (600,360), (0, 0, 255), 1)
         
         temp = junction_detection(row,column,ex)
 
