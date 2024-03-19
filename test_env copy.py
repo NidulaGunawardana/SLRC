@@ -74,10 +74,10 @@ def junction_matrix(disp,image,size):
         ex_mat.append(1)
         cv2.rectangle(disp, (560 - size,120 - size), (560 + size,120 + size), (0, 0, 255), thickness=cv2.FILLED)
 
-    return x_mat,y_mat,ex_mat,x_mat_above
+    return x_mat,y_mat,ex_mat
 
 
-def junction_detection(x_mat,y_mat,ex_mat,x_mat_above): 
+def junction_detection(x_mat,y_mat,ex_mat): 
     """ 1 is referred to white color while 0 is reffered to the black color"""
 
     if (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:6] == [1,1,1,1,1,1] and ex_mat[0:2] == [0,0]):
@@ -86,9 +86,9 @@ def junction_detection(x_mat,y_mat,ex_mat,x_mat_above):
         return 'T junction' # T junction
     elif (x_mat[0:3] == [1,1,1] and y_mat[1:5] == [1,1,1,1] and ex_mat[0:2] == [0,0]):
         return 'T junction left' # T junction left
-    elif (x_mat_above[0:4] == [1,1,1,1] and x_mat_above[5:7] == [0,0]):
+    elif (x_mat[0:4] == [1,1,1,1] and x_mat[5:7] == [0,0] and ex_mat[0:2] == [0,0] and y_mat[0] == 0):
         return 'left right angle' # left right angle
-    elif (x_mat_above[3:7] == [1,1,1,1] and x_mat_above[0:2] == [0,0]):
+    elif (x_mat[3:7] == [1,1,1,1] and x_mat[0:2] == [0,0] and ex_mat[0:2] == [0,0] and y_mat[0] == 0):
         return 'right right angle' # right right angle
     else:
         return None
@@ -152,7 +152,6 @@ def lineFollowing():
         cv2.rectangle(frame, (40,120), (600,360), (0, 0, 255), 1)
         
         temp = junction_detection(row,column,ex)
-
         
         if colour_junct != None:
             # print(colour_junct)
