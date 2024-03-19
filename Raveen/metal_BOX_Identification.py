@@ -4,7 +4,9 @@ goForward(40)
 
 distance_to_box = tof1Readings()
 
-def 
+def getBox(distance):
+    if(distance<10):
+        
 
 if(distance_to_box<10):
     Stop
