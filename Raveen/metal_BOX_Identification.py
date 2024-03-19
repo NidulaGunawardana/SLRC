@@ -1,6 +1,10 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
+from motorRotating import goForward,goBackword,turnLeft,turnRight,Stop
+from  tofsensorreadings import tof1Readings
+from servo_COntrol_rasberry import Arm
+
 pin_proxy = 27
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)

@@ -19,8 +19,8 @@ def junction_matrix(disp,image,size):
 
     th = 127 # Pixel value threshold to detect black and white
 
-    i = 80
-    while i <= 560:
+    i = 140
+    while i <= 620:
         # Top-left and bottom-right coordinates of the rectangle
         start_point = (i - size, 240 - size)
         end_point = (i + size, 240 + size)
@@ -42,10 +42,10 @@ def junction_matrix(disp,image,size):
     while j <= 420:
         if j != 240:
             # Top-left and bottom-right coordinates of the rectangle
-            start_point = (320 - size, j - size)
-            end_point = (320 + size, j + size)
+            start_point = (380 - size, j - size)
+            end_point = (380 + size, j + size)
 
-            crop_img = image[j - size:  j + size, 320 - size: 320 + size]
+            crop_img = image[j - size:  j + size, 380 - size: 380 + size]
 
             mean_value = cv2.mean(crop_img)[0] 
 
@@ -58,21 +58,21 @@ def junction_matrix(disp,image,size):
 
         j += 60
 
-    mean_value = cv2.mean(image[60 - size:60 + size,80 - size:80 + size])[0]
+    mean_value = cv2.mean(image[10 - size:10 + size,80 - size:80 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (80 - size,60 - size), (80 + size,60 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (80 - size,10 - size), (80 + size,10 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (80 - size,60 - size), (80 + size,60 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (80 - size,10 - size), (80 + size,10 + size), (0, 0, 255), thickness=cv2.FILLED)
 
-    mean_value = cv2.mean(image[60 - size:60 + size,560 - size:560 + size])[0]
+    mean_value = cv2.mean(image[10 - size:10 + size,560 - size:560 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (560 - size,60 - size), (560 + size,60 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (560 - size,10 - size), (560 + size,10 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (560 - size,60 - size), (560 + size,60 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (560 - size,10 - size), (560 + size,10 + size), (0, 0, 255), thickness=cv2.FILLED)
 
     return x_mat,y_mat,ex_mat
 
@@ -94,21 +94,44 @@ def junction_detection(x_mat,y_mat,ex_mat):
     else:
         return None
 
-def center_line(x_mat):
-    while x_mat[3] == 1:
-        # Do what you need to do untill the robo detect the line and alligned with the centre
-        pass
-    # Stop what you are doing
+def center_line(video_capture):
+    
+    ret, frame = video_capture.read()
+    frame = cv2.flip(frame,0)
+    frame = cv2.flip(frame,1)
+    width = int(640)
+    height = int(480)
 
-def junction_now():
+    dimentions = (width,height)
+    frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
+
+    # Crop the image
+    crop_img = frame[120:400, 0:640]
+
+    # Convert to grayscale
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # Gaussian blur
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    
+
+        # Color thresholding
+
+    ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
+        # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
+
+
+        # Find the contours of the frame
+    row,column,ex = junction_matrix(frame,thresh,8)
+        
+    while row[3] != 1:
+        turnLeft(30)
+    stop()
+
+
+def junction_now(video_capture):
     # Capture the frames
-        video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
-        # video_capture = cv2.VideoCapture(0)
-        video_capture.set(3, 640) # Set the width of the frame
-        video_capture.set(4, 480) # Set the height of the frame
-
-        video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
-        video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
+        
 
         ret, frame = video_capture.read()
         frame = cv2.flip(frame,0)
@@ -142,7 +165,7 @@ def junction_now():
         # Find the contours of the frame
         row,column,ex = junction_matrix(frame,thresh,8)
         
-        if row[0] == 1 or row[3] == 1 or row[6] == 1:
+        if row[0] == 1 or row[6] == 1:
             return "Junction Now"
         else:
             return None
@@ -206,7 +229,7 @@ def lineFollowing():
             # print(colour_junct)
             if colour_junct[3] == "green":
                 goForward(30)
-                sleep(1)
+                # sleep(0.4)
                 stop()
 
                 right_turn = True
@@ -220,14 +243,14 @@ def lineFollowing():
                 left_turn = True
             elif colour_junct[2] == "green":
                 goForward(30)
-                sleep(2)
+                sleep(1)
+                stop()
         else:
 
             if temp != None: # print if there is a pre defined junction
-                # print(temp)
+                print(temp)
                 if temp == "Junction ahead":
-                    while junction_now == None:
-                        print("Junction detected")
+                    while junction_now(video_capture) == None:
                         goForward(30)
                         sleep(0.05)
                 if temp == "left right angle":
@@ -250,6 +273,7 @@ def lineFollowing():
                     # global left_turn 
                     left_turn = True
                     # leftJunct()
+                    # center_line(video_capture)
                     
                     break
 
@@ -275,7 +299,7 @@ def lineFollowing():
                 continue
 
             # PID control
-            error = 640/2 - cx
+            error = 640/2 - cx + 60
             speed = error*kp
             left_speed = base_speed - speed
             right_speed = base_speed + speed
