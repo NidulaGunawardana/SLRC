@@ -51,6 +51,7 @@ def tof1Readings():
     #     print("2: %d mm, %d cm"% (distance2, (distance2/10)))
 
     time.sleep(timing1/10000000.00)
+    return distance1
 
 def tof2Readings():
     # Get distance from VL53L0X  on TCA9548A bus 1
@@ -94,12 +95,15 @@ def tof2Readings():
 
     time.sleep(timing4/10000000.00)
 
-tof1.stop_ranging()
-tof2.stop_ranging()
-tof3.stop_ranging()
-tof4.stop_ranging()
+# tof1.stop_ranging()
+# tof2.stop_ranging()
+# tof3.stop_ranging()
+# tof4.stop_ranging()
 
-tof1.close()
-tof2.close()
-tof3.close()
-tof4.close()
+# tof1.close()
+# tof2.close()
+# tof3.close()
+# tof4.close()
+
+while(True):
+    read1 = tof1Readings()
