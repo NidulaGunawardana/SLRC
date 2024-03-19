@@ -100,6 +100,45 @@ def center_line(x_mat):
         pass
     # Stop what you are doing
 
+def junction_now():
+    # Capture the frames
+
+        ret, frame = video_capture.read()
+        frame = cv2.flip(frame,0)
+        frame = cv2.flip(frame,1)
+        width = int(640)
+        height = int(480)
+        
+        dimentions = (width,height)
+        frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
+
+
+        # Crop the image
+        crop_img = frame[120:400, 0:640]
+
+        # Convert to grayscale
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+
+        # Gaussian blur
+
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    
+
+        # Color thresholding
+
+        ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
+        # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
+
+
+        # Find the contours of the frame
+        row,column,ex = junction_matrix(frame,thresh,8)
+        
+        if row[0] == 1 or row[3] == 1 or row[6] == 1:
+            return "Junction Now"
+        else:
+            return None
 
 def lineFollowing():
     global left_turn
@@ -180,7 +219,7 @@ def lineFollowing():
             if temp != None: # print if there is a pre defined junction
                 # print(temp)
                 if temp == "Junction ahead":
-                    while (row[0] == 1 or row[3] == 1 or row[6] == 1):
+                    while junction_now == None:
                         goForward(30)
                         sleep(0.05)
                 if temp == "left right angle":
