@@ -102,6 +102,13 @@ def center_line(x_mat):
 
 def junction_now():
     # Capture the frames
+        video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
+        # video_capture = cv2.VideoCapture(0)
+        video_capture.set(3, 640) # Set the width of the frame
+        video_capture.set(4, 480) # Set the height of the frame
+
+        video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
+        video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
 
         ret, frame = video_capture.read()
         frame = cv2.flip(frame,0)
