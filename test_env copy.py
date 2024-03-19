@@ -111,7 +111,7 @@ def lineFollowing():
     video_capture.set(4, 480) # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 350)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
     print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
@@ -129,27 +129,29 @@ def lineFollowing():
 
 
         # Crop the image
-        # crop_img = frame[60:120, 0:160]
+        crop_img = frame[120:400, 0:640]
 
         # Convert to grayscale
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
 
         # Gaussian blur
 
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    
 
         # Color thresholding
 
         ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
         # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
 
+
         # Find the contours of the frame
 
-        contours, hierarchy = cv2.findContours(thresh.copy()[120:360,40:600], 1, cv2.CHAIN_APPROX_NONE)
+        contours, hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
         colour_junct = capture_circle_pattern(frame)
         row,column,ex = junction_matrix(frame,thresh,8)
-        cv2.rectangle(frame, (40,120), (600,360), (0, 0, 255), 1)
         
         temp = junction_detection(row,column,ex)
         
