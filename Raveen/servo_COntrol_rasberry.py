@@ -60,7 +60,7 @@ def servo_4_rotate(angle):
 def Arm():
     servo_2_rotate(32)
     sleep(2)
-    for i in range(-90,40,1):
+    for i in range(-90,30,1):
          servo_1_rotate(i)
          print(i)
          sleep(0.01)
