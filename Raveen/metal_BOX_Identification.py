@@ -54,7 +54,7 @@ status = 1    #1 - forward,2 - right,3 - left
 
 while(metal):
         if(distance_to_box<10):
-            Stop()
+            stop()
             getBox(distance_to_box)
             metal = checkMetal()
             if(metal == True):
