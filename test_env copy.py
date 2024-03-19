@@ -227,6 +227,7 @@ def lineFollowing():
                 # print(temp)
                 if temp == "Junction ahead":
                     while junction_now == None:
+                        print("Junction detected")
                         goForward(30)
                         sleep(0.05)
                 if temp == "left right angle":
