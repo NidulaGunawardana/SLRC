@@ -23,7 +23,8 @@ metal = False  #detect metal
 ##detect junction
 #goforward,right,left
 status = 1    #1 - forward,2 - right,3 - left
-while(metal):
+
+while(True):
     if(status == 1):
         goForward()
         status += 1
@@ -33,14 +34,20 @@ while(metal):
     else:
         turnLeft()
         status += 1
-    
-    if(distance_to_box<10):
-        Stop()
-        getBox(distance_to_box)
-        metal = checkMetal()
+
+    while(metal):
+        if(distance_to_box<10):
+            Stop()
+            getBox(distance_to_box)
+            metal = checkMetal()
+            if(metal == True):
+                break
+        else:
+            goForward(40)
     else:
-        goForward(40)
-else:
+        goBackword() #if not a metal go to the junction 
+        #detect T junction
+    
 
 
 
