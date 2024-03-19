@@ -58,29 +58,30 @@ def junction_matrix(disp,image,size):
 
         j += 60
 
-    mean_value = cv2.mean(image[120 - size:120 + size,80 - size:80 + size])[0]
+    mean_value = cv2.mean(image[60 - size:60 + size,80 - size:80 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (80 - size,120 - size), (80 + size,120 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (80 - size,60 - size), (80 + size,60 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (80 - size,120 - size), (80 + size,120 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (80 - size,60 - size), (80 + size,60 + size), (0, 0, 255), thickness=cv2.FILLED)
 
-    mean_value = cv2.mean(image[120 - size:120 + size,560 - size:560 + size])[0]
+    mean_value = cv2.mean(image[60 - size:60 + size,560 - size:560 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (560 - size,120 - size), (560 + size,120 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (560 - size,60 - size), (560 + size,60 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (560 - size,120 - size), (560 + size,120 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (560 - size,60 - size), (560 + size,60 + size), (0, 0, 255), thickness=cv2.FILLED)
 
     return x_mat,y_mat,ex_mat
 
 
 def junction_detection(x_mat,y_mat,ex_mat): 
     """ 1 is referred to white color while 0 is reffered to the black color"""
-
-    if (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:6] == [1,1,1,1,1,1] and ex_mat[0:2] == [0,0]):
+    if (ex_mat[0] == 1 or ex_mat[1] == 1):
+        return "Junction ahead"
+    elif (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:6] == [1,1,1,1,1,1] and ex_mat[0:2] == [0,0]):
         return 'cross junction' # cross junction
     elif (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:2] == [0,0] and ex_mat[0:2] == [0,0]):
         return 'T junction' # T junction
@@ -99,6 +100,52 @@ def center_line(x_mat):
         pass
     # Stop what you are doing
 
+def junction_now():
+    # Capture the frames
+        video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
+        # video_capture = cv2.VideoCapture(0)
+        video_capture.set(3, 640) # Set the width of the frame
+        video_capture.set(4, 480) # Set the height of the frame
+
+        video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
+        video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
+
+        ret, frame = video_capture.read()
+        frame = cv2.flip(frame,0)
+        frame = cv2.flip(frame,1)
+        width = int(640)
+        height = int(480)
+        
+        dimentions = (width,height)
+        frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
+
+
+        # Crop the image
+        crop_img = frame[120:400, 0:640]
+
+        # Convert to grayscale
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+
+        # Gaussian blur
+
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    
+
+        # Color thresholding
+
+        ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
+        # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
+
+
+        # Find the contours of the frame
+        row,column,ex = junction_matrix(frame,thresh,8)
+        
+        if row[0] == 1 or row[3] == 1 or row[6] == 1:
+            return "Junction Now"
+        else:
+            return None
 
 def lineFollowing():
     global left_turn
@@ -111,7 +158,7 @@ def lineFollowing():
     video_capture.set(4, 480) # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 350)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
     print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
@@ -129,27 +176,29 @@ def lineFollowing():
 
 
         # Crop the image
-        # crop_img = frame[60:120, 0:160]
+        crop_img = frame[120:400, 0:640]
 
         # Convert to grayscale
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
 
         # Gaussian blur
 
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    
 
         # Color thresholding
 
         ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
         # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
 
+
         # Find the contours of the frame
 
         contours, hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
         colour_junct = capture_circle_pattern(frame)
-        row,column,ex = junction_matrix(frame[120:360,40:600],thresh,8)
-        cv2.rectangle(frame, (40,120), (600,360), (0, 0, 255), 1)
+        row,column,ex = junction_matrix(frame,thresh,8)
         
         temp = junction_detection(row,column,ex)
         
@@ -176,6 +225,11 @@ def lineFollowing():
 
             if temp != None: # print if there is a pre defined junction
                 # print(temp)
+                if temp == "Junction ahead":
+                    while junction_now == None:
+                        print("Junction detected")
+                        goForward(30)
+                        sleep(0.05)
                 if temp == "left right angle":
                     stop()
                     # global left_turn 
