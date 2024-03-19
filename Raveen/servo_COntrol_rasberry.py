@@ -72,3 +72,4 @@ def Arm():
     #      sleep(0.01) 
     # servo_3_rotate(0)
     # sleep(2)
+Arm()
