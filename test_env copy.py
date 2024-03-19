@@ -58,29 +58,30 @@ def junction_matrix(disp,image,size):
 
         j += 60
 
-    mean_value = cv2.mean(image[120 - size:120 + size,80 - size:80 + size])[0]
+    mean_value = cv2.mean(image[60 - size:60 + size,80 - size:80 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (80 - size,120 - size), (80 + size,120 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (80 - size,60 - size), (80 + size,60 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (80 - size,120 - size), (80 + size,120 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (80 - size,60 - size), (80 + size,60 + size), (0, 0, 255), thickness=cv2.FILLED)
 
-    mean_value = cv2.mean(image[120 - size:120 + size,560 - size:560 + size])[0]
+    mean_value = cv2.mean(image[60 - size:60 + size,560 - size:560 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (560 - size,120 - size), (560 + size,120 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (560 - size,60 - size), (560 + size,60 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (560 - size,120 - size), (560 + size,120 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (560 - size,60 - size), (560 + size,60 + size), (0, 0, 255), thickness=cv2.FILLED)
 
     return x_mat,y_mat,ex_mat
 
 
 def junction_detection(x_mat,y_mat,ex_mat): 
     """ 1 is referred to white color while 0 is reffered to the black color"""
-
-    if (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:6] == [1,1,1,1,1,1] and ex_mat[0:2] == [0,0]):
+    if (ex_mat[0] == 1 or ex_mat[1] == 1):
+        return "Junction ahead"
+    elif (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:6] == [1,1,1,1,1,1] and ex_mat[0:2] == [0,0]):
         return 'cross junction' # cross junction
     elif (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:2] == [0,0] and ex_mat[0:2] == [0,0]):
         return 'T junction' # T junction
@@ -178,6 +179,10 @@ def lineFollowing():
 
             if temp != None: # print if there is a pre defined junction
                 # print(temp)
+                if temp == "Junction ahead":
+                    while (row[0] == 1 or row[3] == 1 or row[6] == 1):
+                        goForward(30)
+                        sleep(0.05)
                 if temp == "left right angle":
                     stop()
                     # global left_turn 
