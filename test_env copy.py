@@ -14,6 +14,7 @@ turn_180= False
 
 def junction_matrix(disp,image,size):
     x_mat = list()
+    x_mat_above = list()
     y_mat = list()
     ex_mat = list()
 
@@ -58,6 +59,25 @@ def junction_matrix(disp,image,size):
 
         j += 60
 
+    k = 80 # x_above
+    while i <= 560:
+        # Top-left and bottom-right coordinates of the rectangle
+        start_point = (i - size, 120 - size)
+        end_point = (i + size, 120 + size)
+
+        crop_img = image[120 - size:120 + size, i - size: i + size]
+
+        mean_value = cv2.mean(crop_img)[0] 
+
+        if mean_value<th:
+            x_mat_above.append(0)
+            cv2.rectangle(disp, start_point, end_point, (0, 0, 255), 1)
+        else:
+            x_mat_above.append(1)
+            cv2.rectangle(disp, start_point, end_point, (0, 0, 255), thickness=cv2.FILLED)
+
+        i += 80
+
     mean_value = cv2.mean(image[120 - size:120 + size,80 - size:80 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
@@ -74,10 +94,10 @@ def junction_matrix(disp,image,size):
         ex_mat.append(1)
         cv2.rectangle(disp, (560 - size,120 - size), (560 + size,120 + size), (0, 0, 255), thickness=cv2.FILLED)
 
-    return x_mat,y_mat,ex_mat
+    return x_mat,y_mat,ex_mat,x_mat_above
 
 
-def junction_detection(x_mat,y_mat,ex_mat): 
+def junction_detection(x_mat,y_mat,ex_mat,x_mat_above): 
     """ 1 is referred to white color while 0 is reffered to the black color"""
 
     if (x_mat[0:7] == [1,1,1,1,1,1,1] and y_mat[0:6] == [1,1,1,1,1,1] and ex_mat[0:2] == [0,0]):
@@ -86,9 +106,9 @@ def junction_detection(x_mat,y_mat,ex_mat):
         return 'T junction' # T junction
     elif (x_mat[0:3] == [1,1,1] and y_mat[1:5] == [1,1,1,1] and ex_mat[0:2] == [0,0]):
         return 'T junction left' # T junction left
-    elif (x_mat[0:4] == [1,1,1,1] and x_mat[5:7] == [0,0] and ex_mat[0:2] == [0,0] and y_mat[0] == 0):
+    elif (x_mat_above[0:4] == [1,1,1,1] and x_mat_above[5:7] == [0,0]):
         return 'left right angle' # left right angle
-    elif (x_mat[3:7] == [1,1,1,1] and x_mat[0:2] == [0,0] and ex_mat[0:2] == [0,0] and y_mat[0] == 0):
+    elif (x_mat_above[3:7] == [1,1,1,1] and x_mat_above[0:2] == [0,0]):
         return 'right right angle' # right right angle
     else:
         return None

@@ -81,7 +81,7 @@ def junction_matrix(disp,image,size):
         return None
 
 # Main code
-video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
+video_capture = cv2.VideoCapture(0)
 video_capture.set(3, 320) # Set the width of the frame
 video_capture.set(4, 240) # Set the height of the frame
 
