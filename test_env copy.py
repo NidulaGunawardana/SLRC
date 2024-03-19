@@ -74,7 +74,7 @@ def junction_matrix(disp,image,size):
         ex_mat.append(1)
         cv2.rectangle(disp, (560 - size,120 - size), (560 + size,120 + size), (0, 0, 255), thickness=cv2.FILLED)
 
-    return x_mat,y_mat,ex_mat,x_mat_above
+    return x_mat,y_mat,ex_mat
 
 
 def junction_detection(x_mat,y_mat,ex_mat,x_mat_above): 
