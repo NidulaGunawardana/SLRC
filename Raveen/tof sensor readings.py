@@ -52,7 +52,7 @@ def tof1Readings():
 
     time.sleep(timing1/10000000.00)
 
-def tof1Readings():
+def tof2Readings():
     # Get distance from VL53L0X  on TCA9548A bus 1
     tof2.start_ranging(1)
     distance2 = tof2.get_distance()
@@ -66,7 +66,7 @@ def tof1Readings():
 
     time.sleep(timing2/10000000.00)
 
-def tof1Readings():
+def tof2Readings():
     # Get distance from VL53L0X  on TCA9548A bus 1
     tof3.start_ranging(1)
     distance3 = tof3.get_distance()
@@ -80,7 +80,7 @@ def tof1Readings():
 
     time.sleep(timing3/10000000.00)
 
-def tof1Readings():
+def tof2Readings():
     # Get distance from VL53L0X  on TCA9548A bus 1
     tof4.start_ranging(1)
     distance4 = tof4.get_distance()
