@@ -130,18 +130,18 @@ def center_line(video_capture):
     
     row = v_feed(video_capture)
 
-    goForward(30)
-    sleep(2)
+    goForward(37)
+    sleep(1.8)
 
     while row[3] == 1:
         turnLeft(30)
-        sleep(0.5)
-        v_feed(video_capture)
+        sleep(0.05)
+        row = v_feed(video_capture)
 
     while row[3] != 1:
         turnLeft(30)
         sleep(0.05)
-        v_feed(video_capture)
+        row = v_feed(video_capture)
 
     stop()
     print("line centered")
@@ -298,9 +298,9 @@ def lineFollowing():
                 elif temp == "T junction left":
                     stop()
                     # global left_turn 
-                    left_turn = True
+                    # left_turn = True
                     # leftJunct()
-                    # center_line(video_capture)
+                    center_line(video_capture)
                     
                     break
 
