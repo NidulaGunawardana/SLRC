@@ -126,7 +126,7 @@ def v_feed(video_capture):
 
 def center_line(video_capture):
     
-    row = v_feed()
+    row = v_feed(video_capture)
 
     goForward(30)
     sleep(2)
