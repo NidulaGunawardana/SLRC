@@ -409,7 +409,7 @@ def leftJunct():
 
 def turn180():
     turnLeft(40)
-    sleep(2)
+    sleep(2.5)
     global turn_180
     turn_180 = False
     # lineFollowing()
