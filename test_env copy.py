@@ -305,7 +305,7 @@ def lineFollowing():
                     break
 
                 elif temp == "cross junction":
-
+                    stop()
                     if cross_count == 0:
                         goForward(30)
                         sleep(1)
