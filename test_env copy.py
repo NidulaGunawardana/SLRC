@@ -12,6 +12,8 @@ left_turn = False
 right_turn = False
 turn_180= False
 
+cross_count = 0
+
 def junction_matrix(disp,image,size):
     x_mat = list()
     y_mat = list()
@@ -190,6 +192,7 @@ def lineFollowing():
     global left_turn
     global right_turn 
     global turn_180
+    global cross_count
     # Main code
     video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -243,11 +246,10 @@ def lineFollowing():
         
         if colour_junct != None:
             # print(colour_junct)
-            if colour_junct[3] == "green":
+            if colour_junct[2] == "blue":
                 goForward(30)
                 # sleep(0.4)
                 stop()
-
                 right_turn = True
                 # rightJunct()
                 break
@@ -257,6 +259,14 @@ def lineFollowing():
                 stop()
 
                 left_turn = True
+                break
+            elif colour_junct[2] == "white":
+                goForward(30)
+                # sleep(0.4)
+                stop()
+                right_turn = True
+                # rightJunct()
+                break
             elif colour_junct[2] == "green":
                 goForward(30)
                 sleep(1)
@@ -269,6 +279,7 @@ def lineFollowing():
                     while junction_now(video_capture) == None:
                         goForward(30)
                         sleep(0.05)
+
                 if temp == "left right angle":
                     stop()
                     # global left_turn 
@@ -294,10 +305,33 @@ def lineFollowing():
                     break
 
                 elif temp == "cross junction":
+
+                    if cross_count == 0:
+                        goForward(30)
+                        sleep(1)
+                        stop()
+
+                        left_turn = True
+                        break
+                    elif cross_count == 1:
+                        goForward(30)
+                        sleep(1)
+                        stop()
+
+                        turn_180 = True
+                        break
+
+                    elif cross_count == 2:
+                        goForward(30)
+                        sleep(1)
+                        stop()
+
+                        left_turn = True
+                        break
+
                     stop()
-                    # turn_180 = True
-                    left_turn = True
-                    break
+
+                    cross_count += 1
 
         # Find the biggest contour (if detected)
         
@@ -387,8 +421,10 @@ while True:
         
     elif right_turn:
         rightJunct()
+
     elif turn_180:
         turn180()
+
     lineFollowing()
     if 0xFF == ord("q"):
         break
