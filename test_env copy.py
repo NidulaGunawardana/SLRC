@@ -123,6 +123,10 @@ def center_line(video_capture):
 
     # Find the contours of the frame
     row,column,ex = junction_matrix(frame,thresh,8)
+    
+    while row[3] == 1:
+        turnLeft(30)
+        sleep(0.5)
         
     while row[3] != 1:
         turnLeft(30)
