@@ -330,8 +330,9 @@ def lineFollowing():
                         break
 
                     stop()
-
+                    print(cross_count)
                     cross_count += 1
+                
 
         # Find the biggest contour (if detected)
         
