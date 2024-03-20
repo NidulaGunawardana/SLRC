@@ -308,7 +308,7 @@ def lineFollowing():
                     stop()
                     if cross_count == 0:
                         goForward(30)
-                        sleep(1)
+                        sleep(0.5)
                         stop()
 
                         left_turn = True
@@ -316,7 +316,7 @@ def lineFollowing():
                         break
                     elif cross_count == 1:
                         goForward(30)
-                        sleep(1)
+                        sleep(0.5)
                         stop()
 
                         turn_180 = True
@@ -325,7 +325,7 @@ def lineFollowing():
 
                     elif cross_count == 2:
                         goForward(30)
-                        sleep(1)
+                        sleep(0.5)
                         stop()
 
                         left_turn = True
