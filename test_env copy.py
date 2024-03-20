@@ -312,6 +312,7 @@ def lineFollowing():
                         stop()
 
                         left_turn = True
+                        cross_count += 1
                         break
                     elif cross_count == 1:
                         goForward(30)
@@ -319,6 +320,7 @@ def lineFollowing():
                         stop()
 
                         turn_180 = True
+                        cross_count += 1
                         break
 
                     elif cross_count == 2:
@@ -327,10 +329,10 @@ def lineFollowing():
                         stop()
 
                         left_turn = True
+                        cross_count += 1
                         break
 
-                    stop()
-                    cross_count += 1
+                    
                 
 
         # Find the biggest contour (if detected)
