@@ -298,9 +298,9 @@ def lineFollowing():
                 elif temp == "T junction left":
                     stop()
                     # global left_turn 
-                    # left_turn = True
+                    left_turn = True
                     # leftJunct()
-                    center_line(video_capture)
+                    # center_line(video_capture)
                     
                     break
 
