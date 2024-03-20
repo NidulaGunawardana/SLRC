@@ -5,7 +5,7 @@ from Raveen.motorRotating import *
 from Neo.Colorcircleidentify import *
 from Raveen.servo_COntrol_rasberry import *
 
-base_speed = 35
+base_speed = 37
 kp = 0.13
 
 left_turn = False
@@ -232,7 +232,7 @@ def lineFollowing():
 
         # Color thresholding
 
-        ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
+        ret, thresh = cv2.threshold(blur, 125, 255, cv2.THRESH_BINARY) # For the white line
         # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
 
 
@@ -308,7 +308,7 @@ def lineFollowing():
                     stop()
                     if cross_count == 0:
                         goForward(30)
-                        sleep(0.5)
+                        sleep(0.2)
                         stop()
 
                         left_turn = True
@@ -316,7 +316,7 @@ def lineFollowing():
                         break
                     elif cross_count == 1:
                         goForward(30)
-                        sleep(0.5)
+                        sleep(1)
                         stop()
 
                         turn_180 = True
@@ -325,7 +325,7 @@ def lineFollowing():
 
                     elif cross_count == 2:
                         goForward(30)
-                        sleep(0.5)
+                        sleep(0.2)
                         stop()
 
                         left_turn = True
@@ -391,7 +391,7 @@ def lineFollowing():
 
 def rightJunct():
     goForward(30)
-    sleep(2)
+    sleep(2.3)
     turnRight(40)
     sleep(1)
     global right_turn
@@ -400,7 +400,7 @@ def rightJunct():
     
 def leftJunct():
     goForward(30)
-    sleep(2)
+    sleep(2.3)
     turnLeft(40)
     sleep(1)
     global left_turn
@@ -409,13 +409,13 @@ def leftJunct():
 
 def turn180():
     turnLeft(40)
-    sleep(2.5)
+    sleep(3.5)
     global turn_180
     turn_180 = False
     # lineFollowing()
     
 while True:
-    servo_3_rotate(-50)
+    servo_3_rotate(-47)
     servo_2_rotate(32)
     
     if left_turn:
