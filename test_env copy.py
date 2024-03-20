@@ -363,7 +363,7 @@ def turn180():
     # lineFollowing()
     
 while True:
-    servo_3_rotate(-30)
+    servo_3_rotate(-50)
     servo_2_rotate(32)
     
     if left_turn:
