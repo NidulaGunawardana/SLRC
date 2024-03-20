@@ -126,26 +126,47 @@ def v_feed(video_capture):
     row,column,ex = junction_matrix(frame,thresh,8)
     return row
 
-def center_line(video_capture):
+def center_line(video_capture,junction):
     
     row = v_feed(video_capture)
 
     goForward(37)
     sleep(1.8)
 
-    while row[3] == 1:
-        turnLeft(30)
-        sleep(0.05)
-        row = v_feed(video_capture)
+    if junction == 'T junction left':
+        while row[3] == 1:
+            turnLeft(30)
+            sleep(0.05)
+            row = v_feed(video_capture)
 
-    while row[3] != 1:
-        turnLeft(30)
-        sleep(0.05)
-        row = v_feed(video_capture)
+        while row[3] != 1:
+            turnLeft(30)
+            sleep(0.05)
+            row = v_feed(video_capture)
+
+    elif junction == 'right right jucntion':
+        while row[3] == 1:
+            turnRight(30)
+            sleep(0.05)
+            row = v_feed(video_capture)
+
+        while row[3] != 1:
+            turnRight(30)
+            sleep(0.05)
+            row = v_feed(video_capture)
+
+    elif junction == 'left right jucntion':
+        while row[3] == 1:
+            turnLeft(30)
+            sleep(0.05)
+            row = v_feed(video_capture)
+
+        while row[3] != 1:
+            turnLeft(30)
+            sleep(0.05)
+            row = v_feed(video_capture)
 
     stop()
-    print("line centered")
-
 
 def junction_now(video_capture):
     # Capture the frames
@@ -286,13 +307,16 @@ def lineFollowing():
                     left_turn = True
                     # leftJunct()
                     
+                    center_line(video_capture, "left right angle")
                     break
 
                 elif temp == "right right angle":
                     stop()
                     # global right_turn
-                    right_turn = True
+                    # right_turn = True
                     # rightJunct()
+
+                    center_line(video_capture, "right right angle")
                     break
 
                 elif temp == "T junction left":
@@ -300,7 +324,7 @@ def lineFollowing():
                     # global left_turn 
                     # left_turn = True
                     # leftJunct()
-                    center_line(video_capture)
+                    center_line(video_capture, "T junction left")
                     
                     break
 
@@ -311,7 +335,8 @@ def lineFollowing():
                         sleep(0.2)
                         stop()
 
-                        left_turn = True
+                        # left_turn = True
+                        center_line(video_capture, "left right angle")
                         cross_count += 1
                         break
                     elif cross_count == 1:
@@ -319,7 +344,8 @@ def lineFollowing():
                         sleep(1)
                         stop()
 
-                        turn_180 = True
+                        # turn_180 = True
+                        center_line(video_capture, "180")
                         cross_count += 1
                         break
 
@@ -328,7 +354,8 @@ def lineFollowing():
                         sleep(0.2)
                         stop()
 
-                        left_turn = True
+                        # left_turn = True
+                        center_line(video_capture, "left right angle")
                         cross_count += 1
                         break
 
