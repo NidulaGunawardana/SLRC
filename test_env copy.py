@@ -145,10 +145,10 @@ def center_line(video_capture,junction):
             row = v_feed(video_capture)
 
     elif junction == 'right right jucntion':
-        while row[3] == 1:
-            turnRight(30)
-            sleep(0.05)
-            row = v_feed(video_capture)
+        # while row[3] == 1:
+        #     turnRight(30)
+        #     sleep(0.05)
+        #     row = v_feed(video_capture)
 
         while row[3] != 1:
             turnRight(30)
