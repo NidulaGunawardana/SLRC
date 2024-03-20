@@ -94,8 +94,7 @@ def junction_detection(x_mat,y_mat,ex_mat):
     else:
         return None
 
-def center_line(video_capture):
-    
+def v_feed(video_capture):
     ret, frame = video_capture.read()
     frame = cv2.flip(frame,0)
     frame = cv2.flip(frame,1)
@@ -123,16 +122,25 @@ def center_line(video_capture):
 
     # Find the contours of the frame
     row,column,ex = junction_matrix(frame,thresh,8)
+    return row
+
+def center_line(video_capture):
+    
+    row = v_feed()
+
     goForward(30)
     sleep(2)
-    
+
     while row[3] == 1:
         turnLeft(30)
         sleep(0.5)
+        v_feed(video_capture)
 
     while row[3] != 1:
         turnLeft(30)
         sleep(0.05)
+        v_feed(video_capture)
+
     stop()
     print("line centered")
 
