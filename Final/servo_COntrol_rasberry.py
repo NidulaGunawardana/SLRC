@@ -22,40 +22,6 @@ def servo_3_rotate(angle):
         
 def servo_4_rotate(angle):
     servo4.angle = angle-90
-
-# # servo_1_rotate(180)    
-# while True:
-#     servo_2_rotate(32)
-#     sleep(2)
-#     for i in range(-90,40,1):
-#         servo_1_rotate(i)
-#         print(i)
-#         sleep(0.01)
-            
-        
-#     for i in range(40,-90,-1):
-#         servo_1_rotate(i)
-#         print(i)
-#         sleep(0.01) 
-#     # servo_3_rotate(0)
-#     # sleep(2)
-
-
-#     servo_2_rotate(32)
-#     sleep(2)
-
-#     servo_2_rotate(35)
-#     sleep(2)
-
-#     servo_2_rotate(32)
-#     sleep(2)
-
-#     servo_2_rotate(29)
-#     sleep(1.8)
-#     servo_2_rotate(32)
-#     sleep(2)
-    
-#     servo_3_rotate(-20)
     
 def Arm():
     servo_2_rotate(32)
@@ -66,10 +32,3 @@ def Arm():
          sleep(0.01)
     sleep(1)        
         
-    # for i in range(40,-90,-1):
-    #      servo_1_rotate(i)
-    #      print(i)
-    #      sleep(0.01) 
-    # servo_3_rotate(0)
-    # sleep(2)
-# Arm()
