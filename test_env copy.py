@@ -134,12 +134,10 @@ def center_line(video_capture,junction):
     sleep(1.8)
 
     if junction == 'T junction left':
-        # while row[3] == 1:
-        #     turnLeft(30)
-        #     sleep(0.05)
-        #     row = v_feed(video_capture)
-        turnLeft(30)
-        sleep(1.8)
+        while row[3] == 1:
+            turnLeft(30)
+            sleep(0.05)
+            row = v_feed(video_capture)
 
         while row[3] != 1:
             turnLeft(30)
@@ -147,12 +145,11 @@ def center_line(video_capture,junction):
             row = v_feed(video_capture)
 
     elif junction == 'right right jucntion':
-        # while row[3] == 1:
-        #     turnRight(30)
-        #     sleep(0.05)
-        #     row = v_feed(video_capture)
-        turnRight(30)
-        sleep(1.8)
+        while row[3] == 1:
+            turnRight(30)
+            sleep(0.05)
+            row = v_feed(video_capture)
+
         while row[3] != 1:
             turnRight(30)
             sleep(0.05)
@@ -163,8 +160,7 @@ def center_line(video_capture,junction):
         #     turnLeft(30)
         #     sleep(0.05)
         #     row = v_feed(video_capture)
-        turnLeft(30)
-        sleep(1.8)
+
         while row[3] != 1:
             turnLeft(30)
             sleep(0.05)
@@ -340,7 +336,7 @@ def lineFollowing():
                         stop()
 
                         # left_turn = True
-                        center_line(video_capture, "left right angle")
+                        center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
                     elif cross_count == 1:
@@ -349,7 +345,7 @@ def lineFollowing():
                         stop()
 
                         # turn_180 = True
-                        center_line(video_capture, "180")
+                        center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
 
@@ -359,7 +355,7 @@ def lineFollowing():
                         stop()
 
                         # left_turn = True
-                        center_line(video_capture, "left right angle")
+                        center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
 
