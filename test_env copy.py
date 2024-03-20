@@ -115,18 +115,20 @@ def center_line(video_capture):
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     
 
-        # Color thresholding
+    # Color thresholding
 
     ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
-        # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
+    # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
 
 
-        # Find the contours of the frame
+    # Find the contours of the frame
     row,column,ex = junction_matrix(frame,thresh,8)
         
     while row[3] != 1:
         turnLeft(30)
+        sleep(0.05)
     stop()
+    print("line centered")
 
 
 def junction_now(video_capture):
@@ -271,9 +273,9 @@ def lineFollowing():
                 elif temp == "T junction left":
                     stop()
                     # global left_turn 
-                    left_turn = True
+                    # left_turn = True
                     # leftJunct()
-                    # center_line(video_capture)
+                    center_line(video_capture)
                     
                     break
 
