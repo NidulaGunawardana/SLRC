@@ -81,21 +81,3 @@ def capture_circle_pattern(frame):
         return None
     
     return order
-
-# while True:
-    
-#     ret, frame = video_capture.read()
-#     frame = cv2.flip(frame,0)
-#     frame = cv2.flip(frame,1)
-#     width = int(640)
-#     height = int(480)
-
-#     dimentions = (width,height)
-#     frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
-
-#     print(capture_circle_pattern(frame))
-#     cv2.imshow("Frame",frame)
-
-#     if cv2.waitKey(1) & 0xFF == ord("q"):
-
-#         break

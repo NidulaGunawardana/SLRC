@@ -297,24 +297,16 @@ def lineFollowing():
                         sleep(0.05)
                 if temp == "left right angle":
                     stop()
-                    # global left_turn
                     left_turn = True
-                    # leftJunct()
-
                     break
 
                 elif temp == "right right angle":
                     stop()
-                    # global right_turn
                     right_turn = True
-                    # rightJunct()
                     break
 
                 elif temp == "T junction left":
                     stop()
-                    # global left_turn
-                    # left_turn = True
-                    # leftJunct()
                     center_line(video_capture)
 
                     break
@@ -385,7 +377,6 @@ def rightJunct():
     sleep(1)
     global right_turn
     right_turn = False
-    # lineFollowing()
 
 
 def leftJunct():
@@ -395,7 +386,6 @@ def leftJunct():
     sleep(1)
     global left_turn
     left_turn = False
-    # lineFollowing()
 
 
 def turn180():
@@ -403,7 +393,6 @@ def turn180():
     sleep(2)
     global turn_180
     turn_180 = False
-    # lineFollowing()
 
 
 while True:
