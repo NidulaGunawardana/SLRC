@@ -243,7 +243,7 @@ def lineFollowing():
         row,column,ex = junction_matrix(frame,thresh,8)
         
         temp = junction_detection(row,column,ex)
-        
+        print(cross_count)
         if colour_junct != None:
             # print(colour_junct)
             if colour_junct[2] == "blue":
@@ -330,7 +330,6 @@ def lineFollowing():
                         break
 
                     stop()
-                    print(cross_count)
                     cross_count += 1
                 
 
