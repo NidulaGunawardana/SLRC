@@ -175,6 +175,7 @@ def lineFollowing():
     global right_turn 
     global turn_180
     global cross_count
+    global base_speed
 
     video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -222,34 +223,34 @@ def lineFollowing():
             print(temp)
             if temp == "Junction ahead":
                 while junction_now(video_capture) == None or capture_circle_pattern(video_capture) == None:
-                    goForward(30)
+                    goForward(base_speed)
                     sleep(0.05)
                 break
                 
             if colour_junct != None:
 
                 if colour_junct[2] == "blue":
-                    goForward(30)
+                    goForward(base_speed)
                     # sleep(0.4)
                     stop()
                     right_turn = True
                     # rightJunct()
                     break
                 elif colour_junct[2] == "red":
-                    goForward(30)
+                    goForward(base_speed)
                     sleep(1)
                     stop()
                     left_turn = True
                     break
                 elif colour_junct[2] == "white":
-                    goForward(30)
+                    goForward(base_speed)
                     # sleep(0.4)
                     stop()
                     right_turn = True
                     # rightJunct()
                     break
                 elif colour_junct[2] == "green":
-                    goForward(30)
+                    goForward(base_speed)
                     # sleep(1)
                     stop()
 
@@ -361,7 +362,8 @@ def lineFollowing():
 
 def rightJunct():
     global right_turn
-    goForward(30)
+    global base_speed
+    goForward(base_speed)
     sleep(2.3)
 
     turnRight(40)
@@ -370,7 +372,8 @@ def rightJunct():
     
 def leftJunct():
     global left_turn
-    goForward(30)
+    global base_speed
+    goForward(base_speed)
     sleep(2)
 
     turnLeft(40)
