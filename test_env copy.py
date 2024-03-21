@@ -5,7 +5,7 @@ from Raveen.motorRotating import *
 from Neo.Colorcircleidentify import *
 from Raveen.servo_COntrol_rasberry import *
 
-base_speed = 36 # Setting the base speed of the robot
+base_speed = 35 # Setting the base speed of the robot
 kp = 0.14 # Setting the Kp value of the robot
 
 # Setting the states of the turns
@@ -322,21 +322,21 @@ def lineFollowing():
 
             if colour_junct[2] == "blue":
                 goForward(30)
-                # sleep(0.4)
+                sleep(0.55)
                 stop()
-                right_turn = True
+                left_turn = True
                 # rightJunct()
                 break
             elif colour_junct[2] == "red":
                 goForward(30)
-                sleep(1)
+                sleep(0.7)
                 stop()
 
                 left_turn = True
                 break
             elif colour_junct[2] == "white":
                 goForward(30)
-                # sleep(0.4)
+                sleep(0.5)
                 stop()
                 right_turn = True
                 # rightJunct()
@@ -467,7 +467,7 @@ def rightJunct():
     global right_turn
     global base_speed
     goForward(base_speed)
-    sleep(1.6)
+    sleep(1.35)
 
     turnRight(40)
     sleep(0.8)
@@ -477,7 +477,7 @@ def leftJunct():
     global left_turn
     global base_speed
     goForward(base_speed)
-    sleep(1.6)
+    sleep(1.35)
 
     turnLeft(40)
     sleep(0.8)
@@ -486,7 +486,7 @@ def leftJunct():
 def turn180():
     global turn_180
     turnLeft(40)
-    sleep(3)
+    sleep(2.7)
     turn_180 = False
     
 # Main loop
