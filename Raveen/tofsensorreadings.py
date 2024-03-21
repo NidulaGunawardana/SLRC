@@ -21,7 +21,7 @@ if timing1 < 20000:
 
 
 
-def tof1Readings(tof):
+def tof1Readings():
     
     # Get distance from VL53L0X  on TCA9548A bus 1
     distance1 = tof1.get_distance()
@@ -31,16 +31,16 @@ def tof1Readings(tof):
         distance1 = 0
 
     
-    return distance1,tof
+    return distance1
 
 
-x = 0
-tof = 0
-while(x<100):
-    read1,tof = tof1Readings(tof1)
-    print(read1)
-    # time.sleep(timing1/10000000.00)
-    x+=1
+# x = 0
+# tof = 0
+# while(x<100):
+#     read1,tof = tof1Readings(tof1)
+#     print(read1)
+#     # time.sleep(timing1/10000000.00)
+#     x+=1
     
 # tof.stop_ranging()
 # tof.close()
