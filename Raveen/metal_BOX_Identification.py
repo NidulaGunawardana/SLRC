@@ -15,7 +15,7 @@ def getBox(distance):
         Arm()
 
 def checkMetal():
-    return GPIO.input(pin_proxy)
+    print(GPIO.input(pin_proxy)) 
 
 
 # turnLeft(40)#turn left fromm the middle cicle
@@ -61,20 +61,21 @@ servo_1_rotate(-90)
 sleep(2)
 tof =0
 while True:
+    checkMetal()
 
-    distance_to_box,tof = tof1Readings()
-    if(distance_to_box<30):
-        # stop()
-        # getBox(distance_to_box)
-        Arm()
-        metal = checkMetal()
-    else:
-        # goForward(40)
-        pass
+#     distance_to_box,tof = tof1Readings()
+#     if(distance_to_box<30):
+#         # stop()
+#         # getBox(distance_to_box)
+#         Arm()
+#         metal = checkMetal()
+#     else:
+#         # goForward(40)
+#         pass
     
     
-tof.stop_ranging()
-tof.close()
+# tof.stop_ranging()
+# tof.close()
 
 
 
