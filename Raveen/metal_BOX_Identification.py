@@ -41,7 +41,7 @@ status = 1    #1 - forward,2 - right,3 - left
 
 #     while(metal):
 #         if(distance_to_box<10):
-#             Stop()
+#             stop()
 #             getBox(distance_to_box)
 #             metal = checkMetal()
 #             if(metal == True):
@@ -49,7 +49,7 @@ status = 1    #1 - forward,2 - right,3 - left
 #         else:
 #             goForward(40)
 #     else:
-#         goBackword() #if not a metal go to the junction 
+#         goBackward() #if not a metal go to the junction 
 #         #detect T junction
 
 if(distance_to_box<10):

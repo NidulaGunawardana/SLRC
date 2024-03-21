@@ -51,7 +51,7 @@ def tof1Readings():
     # if distance2 > 0:
     #     print("2: %d mm, %d cm"% (distance2, (distance2/10)))
 
-    time.sleep(timing1/10000000.00)
+    
     return distance1
 
 # def tof2Readings():
@@ -108,3 +108,5 @@ def tof1Readings():
 
 while(True):
     read1 = tof1Readings()
+    print(read1)
+    time.sleep(timing1/10000000.00)
