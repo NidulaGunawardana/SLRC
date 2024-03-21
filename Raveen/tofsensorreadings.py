@@ -22,7 +22,7 @@ if timing1 < 20000:
 
 
 def tof1Readings():
-    
+    global tof1
     # Get distance from VL53L0X  on TCA9548A bus 1
     distance1 = tof1.get_distance()
     if distance1 > 0:
@@ -31,7 +31,7 @@ def tof1Readings():
         distance1 = 0
 
     
-    return distance1
+    return distance1,tof1
 
 
 # x = 0
