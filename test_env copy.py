@@ -5,22 +5,31 @@ from Raveen.motorRotating import *
 from Neo.Colorcircleidentify import *
 from Raveen.servo_COntrol_rasberry import *
 
-base_speed = 36
-kp = 0.13
+base_speed = 36 # Setting the base speed of the robot
+kp = 0.13 # Setting the Kp value of the robot
 
-
+# Setting the states of the turns
 left_turn = False
 right_turn = False
 turn_180= False
 
+# Setting the state to 0
 cross_count = 0
 
+# Setting the threshold for balck and white
+th = 155
+
+# Setting servos
+cam_ang = -33 # Setting the camera angle
+arm_h = 32 # Setting the gripper height
+
 def junction_matrix(disp,image,size):
+    """Draw a matrix of squares on the camera frame and give details of junctions"""
+
+    global th
     x_mat = list()
     y_mat = list()
     ex_mat = list()
-
-    th = 127 # Pixel value threshold to detect black and white
 
     i = 140
     while i <= 620:
@@ -61,21 +70,21 @@ def junction_matrix(disp,image,size):
 
         j += 60
 
-    mean_value = cv2.mean(image[10 - size:10 + size,80 - size:80 + size])[0]
+    mean_value = cv2.mean(image[10 - size:10 + size,20 - size:20 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (80 - size,10 - size), (80 + size,10 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (20 - size,10 - size), (20 + size,10 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (80 - size,10 - size), (80 + size,10 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (20 - size,10 - size), (20 + size,10 + size), (0, 0, 255), thickness=cv2.FILLED)
 
-    mean_value = cv2.mean(image[10 - size:10 + size,560 - size:560 + size])[0]
+    mean_value = cv2.mean(image[10 - size:10 + size,620 - size:620 + size])[0]
     if mean_value<th:
         ex_mat.append(0)
-        cv2.rectangle(disp, (560 - size,10 - size), (560 + size,10 + size), (0, 0, 255), 1)
+        cv2.rectangle(disp, (620 - size,10 - size), (620 + size,10 + size), (0, 0, 255), 1)
     else:
         ex_mat.append(1)
-        cv2.rectangle(disp, (560 - size,10 - size), (560 + size,10 + size), (0, 0, 255), thickness=cv2.FILLED)
+        cv2.rectangle(disp, (620 - size,10 - size), (620 + size,10 + size), (0, 0, 255), thickness=cv2.FILLED)
 
     return x_mat,y_mat,ex_mat
 
@@ -98,6 +107,9 @@ def junction_detection(x_mat,y_mat,ex_mat):
         return None
 
 def v_feed(video_capture):
+
+    global th
+
     ret, frame = video_capture.read()
     frame = cv2.flip(frame,0)
     frame = cv2.flip(frame,1)
@@ -116,113 +128,54 @@ def v_feed(video_capture):
     # Gaussian blur
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     
-
     # Color thresholding
+    ret, thresh = cv2.threshold(blur, th, 255, cv2.THRESH_BINARY) # For the white line
 
-    ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
-    # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
-
-
-    # Find the contours of the frame
-    # cv2.imshow("frame", frame)
     row,column,ex = junction_matrix(frame,thresh,8)
     return row
 
-def center_line(video_capture,junction):
-    
-    row = v_feed(video_capture)
-
-    goForward(37)
-    sleep(1.8)
-
-    if junction == 'T junction left':
-        row = v_feed(video_capture)
-        while row[3] == 1:
-            print("onl")
-            turnLeft(30)
-            sleep(0.05)
-            row = v_feed(video_capture)
-
-        # row = v_feed(video_capture)
-        while row[3] != 1:
-            print("ol")
-            turnLeft(30)
-            sleep(0.05)
-            row = v_feed(video_capture)
-
-    elif junction == 'right right junction':
-        # while row[3] == 1:
-        #     turnRight(30)
-        #     sleep(0.05)
-        #     row = v_feed(video_capture)
-      
-        row = v_feed(video_capture)
-        while row[3] != 1:
-
-            turnRight(30)
-            sleep(0.05)
-            row = v_feed(video_capture)
-
-    elif junction == 'left right junction':
-        # while row[3] == 1:
-        #     turnLeft(30)
-        #     sleep(0.05)
-        #     row = v_feed(video_capture)
-        row = v_feed(video_capture)
-        while row[3] != 1:
-            turnLeft(30)
-            sleep(0.05)
-            row = v_feed(video_capture)
-
-    stop()
-
 def junction_now(video_capture):
+
+    global th
+
     # Capture the frames
-        
-
-        ret, frame = video_capture.read()
-        frame = cv2.flip(frame,0)
-        frame = cv2.flip(frame,1)
-        width = int(640)
-        height = int(480)
-        
-        dimentions = (width,height)
-        frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
-
-
-        # Crop the image
-        crop_img = frame[120:400, 0:640]
-
-        # Convert to grayscale
-
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    ret, frame = video_capture.read()
+    frame = cv2.flip(frame,0)
+    frame = cv2.flip(frame,1)
+    width = int(640)
+    height = int(480)
     
+    dimensions = (width,height)
+    frame = cv2.resize(frame,dimensions,interpolation=cv2.INTER_AREA)
 
-        # Gaussian blur
+    # # Crop the image
+    # crop_img = frame[120:400, 0:640]
 
-        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    # Convert to grayscale
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+
+    # Gaussian blur
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+
+
+    # Color thresholding
+    ret, thresh = cv2.threshold(blur, th, 255, cv2.THRESH_BINARY) # For the white line
+
+    row,column,ex = junction_matrix(frame,thresh,8)
     
-
-        # Color thresholding
-
-        ret, thresh = cv2.threshold(blur, 150, 255, cv2.THRESH_BINARY) # For the white line
-        # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
-
-
-        # Find the contours of the frame
-        row,column,ex = junction_matrix(frame,thresh,8)
-        
-        if row[0] == 1 or row[6] == 1:
-            return "Junction Now"
-        else:
-            return None
+    if row[0] == 1 or row[6] == 1:
+        return "Junction Now"
+    else:
+        return None
 
 def lineFollowing():
+    global th
     global left_turn
     global right_turn 
     global turn_180
     global cross_count
-    # Main code
+
     video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
     video_capture.set(3, 640) # Set the width of the frame
@@ -230,87 +183,77 @@ def lineFollowing():
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
     video_capture.set(cv2.CAP_PROP_EXPOSURE, 350)
-    print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
 
         # Capture the frames
-
         ret, frame = video_capture.read()
         frame = cv2.flip(frame,0)
         frame = cv2.flip(frame,1)
         width = int(640)
         height = int(480)
         
-        dimentions = (width,height)
-        frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
+        dimensions = (width,height)
+        frame = cv2.resize(frame,dimensions,interpolation=cv2.INTER_AREA)
 
-
-        # Crop the image
-        crop_img = frame[120:400, 0:640]
+        # # Crop the image
+        # crop_img = frame[120:400, 0:640]
 
         # Convert to grayscale
-
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     
-
         # Gaussian blur
-
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
     
-
         # Color thresholding
-
-        ret, thresh = cv2.threshold(blur, 155, 255, cv2.THRESH_BINARY) # For the white line
-        # ret, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)
-
+        ret, thresh = cv2.threshold(blur, th, 255, cv2.THRESH_BINARY) # For the white line
 
         # Find the contours of the frame
-
         contours, hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
-        colour_junct = capture_circle_pattern(frame)
+           
+        row,column,ex = junction_matrix(frame,thresh,8)
+    
+        temp = junction_detection(row,column,ex)
+        colour_junct = capture_circle_pattern(video_capture)
+        print(cross_count)
 
-        if colour_junct != None:
-            colour_junct = capture_circle_pattern(frame)
-            # print(colour_junct)
-            if colour_junct[2] == "blue":
-                goForward(30)
-                # sleep(0.4)
-                stop()
-                right_turn = True
-                # rightJunct()
+        if temp != None or colour_junct != None: # print if there is a pre defined junction
+            print(temp)
+            if temp == "Junction ahead":
+                while junction_now(video_capture) == None or capture_circle_pattern(video_capture) == None:
+                    goForward(30)
+                    sleep(0.05)
                 break
-            elif colour_junct[2] == "red":
-                goForward(30)
-                sleep(1)
-                stop()
+                
+            if colour_junct != None:
 
-                left_turn = True
-                break
-            elif colour_junct[2] == "white":
-                goForward(30)
-                # sleep(0.4)
-                stop()
-                right_turn = True
-                # rightJunct()
-                break
-            elif colour_junct[2] == "green":
-                goForward(30)
-                # sleep(1)
-                stop()
-        else:
-            row,column,ex = junction_matrix(frame,thresh,8)
-        
-            temp = junction_detection(row,column,ex)
-            print(cross_count)
+                if colour_junct[2] == "blue":
+                    goForward(30)
+                    # sleep(0.4)
+                    stop()
+                    right_turn = True
+                    # rightJunct()
+                    break
+                elif colour_junct[2] == "red":
+                    goForward(30)
+                    sleep(1)
+                    stop()
+                    left_turn = True
+                    break
+                elif colour_junct[2] == "white":
+                    goForward(30)
+                    # sleep(0.4)
+                    stop()
+                    right_turn = True
+                    # rightJunct()
+                    break
+                elif colour_junct[2] == "green":
+                    goForward(30)
+                    # sleep(1)
+                    stop()
 
-            if temp != None: # print if there is a pre defined junction
-                print(temp)
-                if temp == "Junction ahead":
-                    while junction_now(video_capture) == None:
-                        goForward(30)
-                        sleep(0.05)
-
+            else:
                 if temp == "left right angle":
                     stop()
                     # global left_turn 
@@ -343,16 +286,16 @@ def lineFollowing():
                     if cross_count == 0:
                         # goForward(30)
                         # sleep(0.1)
-                        stop()
+                        # stop()
 
                         left_turn = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
                     elif cross_count == 1:
-                        goForward(30)
-                        sleep(1)
-                        stop()
+                        # goForward(30)
+                        # sleep(1)
+                        # stop()
 
                         turn_180 = True
                         # center_line(video_capture, "T junction left")
@@ -360,9 +303,9 @@ def lineFollowing():
                         break
 
                     elif cross_count == 2:
-                        goForward(30)
-                        sleep(0.1)
-                        stop()
+                        # goForward(30)
+                        # sleep(0.1)
+                        # stop()
 
                         left_turn = True
                         # center_line(video_capture, "T junction left")
@@ -370,11 +313,7 @@ def lineFollowing():
                         break
 
                     
-                
-
         # Find the biggest contour (if detected)
-        
-
         if len(contours) > 0:
 
             c = max(contours, key=cv2.contourArea)
@@ -402,70 +341,63 @@ def lineFollowing():
                 right_speed = 100
             elif right_speed<0:
                 right_speed = 0
+
             leftrightMotor_Forward(left_speed,right_speed)
-            # print(error, left_speed, right_speed)
 
             # Drawing the lines
             cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
             cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
             cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
-            # print(cx)
 
         else:
-
-            # print("I don't see the line") #
             pass
 
         # Need to pass the frame to draw, frame to process and the size of the squares in that order
-
-
         # Display the resulting frame
         cv2.imshow("frame", frame)
         cv2.imshow("threshold",thresh)
         if cv2.waitKey(10) & 0xFF == ord("q"):
-
             break
 
 def rightJunct():
+    global right_turn
     goForward(30)
     sleep(2.3)
+
     turnRight(40)
     sleep(1)
-    global right_turn
     right_turn = False
-    # lineFollowing()
     
 def leftJunct():
+    global left_turn
     goForward(30)
-    # sleep(2.3)
     sleep(2)
-    
+
     turnLeft(40)
     sleep(1)
-    global left_turn
     left_turn = False
-    # lineFollowing()
 
 def turn180():
-    turnLeft(40)
-    sleep(3.5)
     global turn_180
+    turnLeft(40)
+    sleep(3.2)
     turn_180 = False
-    # lineFollowing()
     
+# Main loop
 while True:
-    servo_3_rotate(-53)
-    servo_2_rotate(32)
+
+    servo_3_rotate(cam_ang) # Setting the camera angle
+    servo_2_rotate(arm_h) # Setting the gripper height
     
     if left_turn:
         leftJunct()
-        
     elif right_turn:
         rightJunct()
-
     elif turn_180:
         turn180()
 
     lineFollowing()
     if 0xFF == ord("q"):
         break
+
+
