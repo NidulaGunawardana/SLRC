@@ -11,17 +11,17 @@ GPIO.setwarnings(False)
 GPIO.setup(pin_proxy, GPIO.IN)
 
 def getBox(distance):
-    if(distance<10):
+    if(distance<28):
         Arm()
 
 def checkMetal():
     return GPIO.input(pin_proxy)
 
 
-turnLeft(40)#turn left fromm the middle cicle
-goForward(40)#go forward
+# turnLeft(40)#turn left fromm the middle cicle
+# goForward(40)#go forward
 
-distance_to_box = tof1Readings()
+
 metal = False  #detect metal
 
 ##detect junction
@@ -41,7 +41,7 @@ status = 1    #1 - forward,2 - right,3 - left
 
 #     while(metal):
 #         if(distance_to_box<10):
-#             Stop()
+#             stop()
 #             getBox(distance_to_box)
 #             metal = checkMetal()
 #             if(metal == True):
@@ -49,15 +49,20 @@ status = 1    #1 - forward,2 - right,3 - left
 #         else:
 #             goForward(40)
 #     else:
-#         goBackword() #if not a metal go to the junction 
+#         goBackward() #if not a metal go to the junction 
 #         #detect T junction
-
-if(distance_to_box<10):
-    stop()
-    getBox(distance_to_box)
-    metal = checkMetal()
-else:
-    goForward(40)
+while True:
+    servo_2_rotate(32)
+    sleep(2)
+    servo_1_rotate(-90)
+    distance_to_box = tof1Readings()
+    if(distance_to_box<28):
+        stop()
+        getBox(distance_to_box)
+        metal = checkMetal()
+    else:
+        # goForward(40)
+        pass
     
 
 
