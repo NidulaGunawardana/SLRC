@@ -52,15 +52,12 @@ status = 1    #1 - forward,2 - right,3 - left
 #         goBackword() #if not a metal go to the junction 
 #         #detect T junction
 
-while(metal):
-        if(distance_to_box<10):
-            stop()
-            getBox(distance_to_box)
-            metal = checkMetal()
-            if(metal == True):
-                break
-        else:
-            goForward(40)
+if(distance_to_box<10):
+    stop()
+    getBox(distance_to_box)
+    metal = checkMetal()
+else:
+    goForward(40)
     
 
 
