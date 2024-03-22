@@ -12,12 +12,22 @@ video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
 video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
+center_set = False
 angle_set = False
+count = 0
+
+ang_buf =list()
+err_buff = list()
 
 while True:
 	ret, image = video_capture.read()
 	image = cv2.flip(image, 0)
 	image = cv2.flip(image, 1)
+	width = int(640)
+	height = int(480)
+
+	dimensions = (width, height)
+	image = cv2.resize(image, dimensions, interpolation=cv2.INTER_AREA)
 	Blackline = cv2.inRange(image, (140,140,140), (255,255,255))	
 	kernel = np.ones((3,3), np.uint8)
 	Blackline = cv2.erode(Blackline, kernel, iterations=5)
@@ -33,7 +43,8 @@ while True:
 			ang = (90-ang)*-1
 		if w_min > h_min and ang < 0:
 			ang = 90 + ang	  
-		setpoint = 320
+		print(x_min)
+		setpoint = 350
 		error = int(x_min - setpoint) 
 		ang = int(ang)	 
 		box = cv2.boxPoints(blackbox)
@@ -43,25 +54,63 @@ while True:
 		cv2.putText(image,str(error),(10, 320), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 		cv2.line(image, (int(x_min),200 ), (int(x_min),250 ), (255,0,0),3)
 
+		ang_buf.append(ang)
+		err_buff.append(error)
+		if len(ang_buf) > 55:
+			ang_buf.pop(0)
+   
+		if len(err_buff) > 55:
+			err_buff.pop(0)
+   
 
-		# if ang > 0 and ang < 88:
-		# 	turnLeft(25)
-		# 	sleep(0.01)
-		# elif ang<0 and ang > -88:
-		# 	turnRight(25)
-		# 	sleep(0.01)
-		# else:
-		# 	stop()
-		# 	# break
-
-		if error > 0 and error < 5:
-			goLeft(25)
-			sleep(0.01)
-		elif error < 0 and error > -5:
-			goRight(25)
-			sleep(0.01)
+		if ang > 0 and ang < 89:
+			turnLeft(20)
+			sleep(0.005)
+			angle_set = False
+		elif ang<0 and ang > -89:
+			turnRight(20)
+			sleep(0.005)
+			angle_set = False
 		else:
-			stop()
+			# stop()
+			angle_set = True
+   
+
+			# break
+		# if angle_set:
+		if error > 15:
+			goRight(20)
+			center_set = False
+				# sleep(0.01)
+				# sleep(0.01)
+		elif error < -15:
+			goLeft(20)
+			center_set = False
+				# sleep(0.01)
+		else:
+			# stop()
+			center_set = True
+			# break
+		# if center_set and angle_set:
+		# 	count += 1
+		# 	if count > 10:
+		# 		if not(ang > 85 or ang <-85):
+		# 			angle_set = False
+		# 		elif not(error <15 and error > -15):
+		# 			center_set = False
+		# 		else:		
+		# 			stop()
+		# 			break
+  
+		if len(ang_buf) == 55 and len(err_buff) == 55:
+			if all(i > 89 for i in ang_buf) or all(i < -89 for i in ang_buf):
+				angle_set = False
+			if all(i < 15 and i > -15 for i in err_buff):
+				center_set = False
+			if center_set and angle_set:
+				stop()
+				break
+
 
 	cv2.imshow("orginal with line", image)
 

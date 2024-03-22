@@ -416,7 +416,7 @@ def lineFollowing():
                 stop()
         else:
 
-            if cross_count == 3:
+            if cross_count == 2:
                 distance, tof = tof1Readings()
                 if distance < 100:
                     box_detection(tof)
@@ -474,11 +474,11 @@ def lineFollowing():
                         cross_count += 1
                         break
                     elif cross_count == 1:
-                        goForward(30)
-                        sleep(1)
-                        stop()
+                        # goForward(30)
+                        # sleep(1)
+                        # stop()
 
-                        turn_180 = True
+                        # turn_180 = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
