@@ -1,5 +1,7 @@
 from time import sleep
 import VL53L0X
+import statistics
+dev = 0.1 #constant deviation
 
 tof2 = VL53L0X.VL53L0X(tca9548a_num=2, tca9548a_addr=0x70)
 
@@ -32,10 +34,12 @@ def Cylinder():
         sleep(0.1)
 
     avg_dist = tot/20
-    if(avg_dist>260 & avg_dist<270):
-        print("Cylinder")
+    deviation = statistics.stdev(distance)
+    if(deviation<=dev):
+        return "cylinder"
     else:
-        print("Box")
+        return "box"
 
 tof2.stop_ranging()
-tof2.close()   
+tof2.close()
+
