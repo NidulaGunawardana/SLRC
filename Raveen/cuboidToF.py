@@ -31,7 +31,7 @@ def Cylinder():
         dist = tof2Readings()
         distance.append(dist)
         tot += dist
-        sleep(0.1)
+        sleep(0.5)
 
     avg_dist = tot/20
     deviation = statistics.stdev(distance)
