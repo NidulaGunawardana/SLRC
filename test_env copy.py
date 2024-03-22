@@ -6,8 +6,8 @@ from Neo.Colorcircleidentify import *
 from Raveen.servo_COntrol_rasberry import *
 from Raveen.tofsensorreadings import tof1Readings
 
-base_speed = 35 # Setting the base speed of the robot
-kp = 0.14 # Setting the Kp value of the robot
+base_speed = 33 # Setting the base speed of the robot
+kp = 0.13 # Setting the Kp value of the robot
 
 # Setting the states of the turns
 left_turn = False
@@ -341,21 +341,21 @@ def lineFollowing():
 
             if colour_junct[2] == "blue":
                 goForward(30)
-                sleep(0.45)
+                # sleep(0.4)
                 stop()
                 right_turn = True
                 # rightJunct()
                 break
             elif colour_junct[2] == "red":
                 goForward(30)
-                sleep(0.5)
+                sleep(0.6)
                 stop()
 
                 left_turn = True
                 break
             elif colour_junct[2] == "white":
                 goForward(30)
-                sleep(0.5)
+                sleep(0.6)
                 stop()
                 right_turn = True
                 # rightJunct()
@@ -371,7 +371,7 @@ def lineFollowing():
                 if distance <100:
                     print("Box detected")
                     goForward(30)
-                    sleep(1.2)
+                    sleep(1)
                     print("Went forward")
                     stop()
                     Arm()
@@ -455,7 +455,16 @@ def lineFollowing():
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
+                    
+                    elif cross_count == 5:
+                        goForward(30)
+                        sleep(0.1)
+                        stop()
 
+                        left_turn = True
+                        # center_line(video_capture, "T junction left")
+                        cross_count += 1
+                        break
                     
         # Find the biggest contour (if detected)
         if len(contours) > 0:
@@ -507,7 +516,7 @@ def rightJunct():
     global right_turn
     global base_speed
     goForward(base_speed)
-    sleep(1.35)
+    sleep(1.45)
 
     turnRight(39)
     sleep(0.8)
@@ -517,7 +526,7 @@ def leftJunct():
     global left_turn
     global base_speed
     goForward(base_speed)
-    sleep(1.35)
+    sleep(1.45)
 
     turnLeft(39)
     sleep(0.8)
@@ -526,14 +535,14 @@ def leftJunct():
 def turn180():
     global turn_180
     turnLeft(39)
-    sleep(2.7)
+    sleep(2.6)
     turn_180 = False
 
 def turn180_a():
     global turn_180_a
     turnLeft(39)
-    sleep(3.2)
-    turn_180 = False
+    sleep(3.8)
+    turn_180_a = False
 
 # Main loop
 while True:
@@ -547,10 +556,12 @@ while True:
         rightJunct()
     elif turn_180:
         turn180()
-    elif turn180_a:
+    elif turn_180_a:
+        turn180_a()
         if(cross_count == 4):
             goBackward(30)
-            sleep(1)
+            sleep(1.2)
+            stop()
             cross_count = 5
 
     lineFollowing()
