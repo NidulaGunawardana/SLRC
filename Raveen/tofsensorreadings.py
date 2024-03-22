@@ -12,14 +12,10 @@ tof1.open()
 # Start ranging on TCA9548A bus 1
 tof1.start_ranging(VL53L0X.Vl53l0xAccuracyMode.BETTER)
 
-
 timing1 = tof1.get_timing()
-
 
 if timing1 < 20000:
     timing1 = 20000
-
-
 
 def tof1Readings():
     global tof1
@@ -29,10 +25,8 @@ def tof1Readings():
         distance1 = distance1
     else:
         distance1 = 0
-
-    
+  
     return distance1,tof1
-
 
 # x = 0
 # tof = 0
