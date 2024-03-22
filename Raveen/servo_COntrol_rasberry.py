@@ -24,6 +24,7 @@ def servo_4_rotate(angle):
     servo4.angle = angle-90
 
 servo_2_rotate(32)
+servo_3_rotate(-53)
 # # servo_1_rotate(180)    
 # while True:
 #     servo_2_rotate(32)
