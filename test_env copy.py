@@ -168,8 +168,8 @@ def v_feed(video_capture):
     width = int(640)
     height = int(480)
 
-    dimentions = (width, height)
-    frame = cv2.resize(frame, dimentions, interpolation=cv2.INTER_AREA)
+    dimentions = (width,height)
+    frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
 
     # Crop the image
     crop_img = frame[120:400, 0:640]
