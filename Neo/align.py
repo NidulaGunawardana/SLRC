@@ -44,15 +44,24 @@ while True:
 		cv2.line(image, (int(x_min),200 ), (int(x_min),250 ), (255,0,0),3)
 
 
-		if ang > 0 and ang < 88:
-			turnLeft(25)
+		# if ang > 0 and ang < 88:
+		# 	turnLeft(25)
+		# 	sleep(0.01)
+		# elif ang<0 and ang > -88:
+		# 	turnRight(25)
+		# 	sleep(0.01)
+		# else:
+		# 	stop()
+		# 	# break
+
+		if error > 0 and error < 5:
+			goLeft(25)
 			sleep(0.01)
-		elif ang<0 and ang > -88:
-			turnRight(25)
+		elif error < 0 and error > -5:
+			goRight(25)
 			sleep(0.01)
 		else:
 			stop()
-			# break
 
 	cv2.imshow("orginal with line", image)
 
