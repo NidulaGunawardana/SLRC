@@ -57,21 +57,27 @@ servo_1_rotate(-90)
 sleep(2)
 servo_1_rotate(32)
 sleep(1)
-servo_1_rotate(-90)
+servo_1_rotate(25)
 sleep(2)
+for i in range(25,-90,-1):
+    servo_1_rotate(i)
+    # print(i)
+    sleep(0.01)
+
+sleep(3)
 tof =0
 while True:
     checkMetal()
 
-#     distance_to_box,tof = tof1Readings()
-#     if(distance_to_box<30):
-#         # stop()
-#         # getBox(distance_to_box)
-#         Arm()
-#         metal = checkMetal()
-#     else:
-#         # goForward(40)
-#         pass
+    distance_to_box,tof = tof1Readings()
+    if(distance_to_box<30):
+        # stop()
+        # getBox(distance_to_box)
+        Arm()
+        metal = checkMetal()
+    else:
+        # goForward(40)
+        pass
     
     
 # tof.stop_ranging()

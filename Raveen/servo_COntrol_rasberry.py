@@ -5,7 +5,7 @@ from gpiozero.pins.pigpio import PiGPIOFactory
 
 factory = PiGPIOFactory()
 
-servo1 = AngularServo(19,min_pulse_width = 0.0001,max_pulse_width = 2.5/1000,pin_factory = factory)
+servo1 = AngularServo(19,min_pulse_width = 0.0002,max_pulse_width = 2.5/1000,pin_factory = factory)
 servo2= AngularServo(21,min_pulse_width = 0.0005,max_pulse_width = 2.5/1000,pin_factory = factory)
 servo3 = AngularServo(26,min_pulse_width = 0.0005,max_pulse_width = 2.5/1000,pin_factory = factory)
 servo4= AngularServo(17,min_pulse_width = 0.0005,max_pulse_width = 2.5/1000,pin_factory = factory)
@@ -76,7 +76,7 @@ def Arm():
         
     for i in range(25,-90,-1):
          servo_1_rotate(i)
-         print(i)
+        #  print(i)
          sleep(0.01) 
     # servo_3_rotate(0)
     # sleep(2)
