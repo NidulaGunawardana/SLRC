@@ -67,6 +67,8 @@ def capture_circle_pattern(video_capture):
     if bbox_green is not None:
         x1, y1, x2, y2 = bbox_green
         frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
+    else:
+        return None
  
     if bbox_blue is not None:
         x_1, y_1, x_2, y_2 = bbox_blue

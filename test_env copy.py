@@ -13,6 +13,7 @@ kp = 0.14 # Setting the Kp value of the robot
 left_turn = False
 right_turn = False
 turn_180= False
+turn_180_a = False
 
 # Setting the state to 0
 cross_count = 0
@@ -191,6 +192,7 @@ def lineFollowing():
     global left_turn
     global right_turn 
     global turn_180
+    global turn_180_a
     global cross_count
     global base_speed
 
@@ -339,14 +341,14 @@ def lineFollowing():
 
             if colour_junct[2] == "blue":
                 goForward(30)
-                sleep(0.55)
+                sleep(0.45)
                 stop()
                 right_turn = True
                 # rightJunct()
                 break
             elif colour_junct[2] == "red":
                 goForward(30)
-                sleep(0.7)
+                sleep(0.5)
                 stop()
 
                 left_turn = True
@@ -381,7 +383,7 @@ def lineFollowing():
                     goBackward(30)
                     sleep(1)
                     stop()
-                    turn_180 = True
+                    turn_180_a = True
                     cross_count+=1
                     break
             row,column,ex = junction_matrix(frame,thresh,8)
@@ -507,7 +509,7 @@ def rightJunct():
     goForward(base_speed)
     sleep(1.35)
 
-    turnRight(40)
+    turnRight(39)
     sleep(0.8)
     right_turn = False
     
@@ -517,14 +519,20 @@ def leftJunct():
     goForward(base_speed)
     sleep(1.35)
 
-    turnLeft(40)
+    turnLeft(39)
     sleep(0.8)
     left_turn = False
 
 def turn180():
     global turn_180
-    turnLeft(40)
+    turnLeft(39)
     sleep(2.7)
+    turn_180 = False
+
+def turn180_a():
+    global turn_180_a
+    turnLeft(39)
+    sleep(3.2)
     turn_180 = False
 
 # Main loop
@@ -539,6 +547,7 @@ while True:
         rightJunct()
     elif turn_180:
         turn180()
+    elif turn180_a:
         if(cross_count == 4):
             goBackward(30)
             sleep(1)
