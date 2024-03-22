@@ -29,9 +29,9 @@ def tof1Readings():
     return distance1,tof1
 
 # x = 0
-# tof = 0
-# while(x<100):
-#     read1,tof = tof1Readings(tof1)
+# # tof = 0
+# while(True):
+#     read1,tof = tof1Readings()
 #     print(read1)
 #     # time.sleep(timing1/10000000.00)
 #     x+=1

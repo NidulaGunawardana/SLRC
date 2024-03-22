@@ -30,6 +30,13 @@ arm_h = 32  # Setting the gripper height
 servo_3_rotate(cam_ang)
 servo_2_rotate(32)
 sleep(2)
+servo_2_rotate(36)
+sleep(1.8)
+servo_2_rotate(29)
+sleep(2)
+servo_2_rotate(35)
+sleep(1.3)
+servo_2_rotate(32)
 
 for i in range(25, -90, -1):
     servo_1_rotate(i)
@@ -223,24 +230,26 @@ def junction_now(video_capture):
         return None
 
 
-def box_detection(tof):
+def box_detection():
     global box_count
     global cross_count
-    isMetal = checkMetal()
+
+    # print("Metal  - ",isMetal)
     print("Box detected")
     goForward(30)
     sleep(1)
     print("Went forward")
     stop()
     gripper_close()
+    isMetal = checkMetal()    
     if isMetal == 1:
         gripper_up()
         cross_count += 1
     else:
         gripper_open()
         box_count += 1
-    tof.stop_ranging()
-    tof.close()
+    # tof.stop_ranging()
+    # tof.close()
     # servo_2_rotate(34)
     # sleep(1)
     servo_2_rotate(32)
@@ -327,20 +336,36 @@ def lineFollowing():
 
             if cross_count == 2:
                 distance, tof = tof1Readings()
+                # stop()
+                # # sleep(1)
+                # print(distance)
+                # if distance < 200:
                 if distance < 100:
                     if box_count == 0:
-                        box_detection(tof)
+                        box_detection()
                         turn_180_a = True
-                        # box_count += 1
+                            # box_count += 1
                     elif box_count == 1:
-                        box_detection(tof)
+                        box_detection()
                         turn_180_a = True
-                        # box_count += 1
+                            # box_count += 1
+                    elif box_count == 2:
+                        box_detection()
+                        turn_180_a = True
+                            # box_count += 1
                     break
+                # else:
+                #     box_count+=1
+                #     if box_count == 1:
+                #         right_turn = True
+                #     elif box_count == 2:
+                #         turn_180_a = True
+                #     break
+                    
             row, column, ex = junction_matrix(frame, thresh, 8)
 
             temp = junction_detection(row, column, ex)
-            print(cross_count)
+            print(cross_count,box_count)
 
             if temp != None:  # print if there is a pre defined junction
                 print(temp)
@@ -389,14 +414,14 @@ def lineFollowing():
                         break
                     elif cross_count == 1:
                         goForward(30)
-                        sleep(0.5)
-                        # stop()
+                        sleep(1)
+                        stop()
 
                         # turn_180 = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
 
-                        # break
+                        break
 
                     elif cross_count == 2:
                         goForward(30)
@@ -410,7 +435,7 @@ def lineFollowing():
 
                         # left_turn = True
                         # center_line(video_capture, "T junction left")
-                        cross_count += 1
+                        # cross_count += 1
                         break
 
                     elif cross_count == 3:
@@ -484,6 +509,7 @@ def rightJunct():
 
     turnRight(39)
     sleep(0.8)
+    stop()
     right_turn = False
 
 
@@ -494,7 +520,8 @@ def leftJunct():
     sleep(1.45)
 
     turnLeft(39)
-    sleep(0.8)
+    sleep(1.8)
+    stop()
     left_turn = False
 
 
@@ -502,6 +529,7 @@ def turn180():
     global turn_180
     turnLeft(39)
     sleep(2.6)
+    stop()
     turn_180 = False
 
 
@@ -509,6 +537,7 @@ def turn180_a():
     global turn_180_a
     turnLeft(39)
     sleep(3.8)
+    stop()
     turn_180_a = False
 
 
@@ -527,11 +556,11 @@ while True:
 
     elif turn_180_a:
         turn180_a()
-        if cross_count == 3:
+        if cross_count == 3 or cross_count == 2:
             goBackward(30)
             sleep(1.2)
             stop()
-            cross_count = 4
+            # cross_count = 4
 
 
     lineFollowing()
