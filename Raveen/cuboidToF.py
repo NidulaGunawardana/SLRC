@@ -24,7 +24,7 @@ def tof2Readings():
   
     return distance2
 
-def Cylinder():
+def cylinder():
     distance = []
     tot = 0
     for i in range(20):
