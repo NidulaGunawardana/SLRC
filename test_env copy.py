@@ -5,6 +5,7 @@ from Raveen.motorRotating import *
 from Neo.Colorcircleidentify import *
 from Raveen.servo_COntrol_rasberry import *
 from Raveen.tofsensorreadings import tof1Readings
+from Raveen.metal_BOX_Identification import *
 
 base_speed = 33  # Setting the base speed of the robot
 kp = 0.13  # Setting the Kp value of the robot
@@ -17,6 +18,7 @@ turn_180_a = False
 
 # Setting the state to 0
 cross_count = 1
+box_count = 0
 
 # Setting the threshold for balck and white
 th = 155
@@ -222,16 +224,25 @@ def junction_now(video_capture):
 
 
 def box_detection(tof):
+    global box_count
+    global cross_count
+    isMetal = checkMetal()
     print("Box detected")
     goForward(30)
     sleep(1)
     print("Went forward")
     stop()
-    Arm()
+    gripper_close()
+    if isMetal == 1:
+        gripper_up()
+        cross_count += 1
+    else:
+        gripper_open()
+        box_count += 1
     tof.stop_ranging()
     tof.close()
-    servo_2_rotate(34)
-    sleep(1)
+    # servo_2_rotate(34)
+    # sleep(1)
     servo_2_rotate(32)
     goBackward(30)
     sleep(1)
@@ -246,6 +257,7 @@ def lineFollowing():
     global turn_180_a
     global cross_count
     global base_speed
+    global box_count
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -268,9 +280,6 @@ def lineFollowing():
         dimensions = (width, height)
         frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
 
-        # # Crop the image
-        # crop_img = frame[120:400, 0:640]
-
         # Convert to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -284,106 +293,6 @@ def lineFollowing():
 
         # Find the contours of the frame
         contours, hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
-
-        # row,column,ex = junction_matrix(frame,thresh,8)
-
-        # temp = junction_detection(row,column,ex)
-        # colour_junct = capture_circle_pattern(video_capture)
-        # print(cross_count)
-
-        # if temp != None or colour_junct != None: # print if there is a pre defined junction
-        #     print(temp)
-        #     if temp == "Junction ahead":
-        #         while junction_now(video_capture) == None or capture_circle_pattern(video_capture) == None:
-        #             goForward(base_speed)
-        #             sleep(0.05)
-        #         break
-
-        #     if colour_junct != None:
-
-        #         if colour_junct[2] == "blue":
-        #             goForward(base_speed)
-        #             # sleep(0.4)
-        #             stop()
-        #             right_turn = True
-        #             # rightJunct()
-        #             break
-        #         elif colour_junct[2] == "red":
-        #             goForward(base_speed)
-        #             sleep(1)
-        #             stop()
-        #             left_turn = True
-        #             break
-        #         elif colour_junct[2] == "white":
-        #             goForward(base_speed)
-        #             # sleep(0.4)
-        #             stop()
-        #             right_turn = True
-        #             # rightJunct()
-        #             break
-        #         elif colour_junct[2] == "green":
-        #             goForward(base_speed)
-        #             # sleep(1)
-        #             stop()
-
-        #     else:
-        #         if temp == "left right angle":
-        #             stop()
-        #             # global left_turn
-        #             left_turn = True
-        #             # leftJunct()
-
-        #             # center_line(video_capture, "left right junction")
-        #             break
-
-        #         elif temp == "right right angle":
-        #             stop()
-        #             # global right_turn
-        #             right_turn = True
-        #             # rightJunct()
-
-        #             # center_line(video_capture, "right right junction")
-        #             break
-
-        #         elif temp == "T junction left":
-        #             stop()
-        #             # global left_turn
-        #             left_turn = True
-        #             # leftJunct()
-        #             # center_line(video_capture, "T junction left")
-
-        #             break
-
-        #         elif temp == "cross junction":
-        #             stop()
-        #             if cross_count == 0:
-        #                 # goForward(30)
-        #                 # sleep(0.1)
-        #                 # stop()
-
-        #                 left_turn = True
-        #                 # center_line(video_capture, "T junction left")
-        #                 cross_count += 1
-        #                 break
-        #             elif cross_count == 1:
-        #                 # goForward(30)
-        #                 # sleep(1)
-        #                 # stop()
-
-        #                 turn_180 = True
-        #                 # center_line(video_capture, "T junction left")
-        #                 cross_count += 1
-        #                 break
-
-        #             elif cross_count == 2:
-        #                 # goForward(30)
-        #                 # sleep(0.1)
-        #                 # stop()
-
-        #                 left_turn = True
-        #                 # center_line(video_capture, "T junction left")
-        #                 cross_count += 1
-        #                 break
 
         colour_junct = capture_circle_pattern(video_capture)
 
@@ -419,9 +328,14 @@ def lineFollowing():
             if cross_count == 2:
                 distance, tof = tof1Readings()
                 if distance < 100:
-                    box_detection(tof)
-                    turn_180_a = True
-                    cross_count += 1
+                    if box_count == 0:
+                        box_detection(tof)
+                        turn_180_a = True
+                        # box_count += 1
+                    elif box_count == 1:
+                        box_detection(tof)
+                        turn_180_a = True
+                        # box_count += 1
                     break
             row, column, ex = junction_matrix(frame, thresh, 8)
 
@@ -481,23 +395,35 @@ def lineFollowing():
                         # turn_180 = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
+
                         # break
 
                     elif cross_count == 2:
                         goForward(30)
                         sleep(0.1)
                         stop()
+                        if box_count == 1:
+                            left_turn = True
+                        elif box_count == 2:
+                            goForward(30)
+                            sleep(0.5)
 
-                        left_turn = True
+                        # left_turn = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
 
-                    elif cross_count == 5:
+                    elif cross_count == 3:
                         goForward(30)
                         sleep(0.1)
                         stop()
-
+                        if box_count == 0:
+                            goForward(30)
+                            sleep(0.5)
+                        elif box_count == 1:
+                            left_turn = True
+                        elif box_count == 2:
+                            right_turn = True
                         left_turn = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1

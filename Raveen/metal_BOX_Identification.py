@@ -22,11 +22,11 @@ def checkMetal():
 # goForward(40)#go forward
 
 
-metal = False  #detect metal
+# metal = False  #detect metal
 
-##detect junction
-#goforward,right,left
-status = 1    #1 - forward,2 - right,3 - left
+# ##detect junction
+# #goforward,right,left
+# status = 1    #1 - forward,2 - right,3 - left
 
 # while(True):
 #     if(status == 1):
@@ -51,20 +51,20 @@ status = 1    #1 - forward,2 - right,3 - left
 #     else:
 #         goBackward() #if not a metal go to the junction 
 #         #detect T junction
-servo_2_rotate(32)
-sleep(2)
-servo_1_rotate(-90)
-sleep(2)
-servo_1_rotate(32)
-sleep(1)
-servo_1_rotate(25)
-sleep(2)
-for i in range(25,-90,-1):
-    servo_1_rotate(i)
-    # print(i)
-    sleep(0.01)
+# servo_2_rotate(32)
+# sleep(2)
+# servo_1_rotate(-90)
+# sleep(2)
+# servo_1_rotate(32)
+# sleep(1)
+# servo_1_rotate(25)
+# sleep(2)
+# for i in range(25,-90,-1):
+#     servo_1_rotate(i)
+#     # print(i)
+#     sleep(0.01)
 
-sleep(3)
+# sleep(3)
 # tof =0
 # while True:
 #     checkMetal()
