@@ -1,10 +1,13 @@
 import time
 import cv2
 import numpy as np
+import motorRotating 
 
 video_capture = cv2.VideoCapture(0)
 video_capture.set(3, 640)
 video_capture.set(4, 480)
+
+angle_set = False
 
 while True:
 	ret, image = video_capture.read()
@@ -32,9 +35,20 @@ while True:
 		cv2.putText(image,str(ang),(10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 		cv2.putText(image,str(error),(10, 320), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 		cv2.line(image, (int(x_min),200 ), (int(x_min),250 ), (255,0,0),3)
-	 
+
 	cv2.imshow("orginal with line", image)
 
+	if ang > 0 and ang < 88:
+		turnLeft(25)
+		sleep(0.01)
+	elif ang<0 and ang > -88:
+		turnRight(25)
+		sleep(0.01)
+	else:
+		stop()
+		break
+
 	key = cv2.waitKey(1) & 0xFF	
+
 	if key == ord("q"):
 		break
