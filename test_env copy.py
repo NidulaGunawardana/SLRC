@@ -4,6 +4,7 @@ import cv2
 from Raveen.motorRotating import *
 from Neo.Colorcircleidentify import *
 from Raveen.servo_COntrol_rasberry import *
+from Raveen.tofsensorreadings import tof1Readings
 
 base_speed = 35 # Setting the base speed of the robot
 kp = 0.14 # Setting the Kp value of the robot
@@ -22,6 +23,22 @@ th = 155
 # Setting servos
 cam_ang = -53 # Setting the camera angle
 arm_h = 32 # Setting the gripper height
+
+servo_3_rotate(cam_ang)
+servo_2_rotate(32)
+sleep(2)
+# servo_1_rotate(-90)
+# sleep(2)
+# servo_1_rotate(32)
+# sleep(1)
+# servo_1_rotate(25)
+# sleep(2)
+
+for i in range(25,-90,-1):
+    servo_1_rotate(i)
+    # print(i)
+    sleep(0.01)
+
 
 def junction_matrix(disp,image,size):
     """Draw a matrix of squares on the camera frame and give details of junctions"""
@@ -324,7 +341,7 @@ def lineFollowing():
                 goForward(30)
                 sleep(0.55)
                 stop()
-                left_turn = True
+                right_turn = True
                 # rightJunct()
                 break
             elif colour_junct[2] == "red":
@@ -346,6 +363,27 @@ def lineFollowing():
                 # sleep(1)
                 stop()
         else:
+            
+            if cross_count == 3:
+                distance,tof = tof1Readings()
+                if distance <100:
+                    print("Box detected")
+                    goForward(30)
+                    sleep(1.2)
+                    print("Went forward")
+                    stop()
+                    Arm()
+                    tof.stop_ranging()
+                    tof.close()
+                    servo_2_rotate(34)
+                    sleep(1)
+                    servo_2_rotate(32)
+                    goBackward(30)
+                    sleep(1)
+                    stop()
+                    turn_180 = True
+                    cross_count+=1
+                    break
             row,column,ex = junction_matrix(frame,thresh,8)
         
             temp = junction_detection(row,column,ex)
@@ -488,7 +526,7 @@ def turn180():
     turnLeft(40)
     sleep(2.7)
     turn_180 = False
-    
+
 # Main loop
 while True:
 
@@ -501,6 +539,10 @@ while True:
         rightJunct()
     elif turn_180:
         turn180()
+        if(cross_count == 4):
+            goBackward(30)
+            sleep(1)
+            cross_count = 5
 
     lineFollowing()
     if 0xFF == ord("q"):

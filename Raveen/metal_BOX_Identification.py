@@ -15,7 +15,7 @@ def getBox(distance):
         Arm()
 
 def checkMetal():
-    print(GPIO.input(pin_proxy)) 
+    return GPIO.input(pin_proxy)
 
 
 # turnLeft(40)#turn left fromm the middle cicle
@@ -65,19 +65,19 @@ for i in range(25,-90,-1):
     sleep(0.01)
 
 sleep(3)
-tof =0
-while True:
-    checkMetal()
+# tof =0
+# while True:
+#     checkMetal()
 
-    distance_to_box,tof = tof1Readings()
-    if(distance_to_box<30):
-        # stop()
-        # getBox(distance_to_box)
-        Arm()
-        metal = checkMetal()
-    else:
-        # goForward(40)
-        pass
+#     distance_to_box,tof = tof1Readings()
+#     if(distance_to_box<30):
+#         # stop()
+#         # getBox(distance_to_box)
+#         Arm()
+#         metal = checkMetal()
+#     else:
+#         # goForward(40)
+#         pass
     
     
 # tof.stop_ranging()
