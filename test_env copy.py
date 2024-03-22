@@ -16,7 +16,7 @@ turn_180 = False
 turn_180_a = False
 
 # Setting the state to 0
-cross_count = 0
+cross_count = 1
 
 # Setting the threshold for balck and white
 th = 155
@@ -420,7 +420,7 @@ def lineFollowing():
                 distance, tof = tof1Readings()
                 if distance < 100:
                     box_detection(tof)
-                    turn_180_a = True
+                    turn_180 = True
                     cross_count += 1
                     break
             row, column, ex = junction_matrix(frame, thresh, 8)
