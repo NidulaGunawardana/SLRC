@@ -420,7 +420,7 @@ def lineFollowing():
                 distance, tof = tof1Readings()
                 if distance < 100:
                     box_detection(tof)
-                    turn_180 = True
+                    turn_180_a = True
                     cross_count += 1
                     break
             row, column, ex = junction_matrix(frame, thresh, 8)
@@ -474,14 +474,14 @@ def lineFollowing():
                         cross_count += 1
                         break
                     elif cross_count == 1:
-                        # goForward(30)
-                        # sleep(1)
+                        goForward(30)
+                        sleep(0.5)
                         # stop()
 
                         # turn_180 = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
-                        break
+                        # break
 
                     elif cross_count == 2:
                         goForward(30)
@@ -598,13 +598,15 @@ while True:
         rightJunct()
     elif turn_180:
         turn180()
+
     elif turn_180_a:
         turn180_a()
-        if cross_count == 4:
+        if cross_count == 3:
             goBackward(30)
             sleep(1.2)
             stop()
-            cross_count = 5
+            cross_count = 4
+
 
     lineFollowing()
     if 0xFF == ord("q"):
