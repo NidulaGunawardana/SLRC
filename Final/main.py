@@ -21,7 +21,7 @@ turn_180_a = False
 box_grabbed = False
 
 # Setting the state to 0
-cross_count = 4
+cross_count = 0
 box_count = 0
 box_existing = False
 
@@ -427,7 +427,6 @@ def lineFollowing():
                         stop()
                         if box_count == 1:
                             left_turn = True
-                            # box_existance()
                             
                         elif box_count == 2:
                             goForward(30)
@@ -515,7 +514,6 @@ def rightJunct():
     turnRight(39)
     sleep(1.8)
     stop()
-    # box_existance()
     right_turn = False
 
 def rightJunctBox():
@@ -527,7 +525,6 @@ def rightJunctBox():
     turnRight(39)
     sleep(1.8)
     stop()
-    # box_existance()
     right_turn_box = False
 
 
@@ -540,7 +537,6 @@ def leftJunct():
     turnLeft(39)
     sleep(1.8)
     stop()
-    # box_existance()
     left_turn = False
 
 def leftJunctBox():
@@ -552,7 +548,6 @@ def leftJunctBox():
     turnLeft(39)
     sleep(1.8)
     stop()
-    # box_existance()
     left_turn_box = False
 
 
@@ -561,8 +556,6 @@ def turn180():
     turnLeft(39)
     sleep(3.8)
     stop()
-    # box_existance()
-    
     turn_180 = False
 
 
@@ -571,7 +564,6 @@ def turn180_a():
     turnLeft(39)
     sleep(3.8)
     stop()
-    # box_existance()
     turn_180_a = False
 
 
@@ -607,8 +599,6 @@ while True:
             sleep(2.6)
             stop()
             # align_robot()
-
-            # cross_count = 4
     
 
 
