@@ -22,6 +22,13 @@ def led_on(color):
     
     if(color == "blue"):
         GPIO.output(led2,GPIO.HIGH)   #blue led on
+        
+def led_off(color):
+    if(color == "green"):
+        GPIO.output(led1,GPIO.LOW)   #green led on
+    
+    if(color == "blue"):
+        GPIO.output(led2,GPIO.LOW)   #blue led on
     
 def push_button():
     if(GPIO.input(pb) == True):

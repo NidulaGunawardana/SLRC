@@ -8,6 +8,21 @@ from Raveen.tofsensorreadings import tof1Readings
 from Raveen.metal_BOX_Identification import *
 from Neo.align import *
 from Neo.hole import *
+from Raveen.ledAndPushButtons import *
+
+for i in range(3):
+    led_on("green")
+    sleep(0.1)
+    led_off("green")
+    sleep(0.1)
+    led_on("blue")
+    sleep(0.1)
+    led_off("blue")
+    sleep(0.1)
+led_on("green")
+sleep(1)
+led_off("green")
+sleep(1)
 
 base_speed = 33  # Setting the base speed of the robot
 kp = 0.12  # Setting the Kp value of the robot
@@ -662,6 +677,7 @@ def turn180_b():
     stop()
     # box_existance()
     turn_180_b = False
+    
 
 # Main loop
 while True and finish == False:
