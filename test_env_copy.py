@@ -13,6 +13,39 @@ from Neo.hole import *
 from Raveen.ledAndPushButtons import *
 
 
+
+base_speed = 33  # Setting the base speed of the robot
+kp = 0.12  # Setting the Kp value of the robot
+
+# Setting the states of the turns
+left_turn = False
+right_turn = False
+left_turn_box = False
+right_turn_box = False
+turn_180 = False
+turn_180_a = False
+turn_180_b = False
+
+box_grabbed = False
+hole_detected = False
+finish = False
+wall_color = "green"
+button = 0
+running = False
+
+# Setting the state to 0
+cross_count = 1
+box_count = 0
+box_existing = False
+
+# Setting the threshold for balck and white
+th = 155
+
+# Setting servos
+cam_ang = -47  # Setting the camera angle -30 to box normal -47
+arm_h = 32  # Setting the gripper height
+
+
 def blink():
     for i in range(3):
         led_on("green")
@@ -29,6 +62,7 @@ def blink():
     sleep(1)
     
 def servo_init():
+    global cam_ang
     servo_3_rotate(cam_ang)
     servo_2_rotate(32)
     sleep(2)
@@ -53,39 +87,6 @@ def servo_init():
         sleep(0.01)
 blink()
 servo_init()
-
-base_speed = 33  # Setting the base speed of the robot
-kp = 0.12  # Setting the Kp value of the robot
-
-# Setting the states of the turns
-left_turn = False
-right_turn = False
-left_turn_box = False
-right_turn_box = False
-turn_180 = False
-turn_180_a = False
-turn_180_b = False
-
-box_grabbed = False
-hole_detected = False
-finish = False
-wall_color = None
-button = 0
-running = False
-
-# Setting the state to 0
-cross_count = 0
-box_count = 0
-box_existing = False
-
-# Setting the threshold for balck and white
-th = 155
-
-# Setting servos
-cam_ang = -47  # Setting the camera angle -30 to box normal -47
-arm_h = 32  # Setting the gripper height
-
-
     
 def box_existance():
     global box_existing
@@ -754,6 +755,7 @@ while True and finish == False:
                 goBackward(30)
                 sleep(2.4)
                 stop()
+                align_robot()
 
             elif cross_count == 5:
                 goBackward(30)
