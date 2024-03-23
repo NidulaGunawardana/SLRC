@@ -7,6 +7,7 @@ from Raveen.servo_COntrol_rasberry import *
 from Raveen.tofsensorreadings import tof1Readings
 from Raveen.metal_BOX_Identification import *
 from Neo.align import *
+from Neo.hole import *
 
 base_speed = 33  # Setting the base speed of the robot
 kp = 0.13  # Setting the Kp value of the robot
@@ -19,6 +20,9 @@ right_turn_box = False
 turn_180 = False
 turn_180_a = False
 box_grabbed = False
+hole_detected = False
+finish = False
+wall_color = None
 
 # Setting the state to 0
 cross_count = 4
@@ -184,8 +188,14 @@ def junction_detection(x_mat, y_mat, ex_mat):
         and y_mat[0] == 0
     ):
         return "right right angle"  # right right angle
+    elif (
+        ex_mat[0:2] == [1,1]
+        and  y_mat[0:3] == [1,1,1]
+    ):
+        return "stop"
     else:
         return None
+
 
 
 def v_feed(video_capture):
@@ -295,6 +305,8 @@ def lineFollowing():
     global box_count
     global box_existing
     global box_grabbed
+    global hole_detected
+    global wall_color
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -338,8 +350,12 @@ def lineFollowing():
             if colour_junct[2] == "blue":
                 goForward(30)
                 stop()
-                right_turn = True
+                if wall_color == "blue":
+                    left_turn = True
+                else:
+                    right_turn = True
                 break
+
             elif colour_junct[2] == "red":
                 goForward(30)
                 sleep(0.6)
@@ -378,7 +394,25 @@ def lineFollowing():
                         box_count +=1
                         box_existing = True
                         break
-                    
+            
+            if capture_hole(video_capture) != None and box_grabbed == True and colour_junct == None:
+                goBackward(30)
+                sleep(1.5)
+                align_robot()
+                gripper_open()
+                gripper_down()
+                gripper_up()
+                goBackward(30)
+                sleep(0.5)
+                gripper_close()
+                goForward(30)
+                sleep(2)
+                goBackward(30)
+                sleep(0.5)
+                turn180_a = True
+                cam_ang = -30
+                break
+                
             row, column, ex = junction_matrix(frame, thresh, 8)
 
             temp = junction_detection(row, column, ex)
@@ -410,6 +444,8 @@ def lineFollowing():
                 elif temp == "T junction left":
                     stop()
                     left_turn = True
+                    servo_3_rotate(-10)
+                    wall_color = capture_wall_color()
                     break
 
                 elif temp == "cross junction":
@@ -469,7 +505,17 @@ def lineFollowing():
                             left_turn_box = True
                         else:
                             left_turn = True
-                        break
+                        cross_count += 1
+                        break          
+
+                    elif cross_count == 5:
+                        stop()
+                        goForward(30)
+                        sleep(1.2)
+                        left_turn = True
+                        break   
+                elif temp == 'stop':
+                    finish = True
 
         # Find the biggest contour (if detected)
         if len(contours) > 0:
@@ -588,7 +634,7 @@ def turn180_a():
 
 
 # Main loop
-while True:
+while True and finish == False:
 
     servo_3_rotate(cam_ang)  # Setting the camera angle
     servo_2_rotate(arm_h)  # Setting the gripper height
@@ -619,7 +665,10 @@ while True:
             sleep(2.6)
             stop()
             # align_robot()
-
+        elif cross_count == 5:
+            goBackward(30)
+            sleep(1)
+            stop()
             # cross_count = 4
     
 
