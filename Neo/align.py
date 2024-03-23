@@ -37,7 +37,7 @@ def align_robot():
 
 		dimensions = (width, height)
 		image = cv2.resize(image, dimensions, interpolation=cv2.INTER_AREA)
-		image = image[200:480, 0:640]
+		image = image[120:440, 0:640]
 		Blackline = cv2.inRange(image, (140,140,140), (255,255,255))	
 		kernel = np.ones((3,3), np.uint8)
 		Blackline = cv2.erode(Blackline, kernel, iterations=5)
@@ -122,13 +122,13 @@ def align_robot():
 					break
 
 
-		# cv2.imshow("orginal with line", image)
+		cv2.imshow("orginal with line", image)
 
 
-		# key = cv2.waitKey(1) & 0xFF	
+		key = cv2.waitKey(1) & 0xFF	
 
-		# if key == ord("q"):
-		# 	break
+		if key == ord("q"):
+			break
 
 # align_robot()
 
@@ -158,7 +158,7 @@ def align_robot_a(video_capture):
 
 		dimensions = (width, height)
 		image = cv2.resize(image, dimensions, interpolation=cv2.INTER_AREA)
-		image = image[200:480, 0:640]
+		image = image[120:390, 0:640]
 		Blackline = cv2.inRange(image, (140,140,140), (255,255,255))	
 		kernel = np.ones((3,3), np.uint8)
 		Blackline = cv2.erode(Blackline, kernel, iterations=5)
@@ -243,12 +243,12 @@ def align_robot_a(video_capture):
 					break
 
 
-		# cv2.imshow("orginal with line", image)
+		cv2.imshow("orginal with line", image)
 
 
-		# key = cv2.waitKey(1) & 0xFF	
+		key = cv2.waitKey(1) & 0xFF	
 
-		# if key == ord("q"):
-		# 	break
+		if key == ord("q"):
+			break
 
 # align_robot()

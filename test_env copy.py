@@ -24,10 +24,10 @@ turn_180_b = False
 box_grabbed = False
 hole_detected = False
 finish = False
-wall_color = None
+wall_color = "green"
 
 # Setting the state to 0
-cross_count = 0
+cross_count = 1
 box_count = 0
 box_existing = False
 
@@ -41,12 +41,12 @@ arm_h = 32  # Setting the gripper height
 servo_3_rotate(cam_ang)
 servo_2_rotate(32)
 sleep(2)
-servo_2_rotate(36)
-sleep(1.8)
-servo_2_rotate(29)
+servo_2_rotate(37)
 sleep(2)
+servo_2_rotate(28)
+sleep(2.2)
 servo_2_rotate(35)
-sleep(1.3)
+sleep(1.4)
 servo_2_rotate(32)
 
 for i in range(-42, 20, 1):
@@ -174,7 +174,7 @@ def junction_detection(x_mat, y_mat, ex_mat):
     # ):
     #     return "T junction"  # T junction
     elif (
-        x_mat[0:3] == [1, 1, 1] and y_mat[1:5] == [1, 1, 1, 1] and ex_mat[0:2] == [0, 0]
+        x_mat[0:3] == [1, 1, 1] and y_mat[1:5] == [1, 1, 1, 1] and ex_mat[0:2] == [0, 0] and wall_color == None
     ):
         return "T junction left"  # T junction left
     elif (
@@ -312,6 +312,7 @@ def lineFollowing():
     global hole_detected
     global wall_color
     global finish
+    global cam_ang
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -404,22 +405,31 @@ def lineFollowing():
                         box_existing = True
                         break
             
-            if capture_hole(video_capture) != None and box_grabbed == True and colour_junct == None:
+            if capture_hole(video_capture) != None and box_grabbed == True and colour_junct == None and cross_count == 5:
                 goBackward(30)
-                sleep(1.5)
+                sleep(0.3)
+                stop()
                 align_robot_a(video_capture)
+                
+                goForward(30)
+                sleep(0.8)
                 gripper_open()
+                goBackward(30)
+                sleep(0.8)
+                stop()
+                
+                
                 gripper_down()
                 gripper_up()
-                goBackward(30)
-                sleep(0.5)
-                gripper_close()
+                gripper_full_close()
                 goForward(30)
-                sleep(2)
+                sleep(0.9)
                 goBackward(30)
-                sleep(0.5)
-                turn180_a = True
-                cam_ang = -30
+                sleep(0.9)
+                stop()
+            
+                turn_180_a = True
+                cam_ang = -47
                 break
                 
             row, column, ex = junction_matrix(frame, thresh, 8)
@@ -524,7 +534,7 @@ def lineFollowing():
                     elif cross_count == 5:
                         stop()
                         goForward(30)
-                        sleep(1.2)
+                        sleep(1.9)
                         left_turn = True
                         break   
                 elif temp == 'stop':
@@ -683,7 +693,7 @@ while True and finish == False:
         turn180_b()
         if box_grabbed:
             goBackward(30)
-            sleep(2.9)
+            sleep(2.5)
             stop()
             align_robot()
             
@@ -691,7 +701,7 @@ while True and finish == False:
         turn180_a()
         if cross_count == 3 or cross_count == 2:
             goBackward(30)
-            sleep(2.6)
+            sleep(2.4)
             stop()
 
         elif cross_count == 5:

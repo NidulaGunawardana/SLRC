@@ -106,7 +106,14 @@ def gripper_up():
     
 def gripper_down():
     servo_2_rotate(29)
-    sleep(1.8)
+    sleep(2.1)
     servo_2_rotate(32)
-    
+
+def gripper_full_close():
+    servo_2_rotate(32)
+    sleep(2)
+    for i in range(-42,45,1):
+         servo_1_rotate(i)
+        #  print(i)
+         sleep(0.01)
     
