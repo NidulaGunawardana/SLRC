@@ -626,6 +626,7 @@ def lineFollowing():
 def rightJunct():
     global right_turn
     global base_speed
+    global colour_junction
     goForward(base_speed)
     sleep(1.6)
 
@@ -641,7 +642,7 @@ def rightJunct():
 def rightJunctBox():
     global right_turn_box
     global base_speed
-    global colour_junction
+
     goForward(base_speed)
     sleep(1.8)
 
