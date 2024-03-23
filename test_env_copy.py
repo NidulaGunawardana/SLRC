@@ -37,6 +37,7 @@ running = False
 cross_count = 0
 box_count = 0
 box_existing = False
+colour_junction = False
 
 # Setting the threshold for balck and white
 th = 155
@@ -343,6 +344,7 @@ def lineFollowing():
     global finish
     global cam_ang
     global running
+    global colour_junction
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -385,7 +387,7 @@ def lineFollowing():
             colour_junct = capture_circle_pattern(video_capture)
 
             if colour_junct != None:
-
+                colour_junction = True
                 if colour_junct[2] == "blue":
                     goForward(30)
                     sleep(0.3)
@@ -636,12 +638,16 @@ def rightJunct():
 def rightJunctBox():
     global right_turn_box
     global base_speed
+    global colour_junction
     goForward(base_speed)
     sleep(1.8)
 
     turnRight(39)
     sleep(1.8)
     stop()
+    if colour_junction:
+        align_robot()
+        colour_junction = False
     # box_existance()
     right_turn_box = False
 
@@ -649,12 +655,16 @@ def rightJunctBox():
 def leftJunct():
     global left_turn
     global base_speed
+    global colour_junction
     goForward(base_speed)
     sleep(1.6)
 
     turnLeft(39)
     sleep(1.8)
     stop()
+    if colour_junction:
+        align_robot()
+        colour_junction = False
     # box_existance()
     left_turn = False
 
@@ -674,7 +684,7 @@ def leftJunctBox():
 def turn180():
     global turn_180
     turnLeft(39)
-    sleep(3.95)
+    sleep(4)
     stop()
     # box_existance()
     
