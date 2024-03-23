@@ -21,7 +21,7 @@ turn_180_a = False
 box_grabbed = False
 
 # Setting the state to 0
-cross_count = 1
+cross_count = 4
 box_count = 0
 box_existing = False
 
@@ -29,7 +29,7 @@ box_existing = False
 th = 155
 
 # Setting servos
-cam_ang = -47  # Setting the camera angle -15 to box normal -53
+cam_ang = -30  # Setting the camera angle -30 to box normal -47
 arm_h = 32  # Setting the gripper height
 
 servo_3_rotate(cam_ang)
