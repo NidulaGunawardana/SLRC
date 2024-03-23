@@ -12,19 +12,47 @@ from Neo.align import *
 from Neo.hole import *
 from Raveen.ledAndPushButtons import *
 
-for i in range(3):
+
+def blink():
+    for i in range(3):
+        led_on("green")
+        sleep(0.1)
+        led_off("green")
+        sleep(0.1)
+        led_on("blue")
+        sleep(0.1)
+        led_off("blue")
+        sleep(0.1)
     led_on("green")
-    sleep(0.1)
+    sleep(1)
     led_off("green")
-    sleep(0.1)
-    led_on("blue")
-    sleep(0.1)
-    led_off("blue")
-    sleep(0.1)
-led_on("green")
-sleep(1)
-led_off("green")
-sleep(1)
+    sleep(1)
+    
+def servo_init():
+    servo_3_rotate(cam_ang)
+    servo_2_rotate(32)
+    sleep(2)
+    servo_2_rotate(37)
+    sleep(2)
+    servo_2_rotate(28)
+    sleep(2.2)
+    servo_2_rotate(35)
+    sleep(1.4)
+    servo_2_rotate(32)
+
+    for i in range(-42, 20, 1):
+        servo_1_rotate(i)
+        sleep(0.01)
+        
+    servo_1_rotate(25)
+    sleep(1)
+
+
+    for i in range(20, -42, -1):
+        servo_1_rotate(i)
+        sleep(0.01)
+blink()
+servo_init()
 
 base_speed = 33  # Setting the base speed of the robot
 kp = 0.12  # Setting the Kp value of the robot
@@ -57,28 +85,7 @@ th = 155
 cam_ang = -47  # Setting the camera angle -30 to box normal -47
 arm_h = 32  # Setting the gripper height
 
-servo_3_rotate(cam_ang)
-servo_2_rotate(32)
-sleep(2)
-servo_2_rotate(37)
-sleep(2)
-servo_2_rotate(28)
-sleep(2.2)
-servo_2_rotate(35)
-sleep(1.4)
-servo_2_rotate(32)
 
-for i in range(-42, 20, 1):
-    servo_1_rotate(i)
-    sleep(0.01)
-    
-servo_1_rotate(25)
-sleep(1)
-
-
-for i in range(20, -42, -1):
-    servo_1_rotate(i)
-    sleep(0.01)
     
 def box_existance():
     global box_existing
