@@ -347,6 +347,7 @@ def lineFollowing():
 
     while True:
         if push_button() == 0:
+            sleep(0.2)
             button_pressed()
         if running:
             # Capture the frames
@@ -705,6 +706,7 @@ def button_pressed():
 # Main loop
 while True and finish == False:
     if push_button() == 0:
+        sleep(0.2)
         button_pressed()
     if running:
         print(wall_color)
