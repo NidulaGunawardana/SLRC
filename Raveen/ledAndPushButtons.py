@@ -36,3 +36,12 @@ def push_button():
     else:
         return 0
 
+# while True:
+#     if(push_button() == 1):
+#         led_on("green")
+#         led_off("blue")
+#     else:
+#         led_on("blue")
+#         led_off("green")
+        
+#     sleep(0.5)
