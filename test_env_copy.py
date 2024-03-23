@@ -707,7 +707,59 @@ def button_pressed():
     elif button == 1:
         running = False
         stop()
-    button += 1 
+        global left_turn
+        global right_turn
+        global left_turn_box
+        global right_turn_box
+        global turn_180 
+        global turn_180_a 
+        global turn_180_b 
+
+        global box_grabbed 
+        global hole_detected 
+        global finish 
+        global wall_color 
+        global button 
+        global running
+        global cross_count
+        global box_count 
+        global box_existing 
+
+        # Setting the threshold for balck and white
+        global th
+
+        # Setting servos
+        global cam_ang  # Setting the camera angle -30 to box normal -47
+        global arm_h  # Setting the gripper height
+
+        left_turn = False
+        right_turn = False
+        left_turn_box = False
+        right_turn_box = False
+        turn_180 = False
+        turn_180_a = False
+        turn_180_b = False
+
+        box_grabbed = False
+        hole_detected = False
+        finish = False
+        wall_color = None
+        button = 0
+        running = False
+        cross_count = 0
+        box_count = 0
+        box_existing = False
+
+        # Setting the threshold for balck and white
+        th = 155
+
+        # Setting servos
+        cam_ang = -47  # Setting the camera angle -30 to box normal -47
+        arm_h = 32  # Setting the gripper height 
+        blink()
+        servo_init()
+    button += 1
+
     
 
 # Main loop
