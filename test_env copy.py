@@ -10,7 +10,7 @@ from Neo.align import *
 from Neo.hole import *
 
 base_speed = 33  # Setting the base speed of the robot
-kp = 0.13  # Setting the Kp value of the robot
+kp = 0.12  # Setting the Kp value of the robot
 
 # Setting the states of the turns
 left_turn = False
@@ -19,13 +19,15 @@ left_turn_box = False
 right_turn_box = False
 turn_180 = False
 turn_180_a = False
+turn_180_b = False
+
 box_grabbed = False
 hole_detected = False
 finish = False
 wall_color = None
 
 # Setting the state to 0
-cross_count = 4
+cross_count = 0
 box_count = 0
 box_existing = False
 
@@ -33,7 +35,7 @@ box_existing = False
 th = 155
 
 # Setting servos
-cam_ang = -30  # Setting the camera angle -30 to box normal -47
+cam_ang = -47  # Setting the camera angle -30 to box normal -47
 arm_h = 32  # Setting the gripper height
 
 servo_3_rotate(cam_ang)
@@ -156,6 +158,7 @@ def junction_matrix(disp, image, size):
 
 def junction_detection(x_mat, y_mat, ex_mat):
     """1 is referred to white color while 0 is reffered to the black color"""
+    global box_existing
     if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1:
         return "Junction ahead"
     elif (
@@ -164,12 +167,12 @@ def junction_detection(x_mat, y_mat, ex_mat):
         and ex_mat[0:2] == [0, 0]
     ):
         return "cross junction"  # cross junction
-    elif (
-        x_mat[0:7] == [1, 1, 1, 1, 1, 1, 1]
-        and y_mat[0:2] == [0, 0]
-        and ex_mat[0:2] == [0, 0]
-    ):
-        return "T junction"  # T junction
+    # elif (
+    #     x_mat[0:7] == [1, 1, 1, 1, 1, 1, 1]
+    #     and y_mat[0:2] == [0, 0]
+    #     and ex_mat[0:2] == [0, 0]
+    # ):
+    #     return "T junction"  # T junction
     elif (
         x_mat[0:3] == [1, 1, 1] and y_mat[1:5] == [1, 1, 1, 1] and ex_mat[0:2] == [0, 0]
     ):
@@ -300,6 +303,7 @@ def lineFollowing():
     global right_turn_box
     global turn_180
     global turn_180_a
+    global turn_180_b
     global cross_count
     global base_speed
     global box_count
@@ -307,6 +311,7 @@ def lineFollowing():
     global box_grabbed
     global hole_detected
     global wall_color
+    global finish
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -349,6 +354,7 @@ def lineFollowing():
 
             if colour_junct[2] == "blue":
                 goForward(30)
+                sleep(0.3)
                 stop()
                 if wall_color == "blue":
                     left_turn = True
@@ -381,9 +387,12 @@ def lineFollowing():
                     if distance < 100:
                         if box_count <= 2:
                             box_detection()
-                            turn_180_a = True
+                            if box_grabbed == True:
+                                turn_180_b = True
+                            else:
+                                turn_180_a = True
                                 # box_count += 1
-                        break
+                            break
                 else:
                     if box_count == 0:
                         right_turn = True
@@ -398,7 +407,7 @@ def lineFollowing():
             if capture_hole(video_capture) != None and box_grabbed == True and colour_junct == None:
                 goBackward(30)
                 sleep(1.5)
-                align_robot()
+                align_robot_a(video_capture)
                 gripper_open()
                 gripper_down()
                 gripper_up()
@@ -444,8 +453,12 @@ def lineFollowing():
                 elif temp == "T junction left":
                     stop()
                     left_turn = True
-                    servo_3_rotate(-10)
-                    wall_color = capture_wall_color()
+                    servo_3_rotate(20)
+        
+                    wall_color = capture_wall_color(video_capture)
+                    
+                    while wall_color == None:
+                        wall_color = capture_wall_color(video_capture)
                     break
 
                 elif temp == "cross junction":
@@ -494,7 +507,7 @@ def lineFollowing():
                             left_turn_box = True
                         elif box_count == 2:
                             right_turn_box = True
-                        left_turn_box = True
+                        # left_turn_box = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
@@ -568,7 +581,7 @@ def rightJunct():
     global right_turn
     global base_speed
     goForward(base_speed)
-    sleep(1.45)
+    sleep(1.6)
 
     turnRight(39)
     sleep(1.8)
@@ -593,7 +606,7 @@ def leftJunct():
     global left_turn
     global base_speed
     goForward(base_speed)
-    sleep(1.45)
+    sleep(1.6)
 
     turnLeft(39)
     sleep(1.8)
@@ -617,7 +630,7 @@ def leftJunctBox():
 def turn180():
     global turn_180
     turnLeft(39)
-    sleep(3.8)
+    sleep(3.95)
     stop()
     # box_existance()
     
@@ -627,14 +640,22 @@ def turn180():
 def turn180_a():
     global turn_180_a
     turnLeft(39)
-    sleep(3.8)
+    sleep(3.9)
     stop()
     # box_existance()
     turn_180_a = False
-
+    
+def turn180_b():
+    global turn_180_b
+    turnLeft(39)
+    sleep(3.9)
+    stop()
+    # box_existance()
+    turn_180_b = False
 
 # Main loop
 while True and finish == False:
+    print(wall_color)
 
     servo_3_rotate(cam_ang)  # Setting the camera angle
     servo_2_rotate(arm_h)  # Setting the gripper height
@@ -657,14 +678,22 @@ while True and finish == False:
         turn180()
         if box_count == 2 and cross_count == 2:
             box_existance()
-
+            
+    elif turn_180_b:
+        turn180_b()
+        if box_grabbed:
+            goBackward(30)
+            sleep(2.9)
+            stop()
+            align_robot()
+            
     elif turn_180_a:
         turn180_a()
         if cross_count == 3 or cross_count == 2:
             goBackward(30)
             sleep(2.6)
             stop()
-            # align_robot()
+
         elif cross_count == 5:
             goBackward(30)
             sleep(1)

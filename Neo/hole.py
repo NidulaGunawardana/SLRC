@@ -77,17 +77,17 @@ def capture_wall_color(video_capture):
     mask_blue = cv2.inRange(hsvImage, lowerLimit_blue, upperLimit_blue)
 
     mask_green_ = Image.fromarray(mask_green)
-    mask_green_ = Image.fromarray(mask_blue)
+    mask_blue_ = Image.fromarray(mask_blue)
 
     bbox_green = mask_green_.getbbox()
-    bbox_blue = mask_blue.getbbox()
+    bbox_blue = mask_blue_.getbbox()
 
     if bbox_green is not None:
         x1, y1, x2, y2 = bbox_green
         frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
         return "green"
     elif bbox_blue is not None:
-        x_1, y_1, x_2, y_2 = bbox_green
+        x_1, y_1, x_2, y_2 = bbox_blue
         frame = cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (255, 0, 0), 3)
         return "blue"
     else:
