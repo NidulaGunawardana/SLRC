@@ -17,7 +17,7 @@ turn_180 = False
 turn_180_a = False
 
 # Setting the state to 0
-cross_count = 1
+cross_count = 0
 box_count = 0
 box_existing = False
 
@@ -25,7 +25,7 @@ box_existing = False
 th = 155
 
 # Setting servos
-cam_ang = -53  # Setting the camera angle
+cam_ang = -15  # Setting the camera angle -15 to box normal -53
 arm_h = 32  # Setting the gripper height
 
 servo_3_rotate(cam_ang)
@@ -39,7 +39,7 @@ servo_2_rotate(35)
 sleep(1.3)
 servo_2_rotate(32)
 
-for i in range(-90, 25, 1):
+for i in range(-42, 20, 1):
     servo_1_rotate(i)
     sleep(0.01)
     
@@ -47,7 +47,7 @@ servo_1_rotate(25)
 sleep(1)
 
 
-for i in range(25, -90, -1):
+for i in range(20, -42, -1):
     servo_1_rotate(i)
     sleep(0.01)
     

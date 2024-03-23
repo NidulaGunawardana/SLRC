@@ -18,7 +18,7 @@ servo_2_rotate(35)
 sleep(1.3)
 servo_2_rotate(32)
 
-for i in range(-90, -20, 1):
+for i in range(-42, 20, 1):
     servo_1_rotate(i)
     sleep(0.01)
     
@@ -29,6 +29,8 @@ sleep(2)
 gripper_close()
 sleep(2)
 gripper_up()
+
+# servo_1_rotate(-42)
 
 video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
