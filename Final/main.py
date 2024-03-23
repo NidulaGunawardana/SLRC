@@ -29,7 +29,7 @@ box_existing = False
 th = 155
 
 # Setting servos
-cam_ang = -30  # Setting the camera angle -30 to box normal -47
+cam_ang = -47  # Setting the camera angle -30 to box normal -47
 arm_h = 32  # Setting the gripper height
 
 servo_3_rotate(cam_ang)
