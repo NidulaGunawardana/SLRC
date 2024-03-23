@@ -633,6 +633,9 @@ def rightJunct():
     sleep(1.8)
     stop()
     # box_existance()
+    if colour_junction:
+        align_robot()
+        colour_junction = False
     right_turn = False
 
 def rightJunctBox():
@@ -645,9 +648,7 @@ def rightJunctBox():
     turnRight(39)
     sleep(1.8)
     stop()
-    if colour_junction:
-        align_robot()
-        colour_junction = False
+
     # box_existance()
     right_turn_box = False
 
