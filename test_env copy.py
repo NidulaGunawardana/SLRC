@@ -309,16 +309,13 @@ def lineFollowing():
 
             if colour_junct[2] == "blue":
                 goForward(30)
-                # sleep(0.4)
                 stop()
                 right_turn = True
-                # rightJunct()
                 break
             elif colour_junct[2] == "red":
                 goForward(30)
                 sleep(0.6)
                 stop()
-
                 left_turn = True
                 break
             elif colour_junct[2] == "white":
@@ -326,41 +323,37 @@ def lineFollowing():
                 sleep(0.6)
                 stop()
                 right_turn = True
-                # rightJunct()
                 break
             elif colour_junct[2] == "green":
                 goForward(30)
-                # sleep(1)
                 stop()
         else:
 
             if cross_count == 2:
                 distance, tof = tof1Readings()
-                # stop()
-                # # sleep(1)
-                # print(distance)
-                # if distance < 200:
-                if distance < 100:
+                if distance <200:
+                    if distance < 100:
+                        if box_count == 0:
+                            box_detection()
+                            turn_180_a = True
+                                # box_count += 1
+                        elif box_count == 1:
+                            box_detection()
+                            turn_180_a = True
+                                # box_count += 1
+                        elif box_count == 2:
+                            box_detection()
+                            turn_180_a = True
+                                # box_count += 1
+                        break
+                else:
                     if box_count == 0:
-                        box_detection()
-                        turn_180_a = True
-                            # box_count += 1
+                        right_turn = True
+                        box_count +=1
                     elif box_count == 1:
-                        box_detection()
                         turn_180_a = True
-                            # box_count += 1
-                    elif box_count == 2:
-                        box_detection()
-                        turn_180_a = True
-                            # box_count += 1
+                        box_count +=1
                     break
-                # else:
-                #     box_count+=1
-                #     if box_count == 1:
-                #         right_turn = True
-                #     elif box_count == 2:
-                #         turn_180_a = True
-                #     break
                     
             row, column, ex = junction_matrix(frame, thresh, 8)
 
@@ -376,49 +369,30 @@ def lineFollowing():
 
                 if temp == "left right angle":
                     stop()
-                    # global left_turn
                     left_turn = True
-                    # leftJunct()
-
-                    # center_line(video_capture, "left right junction")
                     break
 
                 elif temp == "right right angle":
                     stop()
-                    # global right_turn
                     right_turn = True
-                    # rightJunct()
-
-                    # center_line(video_capture, "right right junction")
                     break
 
                 elif temp == "T junction left":
                     stop()
-                    # global left_turn
                     left_turn = True
-                    # leftJunct()
-                    # center_line(video_capture, "T junction left")
-
                     break
 
                 elif temp == "cross junction":
                     stop()
                     if cross_count == 0:
-                        # goForward(30)
-                        # sleep(0.1)
                         stop()
-
                         left_turn = True
-                        # center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
                     elif cross_count == 1:
                         goForward(30)
                         sleep(1)
                         stop()
-
-                        # turn_180 = True
-                        # center_line(video_capture, "T junction left")
                         cross_count += 1
 
                         break
