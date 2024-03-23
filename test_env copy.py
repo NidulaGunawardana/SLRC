@@ -6,6 +6,7 @@ from Neo.Colorcircleidentify import *
 from Raveen.servo_COntrol_rasberry import *
 from Raveen.tofsensorreadings import tof1Readings
 from Raveen.metal_BOX_Identification import *
+from Neo.align import *
 
 base_speed = 33  # Setting the base speed of the robot
 kp = 0.13  # Setting the Kp value of the robot
@@ -20,7 +21,7 @@ turn_180_a = False
 box_grabbed = False
 
 # Setting the state to 0
-cross_count = 0
+cross_count = 1
 box_count = 0
 box_existing = False
 
@@ -28,7 +29,7 @@ box_existing = False
 th = 155
 
 # Setting servos
-cam_ang = -15  # Setting the camera angle -15 to box normal -53
+cam_ang = -47  # Setting the camera angle -15 to box normal -53
 arm_h = 32  # Setting the gripper height
 
 servo_3_rotate(cam_ang)
@@ -254,7 +255,7 @@ def box_detection():
     global box_count
     global cross_count
     global box_grabbed
-
+    global cam_ang
     # print("Metal  - ",isMetal)
     print("Box detected")
     goForward(30)
@@ -265,6 +266,7 @@ def box_detection():
     isMetal = checkMetal()    
     if isMetal == 1:
         gripper_up()
+        cam_ang = -30
         box_grabbed = True
         cross_count += 1
     else:
@@ -284,6 +286,8 @@ def lineFollowing():
     global th
     global left_turn
     global right_turn
+    global left_turn_box
+    global right_turn_box
     global turn_180
     global turn_180_a
     global cross_count
@@ -536,7 +540,7 @@ def rightJunctBox():
     sleep(1.8)
     stop()
     # box_existance()
-    right_turn = False
+    right_turn_box = False
 
 
 def leftJunct():
@@ -561,7 +565,7 @@ def leftJunctBox():
     sleep(1.8)
     stop()
     # box_existance()
-    left_turn = False
+    left_turn_box = False
 
 
 def turn180():
@@ -597,6 +601,12 @@ while True:
         rightJunct()
         if box_count == 1:
             box_existance()
+    elif right_turn_box:
+        rightJunctBox()
+       
+    elif left_turn_box:
+        leftJunctBox()
+
     elif turn_180:
         turn180()
         if box_count == 2 and cross_count == 2:
@@ -606,10 +616,12 @@ while True:
         turn180_a()
         if cross_count == 3 or cross_count == 2:
             goBackward(30)
-            sleep(1.2)
+            sleep(2.6)
             stop()
+            # align_robot()
 
             # cross_count = 4
+    
 
 
     lineFollowing()
