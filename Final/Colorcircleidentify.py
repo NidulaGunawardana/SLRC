@@ -23,7 +23,16 @@ def get_limits(color):
     return lowerLimit, upperLimit
 
 
-def capture_circle_pattern(frame):
+def capture_circle_pattern(video_capture):
+
+    ret, frame = video_capture.read()
+    frame = cv2.flip(frame,0)
+    frame = cv2.flip(frame,1)
+    width = int(640)
+    height = int(480)
+    
+    dimensions = (width,height)
+    frame = cv2.resize(frame,dimensions,interpolation=cv2.INTER_AREA)
 
     green = [0, 255, 0]  # green in BGR colorspace
     blue = [255, 0, 0]  # blue in BGR colorspace
@@ -50,6 +59,8 @@ def capture_circle_pattern(frame):
     if bbox_green is not None:
         x1, y1, x2, y2 = bbox_green
         frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
+    else:
+        return None
  
     if bbox_blue is not None:
         x_1, y_1, x_2, y_2 = bbox_blue
@@ -81,3 +92,4 @@ def capture_circle_pattern(frame):
         return None
     
     return order
+
