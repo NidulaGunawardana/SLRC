@@ -13,8 +13,11 @@ kp = 0.13  # Setting the Kp value of the robot
 # Setting the states of the turns
 left_turn = False
 right_turn = False
+left_turn_box = False
+right_turn_box = False
 turn_180 = False
 turn_180_a = False
+box_grabbed = False
 
 # Setting the state to 0
 cross_count = 0
@@ -250,6 +253,7 @@ def junction_now(video_capture):
 def box_detection():
     global box_count
     global cross_count
+    global box_grabbed
 
     # print("Metal  - ",isMetal)
     print("Box detected")
@@ -261,6 +265,7 @@ def box_detection():
     isMetal = checkMetal()    
     if isMetal == 1:
         gripper_up()
+        box_grabbed = True
         cross_count += 1
     else:
         gripper_open()
@@ -285,6 +290,7 @@ def lineFollowing():
     global base_speed
     global box_count
     global box_existing
+    global box_grabbed
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -383,12 +389,18 @@ def lineFollowing():
 
                 if temp == "left right angle":
                     stop()
-                    left_turn = True
+                    if box_grabbed == True:
+                        left_turn_box = True
+                    else:
+                        left_turn = True
                     break
 
                 elif temp == "right right angle":
                     stop()
-                    right_turn = True
+                    if box_grabbed == True:
+                        right_turn_box = True
+                    else:
+                        right_turn = True
                     break
 
                 elif temp == "T junction left":
@@ -439,12 +451,20 @@ def lineFollowing():
                             goForward(30)
                             sleep(0.5)
                         elif box_count == 1:
-                            left_turn = True
+                            left_turn_box = True
                         elif box_count == 2:
-                            right_turn = True
-                        left_turn = True
+                            right_turn_box = True
+                        left_turn_box = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
+                        break
+
+                    elif cross_count == 4:
+                        stop()
+                        if box_grabbed == True:
+                            left_turn_box = True
+                        else:
+                            left_turn = True
                         break
 
         # Find the biggest contour (if detected)
@@ -506,12 +526,36 @@ def rightJunct():
     # box_existance()
     right_turn = False
 
+def rightJunctBox():
+    global right_turn_box
+    global base_speed
+    goForward(base_speed)
+    sleep(1.8)
+
+    turnRight(39)
+    sleep(1.8)
+    stop()
+    # box_existance()
+    right_turn = False
+
 
 def leftJunct():
     global left_turn
     global base_speed
     goForward(base_speed)
     sleep(1.45)
+
+    turnLeft(39)
+    sleep(1.8)
+    stop()
+    # box_existance()
+    left_turn = False
+
+def leftJunctBox():
+    global left_turn_box
+    global base_speed
+    goForward(base_speed)
+    sleep(1.8)
 
     turnLeft(39)
     sleep(1.8)
