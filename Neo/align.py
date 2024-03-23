@@ -12,13 +12,13 @@ from Raveen.motorRotating import *
 
 # video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
 # video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+# print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 def align_robot():
 	center_set = False
 	angle_set = False
 	count = 0
 
-	ang_buf =list()
+	ang_buf = list()
 	err_buff = list()
     # video_capture = cv2.VideoCapture(0)
 	video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
@@ -63,6 +63,10 @@ def align_robot():
 			cv2.putText(image,str(ang),(10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 			cv2.putText(image,str(error),(10, 320), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 			cv2.line(image, (int(x_min),200 ), (int(x_min),250 ), (255,0,0),3)
+
+			if (ang > 89 or ang < -89) and (error < 15 or error > 15) and count == 0:
+				count += 1
+				return
 
 			ang_buf.append(ang)
 			err_buff.append(error)
@@ -185,6 +189,10 @@ def align_robot_a(video_capture):
 			cv2.putText(image,str(error),(10, 320), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 			cv2.line(image, (int(x_min),200 ), (int(x_min),250 ), (255,0,0),3)
 
+			if (ang > 89 or ang < -89) and (error < 15 or error > 15) and count == 0:
+				count += 1
+				return
+				
 			ang_buf.append(ang)
 			err_buff.append(error)
 			if len(ang_buf) > 55:
