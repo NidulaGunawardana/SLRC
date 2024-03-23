@@ -29,12 +29,12 @@ turn_180_b = False
 box_grabbed = False
 hole_detected = False
 finish = False
-wall_color = "green"
+wall_color = None #"green"
 button = 0
 running = False
 
 # Setting the state to 0
-cross_count = 1
+cross_count = 0
 box_count = 0
 box_existing = False
 
