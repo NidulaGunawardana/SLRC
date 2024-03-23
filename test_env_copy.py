@@ -178,6 +178,8 @@ def junction_matrix(disp, image, size):
 def junction_detection(x_mat, y_mat, ex_mat):
     """1 is referred to white color while 0 is reffered to the black color"""
     global box_existing
+    global wall_color
+    
     if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1:
         return "Junction ahead"
     elif (
