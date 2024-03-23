@@ -1,8 +1,6 @@
 import RPi.GPIO as GPIO
 from time import sleep
-# from motorRotating import 
-# from servo_COntrol_rasberry import servo_1_rotate,servo_2_rotate,servo_3_rotate,servo_4_rotate,Arm
-# from tofsensorreadings import tof1Readings
+
 
 # import metal_BOX_Identification
 pin_proxy = 27
@@ -10,9 +8,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 GPIO.setup(pin_proxy, GPIO.IN)
 
-# def getBox(distance):
-#     if(distance<30):
-#         Arm()
+
 
 def checkMetal():
     return GPIO.input(pin_proxy)

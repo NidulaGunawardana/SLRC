@@ -6,34 +6,68 @@ from Neo.Colorcircleidentify import *
 from Raveen.servo_COntrol_rasberry import *
 from Raveen.tofsensorreadings import tof1Readings
 from Raveen.metal_BOX_Identification import *
+from Neo.align import *
+from Neo.hole import *
 
 base_speed = 33  # Setting the base speed of the robot
-kp = 0.13  # Setting the Kp value of the robot
+kp = 0.12  # Setting the Kp value of the robot
 
 # Setting the states of the turns
 left_turn = False
 right_turn = False
+left_turn_box = False
+right_turn_box = False
 turn_180 = False
 turn_180_a = False
+turn_180_b = False
+
+box_grabbed = False
+hole_detected = False
+finish = False
+wall_color = "green"
 
 # Setting the state to 0
 cross_count = 1
 box_count = 0
+box_existing = False
 
 # Setting the threshold for balck and white
 th = 155
 
 # Setting servos
-cam_ang = -53  # Setting the camera angle
+cam_ang = -47  # Setting the camera angle -30 to box normal -47
 arm_h = 32  # Setting the gripper height
 
 servo_3_rotate(cam_ang)
 servo_2_rotate(32)
 sleep(2)
+servo_2_rotate(37)
+sleep(2)
+servo_2_rotate(28)
+sleep(2.2)
+servo_2_rotate(35)
+sleep(1.4)
+servo_2_rotate(32)
 
-for i in range(25, -90, -1):
+for i in range(-42, 20, 1):
     servo_1_rotate(i)
     sleep(0.01)
+    
+servo_1_rotate(25)
+sleep(1)
+
+
+for i in range(20, -42, -1):
+    servo_1_rotate(i)
+    sleep(0.01)
+    
+def box_existance():
+    global box_existing
+    distance, tof = tof1Readings()
+    if distance < 500:
+        box_existing = True
+    else:
+        box_existing = False
 
 
 def junction_matrix(disp, image, size):
@@ -124,6 +158,7 @@ def junction_matrix(disp, image, size):
 
 def junction_detection(x_mat, y_mat, ex_mat):
     """1 is referred to white color while 0 is reffered to the black color"""
+    global box_existing
     if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1:
         return "Junction ahead"
     elif (
@@ -132,14 +167,14 @@ def junction_detection(x_mat, y_mat, ex_mat):
         and ex_mat[0:2] == [0, 0]
     ):
         return "cross junction"  # cross junction
+    # elif (
+    #     x_mat[0:7] == [1, 1, 1, 1, 1, 1, 1]
+    #     and y_mat[0:2] == [0, 0]
+    #     and ex_mat[0:2] == [0, 0]
+    # ):
+    #     return "T junction"  # T junction
     elif (
-        x_mat[0:7] == [1, 1, 1, 1, 1, 1, 1]
-        and y_mat[0:2] == [0, 0]
-        and ex_mat[0:2] == [0, 0]
-    ):
-        return "T junction"  # T junction
-    elif (
-        x_mat[0:3] == [1, 1, 1] and y_mat[1:5] == [1, 1, 1, 1] and ex_mat[0:2] == [0, 0]
+        x_mat[0:3] == [1, 1, 1] and y_mat[1:5] == [1, 1, 1, 1] and ex_mat[0:2] == [0, 0] and wall_color == None
     ):
         return "T junction left"  # T junction left
     elif (
@@ -156,8 +191,14 @@ def junction_detection(x_mat, y_mat, ex_mat):
         and y_mat[0] == 0
     ):
         return "right right angle"  # right right angle
+    elif (
+        ex_mat[0:2] == [1,1]
+        and  y_mat[0:3] == [1,1,1]
+    ):
+        return "stop"
     else:
         return None
+
 
 
 def v_feed(video_capture):
@@ -223,24 +264,29 @@ def junction_now(video_capture):
         return None
 
 
-def box_detection(tof):
+def box_detection():
     global box_count
     global cross_count
-    isMetal = checkMetal()
+    global box_grabbed
+    global cam_ang
+    # print("Metal  - ",isMetal)
     print("Box detected")
     goForward(30)
     sleep(1)
     print("Went forward")
     stop()
     gripper_close()
+    isMetal = checkMetal()    
     if isMetal == 1:
         gripper_up()
+        cam_ang = -30
+        box_grabbed = True
         cross_count += 1
     else:
         gripper_open()
         box_count += 1
-    tof.stop_ranging()
-    tof.close()
+    # tof.stop_ranging()
+    # tof.close()
     # servo_2_rotate(34)
     # sleep(1)
     servo_2_rotate(32)
@@ -253,11 +299,20 @@ def lineFollowing():
     global th
     global left_turn
     global right_turn
+    global left_turn_box
+    global right_turn_box
     global turn_180
     global turn_180_a
+    global turn_180_b
     global cross_count
     global base_speed
     global box_count
+    global box_existing
+    global box_grabbed
+    global hole_detected
+    global wall_color
+    global finish
+    global cam_ang
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -265,7 +320,7 @@ def lineFollowing():
     video_capture.set(4, 480)  # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
@@ -300,16 +355,18 @@ def lineFollowing():
 
             if colour_junct[2] == "blue":
                 goForward(30)
-                # sleep(0.4)
+                sleep(0.3)
                 stop()
-                right_turn = True
-                # rightJunct()
+                if wall_color == "blue":
+                    left_turn = True
+                else:
+                    right_turn = True
                 break
+
             elif colour_junct[2] == "red":
                 goForward(30)
                 sleep(0.6)
                 stop()
-
                 left_turn = True
                 break
             elif colour_junct[2] == "white":
@@ -317,30 +374,68 @@ def lineFollowing():
                 sleep(0.6)
                 stop()
                 right_turn = True
-                # rightJunct()
                 break
             elif colour_junct[2] == "green":
                 goForward(30)
-                # sleep(1)
                 stop()
         else:
 
-            if cross_count == 2:
+            if cross_count == 2 :
                 distance, tof = tof1Readings()
-                if distance < 100:
+                print(distance)
+                
+                if box_existing:
+                    if distance < 100:
+                        if box_count <= 2:
+                            box_detection()
+                            if box_grabbed == True:
+                                turn_180_b = True
+                            else:
+                                turn_180_a = True
+                                # box_count += 1
+                            break
+                else:
                     if box_count == 0:
-                        box_detection(tof)
-                        turn_180_a = True
-                        # box_count += 1
+                        right_turn = True
+                        box_count +=1
+                        break
                     elif box_count == 1:
-                        box_detection(tof)
-                        turn_180_a = True
-                        # box_count += 1
-                    break
+                        turn_180 = True
+                        box_count +=1
+                        box_existing = True
+                        break
+            
+            if capture_hole(video_capture) != None and box_grabbed == True and colour_junct == None and cross_count == 5:
+                goBackward(30)
+                sleep(0.3)
+                stop()
+                align_robot_a(video_capture)
+                
+                goForward(30)
+                sleep(0.8)
+                gripper_open()
+                goBackward(30)
+                sleep(0.8)
+                stop()
+                
+                
+                gripper_down()
+                gripper_up()
+                gripper_full_close()
+                goForward(30)
+                sleep(0.9)
+                goBackward(30)
+                sleep(0.9)
+                stop()
+            
+                turn_180_a = True
+                cam_ang = -47
+                break
+                
             row, column, ex = junction_matrix(frame, thresh, 8)
 
             temp = junction_detection(row, column, ex)
-            print(cross_count)
+            print(cross_count,box_count)
 
             if temp != None:  # print if there is a pre defined junction
                 print(temp)
@@ -351,52 +446,46 @@ def lineFollowing():
 
                 if temp == "left right angle":
                     stop()
-                    # global left_turn
-                    left_turn = True
-                    # leftJunct()
-
-                    # center_line(video_capture, "left right junction")
+                    if box_grabbed == True:
+                        left_turn_box = True
+                    else:
+                        left_turn = True
                     break
 
                 elif temp == "right right angle":
                     stop()
-                    # global right_turn
-                    right_turn = True
-                    # rightJunct()
-
-                    # center_line(video_capture, "right right junction")
+                    if box_grabbed == True:
+                        right_turn_box = True
+                    else:
+                        right_turn = True
                     break
 
                 elif temp == "T junction left":
                     stop()
-                    # global left_turn
                     left_turn = True
-                    # leftJunct()
-                    # center_line(video_capture, "T junction left")
-
+                    servo_3_rotate(20)
+        
+                    wall_color = capture_wall_color(video_capture)
+                    
+                    while wall_color == None:
+                        wall_color = capture_wall_color(video_capture)
                     break
 
                 elif temp == "cross junction":
                     stop()
                     if cross_count == 0:
-                        # goForward(30)
-                        # sleep(0.1)
                         stop()
-
                         left_turn = True
-                        # center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
                     elif cross_count == 1:
                         goForward(30)
-                        sleep(0.5)
-                        # stop()
-
-                        # turn_180 = True
-                        # center_line(video_capture, "T junction left")
+                        sleep(0.2)
+                        stop()
+                        box_existance()
                         cross_count += 1
 
-                        # break
+                        break
 
                     elif cross_count == 2:
                         goForward(30)
@@ -404,13 +493,17 @@ def lineFollowing():
                         stop()
                         if box_count == 1:
                             left_turn = True
+                            # box_existance()
+                            
                         elif box_count == 2:
                             goForward(30)
                             sleep(0.5)
+                            box_existance()
+                            
 
                         # left_turn = True
                         # center_line(video_capture, "T junction left")
-                        cross_count += 1
+                        # cross_count += 1
                         break
 
                     elif cross_count == 3:
@@ -421,13 +514,31 @@ def lineFollowing():
                             goForward(30)
                             sleep(0.5)
                         elif box_count == 1:
-                            left_turn = True
+                            left_turn_box = True
                         elif box_count == 2:
-                            right_turn = True
-                        left_turn = True
+                            right_turn_box = True
+                        # left_turn_box = True
                         # center_line(video_capture, "T junction left")
                         cross_count += 1
                         break
+
+                    elif cross_count == 4:
+                        stop()
+                        if box_grabbed == True:
+                            left_turn_box = True
+                        else:
+                            left_turn = True
+                        cross_count += 1
+                        break          
+
+                    elif cross_count == 5:
+                        stop()
+                        goForward(30)
+                        sleep(1.9)
+                        left_turn = True
+                        break   
+                elif temp == 'stop':
+                    finish = True
 
         # Find the biggest contour (if detected)
         if len(contours) > 0:
@@ -480,58 +591,125 @@ def rightJunct():
     global right_turn
     global base_speed
     goForward(base_speed)
-    sleep(1.45)
+    sleep(1.6)
 
     turnRight(39)
-    sleep(0.8)
+    sleep(1.8)
+    stop()
+    # box_existance()
     right_turn = False
+
+def rightJunctBox():
+    global right_turn_box
+    global base_speed
+    goForward(base_speed)
+    sleep(1.8)
+
+    turnRight(39)
+    sleep(1.8)
+    stop()
+    # box_existance()
+    right_turn_box = False
 
 
 def leftJunct():
     global left_turn
     global base_speed
     goForward(base_speed)
-    sleep(1.45)
+    sleep(1.6)
 
     turnLeft(39)
-    sleep(0.8)
+    sleep(1.8)
+    stop()
+    # box_existance()
     left_turn = False
+
+def leftJunctBox():
+    global left_turn_box
+    global base_speed
+    goForward(base_speed)
+    sleep(1.8)
+
+    turnLeft(39)
+    sleep(1.8)
+    stop()
+    # box_existance()
+    left_turn_box = False
 
 
 def turn180():
     global turn_180
     turnLeft(39)
-    sleep(2.6)
+    sleep(3.95)
+    stop()
+    # box_existance()
+    
     turn_180 = False
 
 
 def turn180_a():
     global turn_180_a
     turnLeft(39)
-    sleep(3.8)
+    sleep(3.9)
+    stop()
+    # box_existance()
     turn_180_a = False
-
+    
+def turn180_b():
+    global turn_180_b
+    turnLeft(39)
+    sleep(3.9)
+    stop()
+    # box_existance()
+    turn_180_b = False
 
 # Main loop
-while True:
+while True and finish == False:
+    print(wall_color)
 
     servo_3_rotate(cam_ang)  # Setting the camera angle
     servo_2_rotate(arm_h)  # Setting the gripper height
 
     if left_turn:
         leftJunct()
+        if box_count == 1:
+            box_existance()
     elif right_turn:
         rightJunct()
+        if box_count == 1:
+            box_existance()
+    elif right_turn_box:
+        rightJunctBox()
+       
+    elif left_turn_box:
+        leftJunctBox()
+
     elif turn_180:
         turn180()
-
+        if box_count == 2 and cross_count == 2:
+            box_existance()
+            
+    elif turn_180_b:
+        turn180_b()
+        if box_grabbed:
+            goBackward(30)
+            sleep(2.5)
+            stop()
+            align_robot()
+            
     elif turn_180_a:
         turn180_a()
-        if cross_count == 3:
+        if cross_count == 3 or cross_count == 2:
             goBackward(30)
-            sleep(1.2)
+            sleep(2.4)
             stop()
-            cross_count = 4
+
+        elif cross_count == 5:
+            goBackward(30)
+            sleep(1)
+            stop()
+            # cross_count = 4
+    
 
 
     lineFollowing()

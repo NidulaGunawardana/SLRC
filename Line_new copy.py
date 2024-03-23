@@ -2,27 +2,56 @@ import numpy as np
 import cv2
 
 from Raveen.motorRotating import *
+from Raveen.servo_COntrol_rasberry import *
 
-video_capture = cv2.VideoCapture(0,cv2.CAP_V4L2)
-video_capture.set(3, 160)
-video_capture.set(4, 120)
-# video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 3) # auto mode
-video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1) # manual mode
-video_capture.set(cv2.CAP_PROP_EXPOSURE, 400)
-print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+kp = 0.14
+base_speed = 40
 
-kp = 0.07
-base_speed = 35
+servo_3_rotate(-15)
+servo_2_rotate(32)
+sleep(2)
+servo_2_rotate(36)
+sleep(1.8)
+servo_2_rotate(29)
+sleep(2)
+servo_2_rotate(35)
+sleep(1.3)
+servo_2_rotate(32)
+
+for i in range(-42, 20, 1):
+    servo_1_rotate(i)
+    sleep(0.01)
+    
+
+    
+gripper_open()
+sleep(2)
+gripper_close()
+sleep(2)
+gripper_up()
+
+# servo_1_rotate(-42)
+
+video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # video_capture = cv2.VideoCapture(0)
+video_capture.set(3, 640)  # Set the width of the frame
+video_capture.set(4, 480)  # Set the height of the frame
+
+video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
 while True:
 
-    # Capture the frames
-
+        # Capture the frames
     ret, frame = video_capture.read()
+    frame = cv2.flip(frame, 0)
+    frame = cv2.flip(frame, 1)
+    width = int(640)
+    height = int(480)
 
-    # Crop the image
-
-    crop_img = frame[60:120, 0:160]
+    dimensions = (width, height)
+    frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
 
     # Convert to grayscale
 
@@ -74,8 +103,8 @@ while True:
             right_speed = 0
         
         
-        leftrightMotor_Forward(left_speed,right_speed)
-        print(cx, left_speed, right_speed,error)
+        # leftrightMotor_Forward(left_speed,right_speed)
+        # print(cx, left_speed, right_speed,error)
 
         # Drawing the lines
         cv2.line(frame, (cx, 0), (cx, 720), (255, 0, 0), 1)
