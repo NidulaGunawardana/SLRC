@@ -29,12 +29,12 @@ turn_180_b = False
 box_grabbed = False
 hole_detected = False
 finish = False
-wall_color = "green"
+wall_color = None #"green"
 button = 0
 running = False
 
 # Setting the state to 0
-cross_count = 1
+cross_count = 0
 box_count = 0
 box_existing = False
 
@@ -720,8 +720,8 @@ def button_pressed():
         global hole_detected 
         global finish 
         global wall_color 
-        global button 
-        global running
+        # global button 
+        # global running
         global cross_count
         global box_count 
         global box_existing 
@@ -745,8 +745,8 @@ def button_pressed():
         hole_detected = False
         finish = False
         wall_color = None
-        button = 0
-        running = False
+        # button = 0
+        # running = False
         cross_count = 0
         box_count = 0
         box_existing = False
