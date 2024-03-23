@@ -19,6 +19,7 @@ turn_180_a = False
 # Setting the state to 0
 cross_count = 1
 box_count = 0
+box_existing = False
 
 # Setting the threshold for balck and white
 th = 155
@@ -38,9 +39,25 @@ servo_2_rotate(35)
 sleep(1.3)
 servo_2_rotate(32)
 
+for i in range(-90, 25, 1):
+    servo_1_rotate(i)
+    sleep(0.01)
+    
+servo_1_rotate(25)
+sleep(1)
+
+
 for i in range(25, -90, -1):
     servo_1_rotate(i)
     sleep(0.01)
+    
+def box_existance():
+    global box_existing
+    distance, tof = tof1Readings()
+    if distance < 500:
+        box_existing = True
+    else:
+        box_existing = False
 
 
 def junction_matrix(disp, image, size):
@@ -267,6 +284,7 @@ def lineFollowing():
     global cross_count
     global base_speed
     global box_count
+    global box_existing
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -274,7 +292,7 @@ def lineFollowing():
     video_capture.set(4, 480)  # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 300)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
@@ -329,19 +347,13 @@ def lineFollowing():
                 stop()
         else:
 
-            if cross_count == 2:
+            if cross_count == 2 :
                 distance, tof = tof1Readings()
-                if distance <200:
+                print(distance)
+                
+                if box_existing:
                     if distance < 100:
-                        if box_count == 0:
-                            box_detection()
-                            turn_180_a = True
-                                # box_count += 1
-                        elif box_count == 1:
-                            box_detection()
-                            turn_180_a = True
-                                # box_count += 1
-                        elif box_count == 2:
+                        if box_count <= 2:
                             box_detection()
                             turn_180_a = True
                                 # box_count += 1
@@ -350,10 +362,12 @@ def lineFollowing():
                     if box_count == 0:
                         right_turn = True
                         box_count +=1
+                        break
                     elif box_count == 1:
-                        turn_180_a = True
+                        turn_180 = True
                         box_count +=1
-                    break
+                        box_existing = True
+                        break
                     
             row, column, ex = junction_matrix(frame, thresh, 8)
 
@@ -391,8 +405,9 @@ def lineFollowing():
                         break
                     elif cross_count == 1:
                         goForward(30)
-                        sleep(1)
+                        sleep(0.2)
                         stop()
+                        box_existance()
                         cross_count += 1
 
                         break
@@ -403,9 +418,13 @@ def lineFollowing():
                         stop()
                         if box_count == 1:
                             left_turn = True
+                            # box_existance()
+                            
                         elif box_count == 2:
                             goForward(30)
                             sleep(0.5)
+                            box_existance()
+                            
 
                         # left_turn = True
                         # center_line(video_capture, "T junction left")
@@ -482,8 +501,9 @@ def rightJunct():
     sleep(1.45)
 
     turnRight(39)
-    sleep(0.8)
+    sleep(1.8)
     stop()
+    # box_existance()
     right_turn = False
 
 
@@ -496,14 +516,17 @@ def leftJunct():
     turnLeft(39)
     sleep(1.8)
     stop()
+    # box_existance()
     left_turn = False
 
 
 def turn180():
     global turn_180
     turnLeft(39)
-    sleep(2.6)
+    sleep(3.8)
     stop()
+    # box_existance()
+    
     turn_180 = False
 
 
@@ -512,6 +535,7 @@ def turn180_a():
     turnLeft(39)
     sleep(3.8)
     stop()
+    # box_existance()
     turn_180_a = False
 
 
@@ -523,10 +547,16 @@ while True:
 
     if left_turn:
         leftJunct()
+        if box_count == 1:
+            box_existance()
     elif right_turn:
         rightJunct()
+        if box_count == 1:
+            box_existance()
     elif turn_180:
         turn180()
+        if box_count == 2 and cross_count == 2:
+            box_existance()
 
     elif turn_180_a:
         turn180_a()
@@ -534,6 +564,7 @@ while True:
             goBackward(30)
             sleep(1.2)
             stop()
+
             # cross_count = 4
 
 
