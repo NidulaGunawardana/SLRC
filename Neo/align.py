@@ -125,9 +125,7 @@ def align_robot():
 					stop()
 					break
 
-
 		cv2.imshow("orginal with line", image)
-
 
 		key = cv2.waitKey(1) & 0xFF	
 
@@ -135,8 +133,6 @@ def align_robot():
 			break
 
 # align_robot()
-
-
 
 def align_robot_a(video_capture):
 	center_set = False
@@ -178,6 +174,7 @@ def align_robot_a(video_capture):
 				ang = (90-ang)*-1
 			if w_min > h_min and ang < 0:
 				ang = 90 + ang	  
+
 			print(x_min)
 			setpoint = 350
 			error = int(x_min - setpoint) 
@@ -192,7 +189,7 @@ def align_robot_a(video_capture):
 			if (ang > 89 or ang < -89) and (error < 15 or error > 15) and count == 0:
 				count += 1
 				return
-				
+
 			ang_buf.append(ang)
 			err_buff.append(error)
 			if len(ang_buf) > 55:
