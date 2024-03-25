@@ -19,13 +19,10 @@ kp = 0.12  # Setting the Kp value of the robot
 
 # Setting the states of the turns
 left_turn = False
+left_turn_col = False
 right_turn = False
-left_turn_box = False
-right_turn_box = False
+right_turn_col = False
 turn_180 = False
-turn_180_a = False
-turn_180_b = False
-tt = False
 
 box_grabbed = False
 hole_detected = False
@@ -51,12 +48,10 @@ arm_h = 32  # Setting the gripper height
 def lineFollowing():
     global th
     global left_turn
+    global left_turn_col
     global right_turn
-    global left_turn_box
-    global right_turn_box
+    global right_turn_col
     global turn_180
-    global turn_180_a
-    global turn_180_b
     global cross_count
     global base_speed
     global box_count
@@ -68,7 +63,6 @@ def lineFollowing():
     global cam_ang
     global running
     global colour_junction
-    global tt
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -119,22 +113,22 @@ def lineFollowing():
                     sleep(0.3)
                     stop()
                     if wall_color == "blue":
-                        left_turn = True
+                        left_turn_col = True
                     else:
-                        right_turn = True
+                        right_turn_col = True
                     break
 
                 elif colour_junct[2] == "red":
                     goForward(30)
                     sleep(0.6)
                     stop()
-                    left_turn = True
+                    left_turn_col = True
                     break
                 elif colour_junct[2] == "white":
                     goForward(30)
                     sleep(0.6)
                     stop()
-                    right_turn = True
+                    right_turn_col = True
                     break
                 elif colour_junct[2] == "green":
                     goForward(30)
@@ -149,11 +143,7 @@ def lineFollowing():
                         if distance < 100:
                             if box_count <= 2:
                                 box_detection()
-                                if box_grabbed == True:
-                                    turn_180_b = True
-                                else:
-                                    turn_180_a = True
-                                    # box_count += 1
+                                turn_180 = True
                                 break
                     else:
                         if box_count == 0:
@@ -194,7 +184,7 @@ def lineFollowing():
                     sleep(2.3)
                     stop()
 
-                    turn_180_a = True
+                    turn_180 = True
                     cam_ang = -47
                     break
 
@@ -211,19 +201,13 @@ def lineFollowing():
                             sleep(0.05)
 
                     if temp == "left right angle":
-                        stop()
-                        if box_grabbed == True:
-                            left_turn_box = True
-                        else:
-                            left_turn = True
+                        stop()                      
+                        left_turn = True
                         break
 
                     elif temp == "right right angle":
                         stop()
-                        if box_grabbed == True:
-                            right_turn_box = True
-                        else:
-                            right_turn = True
+                        right_turn = True
                         break
 
                     elif temp == "T junction left":
@@ -279,20 +263,16 @@ def lineFollowing():
                                 goForward(30)
                                 sleep(0.5)
                             elif box_count == 1:
-                                left_turn_box = True
+                                left_turn = True
                             elif box_count == 2:
-                                right_turn_box = True
-                            # left_turn_box = True
-                            # center_line(video_capture, "T junction left")
+                                right_turn = True
+
                             cross_count += 1
                             break
 
                         elif cross_count == 4:
                             stop()
-                            if box_grabbed == True:
-                                left_turn_box = True
-                            else:
-                                left_turn = True
+                            left_turn = True
                             cross_count += 1
                             break
 
@@ -305,8 +285,7 @@ def lineFollowing():
                             break
                     elif temp == "T junction":
                         stop()
-                        turn_180_a = True
-                        tt = True
+                        turn_180 = True
                         break
 
             # Find the biggest contour (if detected)
@@ -514,14 +493,14 @@ def junction_detection(x_mat, y_mat, ex_mat):
     if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1:
         return "Junction ahead"
     elif (
-        x_mat[0:7] == [1, 1, 1, 1, 1, 1, 1]
-        and y_mat[0:6] == [1, 1, 1, 1, 1, 1]
+        x_mat[1:6] == [1, 1, 1, 1, 1]
+        and y_mat[1:5] == [1, 1, 1, 1]
         and ex_mat[0:2] == [0, 0]
     ):
         return "cross junction"  # cross junction
     elif (
-        x_mat[0:7] == [1, 1, 1, 1, 1, 1, 1]
-        and y_mat[0:3] == [0, 0, 0]
+        x_mat[1:6] == [1, 1, 1, 1, 1]
+        and y_mat[0:2] == [0, 0]
         and ex_mat[0:2] == [0, 0]
     ):
         return "T junction"  # T junction
@@ -640,10 +619,7 @@ def box_detection():
     else:
         gripper_open()
         box_count += 1
-    # tof.stop_ranging()
-    # tof.close()
-    # servo_2_rotate(34)
-    # sleep(1)
+
     servo_2_rotate(32)
     goBackward(30)
     sleep(1)
@@ -661,27 +637,6 @@ def rightJunct():
         goForward(base_speed)
         sleep(0.05)
     stop()
-    # goForward(base_speed)
-    # sleep(0.2)
-
-    # if sensor_FRONT() == 1:
-    #     while sensor_FRONT() == 1:
-    #         turnRight(base_speed)
-    #         sleep(0.05)
-    #     turnRight(base_speed)
-    #     sleep(0.5)
-    #     stop()
-    # else:
-    #     while sensor_FRONT() == 0:
-    #         turnRight(base_speed)
-    #         sleep(0.05)
-    #     turnRight(base_speed)
-    #     sleep(0.1)
-
-    #     while sensor_FRONT() == 1:
-    #         turnRight(base_speed)
-    #         sleep(0.05)
-    #     stop()
     
     turnRight(base_speed)
     sleep(0.3)
@@ -696,24 +651,6 @@ def rightJunct():
     #     colour_junction = False
     right_turn = False
 
-
-def rightJunctBox():
-    """Turning right when a box is grabbed"""
-
-    global right_turn_box
-    global base_speed
-
-    goForward(base_speed)
-    sleep(1.8)
-
-    turnRight(39)
-    sleep(1.8)
-    stop()
-
-    # box_existance()
-    right_turn_box = False
-
-
 def leftJunct():
     """Turning left when a box is not grabbed"""
 
@@ -726,27 +663,6 @@ def leftJunct():
         sleep(0.05)
     stop()
 
-    # if sensor_FRONT() == 1:
-    #     while sensor_FRONT() == 1:
-    #         turnLeft(base_speed)
-    #         sleep(0.05)
-    #     sleep(0.5)
-    #     stop()
-    # else:
-    #     while sensor_FRONT() == 0:
-    #         turnLeft(base_speed)
-    #         sleep(0.05)
-    #     sleep(0.1)
-
-    #     while sensor_FRONT() == 1:
-    #         turnLeft(base_speed)
-    #         sleep(0.05)
-    #     sleep(0.5)
-    #     stop()
-
-    # while sensor_LEFT() == 0:
-    #     turnLeft(base_speed)
-    #     sleep(0.05)
     turnLeft(base_speed)
     sleep(0.3)
 
@@ -756,26 +672,7 @@ def leftJunct():
     sleep(0.5)
     stop()
 
-    # if colour_junction:
-    #     align_robot()
-    #     colour_junction = False
-    # # box_existance()
     left_turn = False
-
-
-def leftJunctBox():
-    """Turning left when a box is grabbed"""
-
-    global left_turn_box
-    global base_speed
-    goForward(base_speed)
-    sleep(1.6)
-
-    turnLeft(39)
-    sleep(1.7)
-    stop()
-    # box_existance()
-    left_turn_box = False
 
 
 def turn180():
@@ -783,43 +680,51 @@ def turn180():
 
     global turn_180
 
-    # while sensor_FRONT() == 0:
-    #     turnLeft(base_speed)
-    #     sleep(0.05)
     turnRight(base_speed)
     sleep(0.3)
 
     while sensor_FRONT() == 1:
         turnLeft(base_speed)
         sleep(0.05)
-    sleep(0.2)
+    sleep(0.5)
     stop()
 
     turn_180 = False
 
+def rightJunctCol():
+    global right_turn_col
+    global base_speed
+    global colour_junction
 
-def turn180_a():
-    """Turning 180 v2"""
+    goForward(base_speed)
+    sleep(1.6)
 
-    global turn_180_a
+    turnRight(39)
+    sleep(1.8)
+    stop()
+
+    if colour_junction:
+        align_robot()
+        colour_junction = False
+    right_turn_col = False
+
+
+def leftJunctCol():
+    global left_turn_col
+    global base_speed
+    global colour_junction
+
+    goForward(base_speed)
+    sleep(1.6)
 
     turnLeft(39)
-    sleep(3.9)
+    sleep(1.8)
     stop()
-    # box_existance()
-    turn_180_a = False
+    if colour_junction:
+        align_robot()
+        colour_junction = False
 
-
-def turn180_b():
-    """Turning 180 v3"""
-
-    global turn_180_b
-
-    turnLeft(39)
-    sleep(3.9)
-    stop()
-    # box_existance()
-    turn_180_b = False
+    left_turn_col = False
 
 
 def button_pressed():
@@ -837,13 +742,11 @@ def button_pressed():
         running = False
         stop()
         global left_turn
+        global left_turn_col
         global right_turn
-        global left_turn_box
-        global right_turn_box
+        global right_turn_col
         global turn_180
-        global turn_180_a
-        global turn_180_b
-
+   
         global box_grabbed
         global hole_detected
         global finish
@@ -862,12 +765,10 @@ def button_pressed():
         global arm_h  # Setting the gripper height
 
         left_turn = False
+        left_turn_col = False
         right_turn = False
-        left_turn_box = False
-        right_turn_box = False
+        right_turn_col = False
         turn_180 = False
-        turn_180_a = False
-        turn_180_b = False
 
         box_grabbed = False
         hole_detected = False
@@ -891,7 +792,7 @@ def button_pressed():
 
 
 ####################################################################### Main loop ##############################################################################
-while True and finish == False:
+while finish == False:
     if push_button() == 0:
         sleep(0.2)
         button_pressed()
@@ -905,107 +806,40 @@ while True and finish == False:
             leftJunct()
             if box_count == 1:
                 box_existance()
+        elif left_turn_col:
+            leftJunctCol()
         elif right_turn:
             rightJunct()
             if box_count == 1:
                 box_existance()
-        elif right_turn_box:
-            rightJunctBox()
-
-        elif left_turn_box:
-            leftJunctBox()
-
+        elif right_turn_col:
+            rightJunctCol()
         elif turn_180:
             turn180()
             if box_count == 2 and cross_count == 2:
                 box_existance()
 
-        elif turn_180_b:
-            turn180_b()
             if box_grabbed:
                 goBackward(30)
                 sleep(2.7)
                 stop()
-                align_robot()
+                # align_robot()
 
-        elif turn_180_a:
-            turn180_a()
             if cross_count == 3 or cross_count == 2:
                 goBackward(30)
                 sleep(2.6)
                 stop()
-                align_robot()
-            if tt == True:
-                align_robot()
-                tt == False
+                # align_robot()
 
             elif cross_count == 5:
                 goBackward(30)
                 sleep(1)
                 stop()
-                # cross_count = 4
+
+            align_robot()
 
         lineFollowing()
         if 0xFF == ord("q"):
             break
 
-
-####################################################################### Main loop
-while True and finish == False:
-    if push_button() == 0:
-        sleep(0.2)
-        button_pressed()
-    if running:
-        print(wall_color)
-
-        servo_3_rotate(cam_ang)  # Setting the camera angle
-        servo_2_rotate(arm_h)  # Setting the gripper height
-
-        if left_turn:
-            leftJunct()
-            if box_count == 1:
-                box_existance()
-        elif right_turn:
-            rightJunct()
-            if box_count == 1:
-                box_existance()
-        elif right_turn_box:
-            rightJunctBox()
-
-        elif left_turn_box:
-            leftJunctBox()
-
-        elif turn_180:
-            turn180()
-            if box_count == 2 and cross_count == 2:
-                box_existance()
-
-        elif turn_180_b:
-            turn180_b()
-            if box_grabbed:
-                goBackward(30)
-                sleep(2.7)
-                stop()
-                align_robot()
-
-        elif turn_180_a:
-            turn180_a()
-            if cross_count == 3 or cross_count == 2:
-                goBackward(30)
-                sleep(2.6)
-                stop()
-                align_robot()
-            if tt == True:
-                align_robot()
-                tt == False
-
-            elif cross_count == 5:
-                goBackward(30)
-                sleep(1)
-                stop()
-                # cross_count = 4
-
-        lineFollowing()
-        if 0xFF == ord("q"):
-            break
 
