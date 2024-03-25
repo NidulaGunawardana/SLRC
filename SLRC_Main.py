@@ -15,8 +15,8 @@ from Neo.align import *
 from Neo.hole import *
 from Nidula.irSensors import *
 
-base_speed = 39  # Setting the base speed of the robot
-kp = 0.12  # Setting the Kp value of the robot  0.13
+base_speed = 37  # Setting the base speed of the robot
+kp = 0.13  # Setting the Kp value of the robot  0.13
 kd = 0.01  # Setting the Kd value of the robot
 
 # Setting the states of the turns
@@ -25,18 +25,19 @@ left_turn_col = False
 right_turn = False
 right_turn_col = False
 turn_180 = False
+turn_180_double = False
 go_around_circle = False
 mid_object = None
 
 box_grabbed = False
 hole_detected = False
 finish = False
-wall_color = "green"
+wall_color = None #"green"
 button = 0
 running = False
 
 # Setting the state to 0
-cross_count = 1
+cross_count = 0
 t_count = 0
 box_count = 0
 box_existing = False
@@ -59,6 +60,7 @@ def lineFollowing():
     global right_turn
     global right_turn_col
     global turn_180
+    global turn_180_double
     global cross_count
     global base_speed
     global box_count
@@ -84,7 +86,7 @@ def lineFollowing():
     video_capture.set(4, 480)  # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 200)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
@@ -165,7 +167,7 @@ def lineFollowing():
                             box_count += 1
                             break
                         elif box_count == 1:
-                            turn_180 = True
+                            turn_180_double = True
                             box_count += 1
                             box_existing = True
                             break
@@ -308,12 +310,11 @@ def lineFollowing():
 
                         elif cross_count == 5:
                             stop()
-                            # goForward(30)
-                            # sleep(2.4)
-                            # stop()
+                            goForward(30)
+                            sleep(2.4)
+                            stop()
                             left_turn = True
                             break
-                        
                     elif temp == "T junction":
                         stop()
                         # turn_180 = True
@@ -654,6 +655,7 @@ def box_detection():
         cam_ang = -30
         box_grabbed = True
         cross_count += 1
+        
     else:
         gripper_open()
         box_count += 1
@@ -682,6 +684,7 @@ def rightJunct():
     while sensor_FRONT() == 1:
         turnRight(33)
         sleep(0.05)
+    sleep(0.3)
     stop()
     # # box_existance()
     # if colour_junction:
@@ -707,10 +710,9 @@ def leftJunct():
 
     while sensor_LEFT() == 1:
         turnLeft(33)
-        sleep(0.05)
-    sleep(0.5)
+    sleep(0.3)
     stop()
-
+    
     if t_count == 1:
         goForward(33)
         sleep(0.3)
@@ -722,6 +724,7 @@ def turn180():
     """Turning 180"""
 
     global turn_180
+    global box_count
 
     while sensor_FRONT() == 0:
         turnLeft(33)
@@ -732,10 +735,31 @@ def turn180():
     while sensor_FRONT() == 1:
         turnLeft(33)
         sleep(0.05)
-    sleep(0.5)
+    sleep(0.3)
     stop()
 
     turn_180 = False
+    
+def turn180_double():
+    """Turning 180 double"""
+
+    global turn_180_double
+    global box_count
+
+    for i in range(2):
+        while sensor_FRONT() == 0:
+            turnLeft(33)
+            sleep(0.05)
+        turnLeft(33)
+        sleep(0.1)
+
+        while sensor_FRONT() == 1:
+            turnLeft(33)
+            sleep(0.05)
+        sleep(0.5)
+        stop()
+
+    turn_180_double = False
 
 
 def rightJunctCol():
@@ -749,7 +773,8 @@ def rightJunctCol():
     turnRight(39)
     sleep(1.8)
     stop()
-
+    
+    align_robot()
     # if colour_junction:
     #     align_robot()
     #     colour_junction = False
@@ -767,6 +792,8 @@ def leftJunctCol():
     turnLeft(39)
     sleep(1.8)
     stop()
+    
+    align_robot()
     # if colour_junction:
     #     align_robot()
     #     colour_junction = False
@@ -840,7 +867,7 @@ def button_pressed():
 
 ####################################################################### Main loop ##############################################################################
 # blink()
-# servo_init()
+servo_init()
 while finish == False:
     if push_button() == 0:
         sleep(0.2)
@@ -887,6 +914,8 @@ while finish == False:
                 stop()
 
             align_robot()
+        elif turn_180_double:
+            turn180_double()
 
         lineFollowing()
         if 0xFF == ord("q"):
