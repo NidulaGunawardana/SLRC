@@ -16,7 +16,7 @@ from Neo.hole import *
 from Nidula.irSensors import *
 
 base_speed = 39  # Setting the base speed of the robot
-kp = 0.12 # Setting the Kp value of the robot  0.13 
+kp = 0.12  # Setting the Kp value of the robot  0.13
 kd = 0.01  # Setting the Kd value of the robot
 
 # Setting the states of the turns
@@ -31,17 +31,18 @@ mid_object = None
 box_grabbed = False
 hole_detected = False
 finish = False
-wall_color = None  # "green"
+wall_color = "green"
 button = 0
 running = False
 
 # Setting the state to 0
-cross_count = 0
+cross_count = 1
 t_count = 0
 box_count = 0
 box_existing = False
 colour_junction = False
 prev_error = 0
+distance_samples = []
 
 # Setting the threshold for balck and white
 th = 155
@@ -75,6 +76,7 @@ def lineFollowing():
     global go_around_circle
     global t_count
     global mid_object
+    global distance_samples
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -213,7 +215,7 @@ def lineFollowing():
                             sleep(0.05)
 
                     if temp == "left right angle":
-                        stop()                      
+                        stop()
                         left_turn = True
                         break
 
@@ -231,18 +233,20 @@ def lineFollowing():
 
                         while wall_color == None:
                             wall_color = capture_wall_color(video_capture)
-                        break
+                        # break
 
                         if t_count == 1:
                             left_turn = True
                             go_around_circle = False
                             mid_object = cylinder(distance_samples)
                             t_count += 1
-                            break
+                        break
 
                     elif temp == "circle out":
                         left_turn = True
                         go_around_circle = False
+                        print(distance_samples)
+
                         mid_object = cylinder(distance_samples)
                         t_count += 1
                         break
@@ -317,9 +321,10 @@ def lineFollowing():
                         t_count += 1
                         break
 
-            
             if go_around_circle:
-                distance_samples.append(tof2Readings)
+                dis_temp = tof2Readings()
+                if dis_temp < 300:
+                    distance_samples.append(dis_temp)
 
             # Find the biggest contour (if detected)
             if len(contours) > 0:
@@ -335,9 +340,9 @@ def lineFollowing():
                     continue
 
                 # PID control
-                
+
                 error = 640 / 2 - cx + 60
-                speed = error * kp + (prev_error - error)*kd
+                speed = error * kp + (prev_error - error) * kd
                 prev_error = error
                 left_speed = base_speed - speed
                 right_speed = base_speed + speed
@@ -522,12 +527,9 @@ def junction_detection(x_mat, y_mat, ex_mat):
     global box_existing
     global wall_color
 
-    if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1:
+    if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1 and t_count != 1:
         return "Junction ahead"
-    elif (
-        sensor_LEFT == 0 
-        and t_count == 1
-    ):
+    elif t_count == 1 and (sensor_LEFT() == 0 or x_mat[0] == 1):
         return "circle out"
     elif (
         x_mat[1:6] == [1, 1, 1, 1, 1]
@@ -536,9 +538,7 @@ def junction_detection(x_mat, y_mat, ex_mat):
     ):
         return "cross junction"  # cross junction
     elif (
-        x_mat[1:6] == [1, 1, 1, 1, 1]
-        and y_mat[0:2] == [0, 0]
-        and ex_mat[0:2] == [0, 0]
+        x_mat[1:6] == [1, 1, 1, 1, 1] and y_mat[0:2] == [0, 0] and ex_mat[0:2] == [0, 0]
     ):
         return "T junction"  # T junction
     elif (
@@ -674,7 +674,7 @@ def rightJunct():
         goForward(33)
         sleep(0.05)
     stop()
-    
+
     turnRight(33)
     sleep(0.3)
 
@@ -687,6 +687,7 @@ def rightJunct():
     #     align_robot()
     #     colour_junction = False
     right_turn = False
+
 
 def leftJunct():
     """Turning left when a box is not grabbed"""
@@ -709,6 +710,10 @@ def leftJunct():
     sleep(0.5)
     stop()
 
+    if t_count == 1:
+        goForward(33)
+        sleep(0.3)
+        stop()
     left_turn = False
 
 
@@ -730,7 +735,7 @@ def turn180():
     stop()
 
     turn_180 = False
-    
+
 
 def rightJunctCol():
     global right_turn_col
@@ -787,7 +792,7 @@ def button_pressed():
         global right_turn
         global right_turn_col
         global turn_180
-   
+
         global box_grabbed
         global hole_detected
         global finish
@@ -834,7 +839,7 @@ def button_pressed():
 
 ####################################################################### Main loop ##############################################################################
 # blink()
-servo_init()
+# servo_init()
 while finish == False:
     if push_button() == 0:
         sleep(0.2)
@@ -885,5 +890,3 @@ while finish == False:
         lineFollowing()
         if 0xFF == ord("q"):
             break
-
-
