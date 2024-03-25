@@ -657,24 +657,24 @@ def rightJunct():
     global base_speed
     global colour_junction
 
-    while sensor_LEFT == 1 and sensor_RIGHT == 1:
+    while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
         goForward(base_speed)
         sleep(0.05)
     stop()
 
-    if sensor_FRONT == 1:
-        while sensor_FRONT == 1:
+    if sensor_FRONT() == 1:
+        while sensor_FRONT() == 1:
             turnRight(base_speed)
             sleep(0.05)
         stop()
     else:
-        while sensor_FRONT == 0:
+        while sensor_FRONT() == 0:
             turnRight(base_speed)
             sleep(0.05)
         turnRight(base_speed)
         sleep(0.1)
 
-        while sensor_FRONT == 1:
+        while sensor_FRONT() == 1:
             turnRight(base_speed)
             sleep(0.05)
         stop()
@@ -710,24 +710,24 @@ def leftJunct():
     global base_speed
     global colour_junction
 
-    while sensor_LEFT == 1 and sensor_RIGHT == 1:
+    while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
         goForward(base_speed)
         sleep(0.05)
     stop()
 
-    if sensor_FRONT == 1:
-        while sensor_FRONT == 1:
+    if sensor_FRONT() == 1:
+        while sensor_FRONT() == 1:
             turnLeft(base_speed)
             sleep(0.05)
         stop()
     else:
-        while sensor_FRONT == 0:
+        while sensor_FRONT() == 0:
             turnLeft(base_speed)
             sleep(0.05)
         turnRight(base_speed)
         sleep(0.1)
 
-        while sensor_FRONT == 1:
+        while sensor_FRONT() == 1:
             turnLeft(base_speed)
             sleep(0.05)
         stop()
@@ -737,7 +737,6 @@ def leftJunct():
     #     colour_junction = False
     # # box_existance()
     left_turn = False
-    
 
 
 def leftJunctBox():
@@ -760,13 +759,13 @@ def turn180():
 
     global turn_180
 
-    while sensor_FRONT == 0:
+    while sensor_FRONT() == 0:
         turnLeft(base_speed)
         sleep(0.05)
     turnRight(base_speed)
     sleep(0.1)
 
-    while sensor_FRONT == 1:
+    while sensor_FRONT() == 1:
         turnLeft(base_speed)
         sleep(0.05)
     stop()
