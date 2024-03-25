@@ -11,9 +11,8 @@ GPIO.setwarnings(False)
 GPIO.setup(led1, GPIO.OUT)
 GPIO.setup(led2, GPIO.OUT)
 GPIO.setup(pb, GPIO.IN)
+
 #led3 = 25
-
-
 #led4 = 22
 
 def led_on(color):
