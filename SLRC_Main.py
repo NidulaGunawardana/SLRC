@@ -47,157 +47,8 @@ th = 155
 cam_ang = -47  # Setting the camera angle -30 to box normal -47
 arm_h = 32  # Setting the gripper height
 
-def button_pressed():
-    pass
 
 
-def push_button():
-    pass
-
-def servo_3_rotate(angle):
-    pass
-
-def servo_2_rotate(height):
-    pass
-
-def lineFollowing():
-    pass
-
-def blink():
-    pass
-
-def servo_1_rotate(angle):
-    pass
-
-def led_on(color):
-    pass
-
-def led_off(color):
-    pass
-
-def sleep(duration):
-    pass
-
-def servo_init():
-    pass
-
-def box_existance():
-    pass
-
-def tof1Readings():
-    pass
-
-def checkMetal():
-    pass
-
-def goForward(speed):
-    pass
-
-def stop():
-    pass
-
-def gripper_close():
-    pass
-
-def goBackward(speed):
-    pass
-
-def turnRight(angle):
-    pass
-
-def turnLeft(angle):
-    pass
-
-def junction_now(video_capture):
-    pass
-
-def box_detection():
-    pass
-
-def rightJunct():
-    pass
-
-def rightJunctBox():
-    pass
-
-def leftJunct():
-    pass
-
-def leftJunctBox():
-    pass
-
-def turn180():
-    pass
-
-def turn180_a():
-    pass
-
-def turn180_b():
-    pass
-
-def button_pressed():
-    pass
-
-
-
-####################################################################### Main loop
-while True and finish == False:
-    if push_button() == 0:
-        sleep(0.2)
-        button_pressed()
-    if running:
-        print(wall_color)
-
-        servo_3_rotate(cam_ang)  # Setting the camera angle
-        servo_2_rotate(arm_h)  # Setting the gripper height
-
-        if left_turn:
-            leftJunct()
-            if box_count == 1:
-                box_existance()
-        elif right_turn:
-            rightJunct()
-            if box_count == 1:
-                box_existance()
-        elif right_turn_box:
-            rightJunctBox()
-
-        elif left_turn_box:
-            leftJunctBox()
-
-        elif turn_180:
-            turn180()
-            if box_count == 2 and cross_count == 2:
-                box_existance()
-
-        elif turn_180_b:
-            turn180_b()
-            if box_grabbed:
-                goBackward(30)
-                sleep(2.7)
-                stop()
-                align_robot()
-
-        elif turn_180_a:
-            turn180_a()
-            if cross_count == 3 or cross_count == 2:
-                goBackward(30)
-                sleep(2.6)
-                stop()
-                align_robot()
-            if tt == True:
-                align_robot()
-                tt == False
-
-            elif cross_count == 5:
-                goBackward(30)
-                sleep(1)
-                stop()
-                # cross_count = 4
-
-        lineFollowing()
-        if 0xFF == ord("q"):
-            break
 
 
 def lineFollowing():
@@ -977,3 +828,63 @@ def button_pressed():
         blink()
         servo_init()
     button += 1
+
+
+####################################################################### Main loop
+while True and finish == False:
+    if push_button() == 0:
+        sleep(0.2)
+        button_pressed()
+    if running:
+        print(wall_color)
+
+        servo_3_rotate(cam_ang)  # Setting the camera angle
+        servo_2_rotate(arm_h)  # Setting the gripper height
+
+        if left_turn:
+            leftJunct()
+            if box_count == 1:
+                box_existance()
+        elif right_turn:
+            rightJunct()
+            if box_count == 1:
+                box_existance()
+        elif right_turn_box:
+            rightJunctBox()
+
+        elif left_turn_box:
+            leftJunctBox()
+
+        elif turn_180:
+            turn180()
+            if box_count == 2 and cross_count == 2:
+                box_existance()
+
+        elif turn_180_b:
+            turn180_b()
+            if box_grabbed:
+                goBackward(30)
+                sleep(2.7)
+                stop()
+                align_robot()
+
+        elif turn_180_a:
+            turn180_a()
+            if cross_count == 3 or cross_count == 2:
+                goBackward(30)
+                sleep(2.6)
+                stop()
+                align_robot()
+            if tt == True:
+                align_robot()
+                tt == False
+
+            elif cross_count == 5:
+                goBackward(30)
+                sleep(1)
+                stop()
+                # cross_count = 4
+
+        lineFollowing()
+        if 0xFF == ord("q"):
+            break
