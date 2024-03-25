@@ -617,7 +617,7 @@ def box_detection():
     isMetal = checkMetal()
     if isMetal == 1:
         gripper_up()
-        cam_ang = -27
+        cam_ang = -30
         box_grabbed = True
         cross_count += 1
     else:
