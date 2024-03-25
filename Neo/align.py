@@ -26,7 +26,7 @@ def align_robot():
 	video_capture.set(3, 640)  # Set the width of the frame
 
 	video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-	video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
+	video_capture.set(cv2.CAP_PROP_EXPOSURE, 200)
 
 	while True:
 		ret, image = video_capture.read()
@@ -64,9 +64,9 @@ def align_robot():
 			cv2.putText(image,str(error),(10, 320), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 			cv2.line(image, (int(x_min),200 ), (int(x_min),250 ), (255,0,0),3)
 
-			if (ang > 89 or ang < -89) and (error < 15 or error > 15) and count == 0:
-				count += 1
-				return
+			# if (ang > 89 or ang < -89) and (error < 15 or error > 15) and count == 0:
+			# 	count += 1
+			# 	return
 
 			ang_buf.append(ang)
 			err_buff.append(error)
@@ -125,7 +125,9 @@ def align_robot():
 					stop()
 					break
 
+
 		cv2.imshow("orginal with line", image)
+
 
 		key = cv2.waitKey(1) & 0xFF	
 
@@ -133,6 +135,8 @@ def align_robot():
 			break
 
 # align_robot()
+
+
 
 def align_robot_a(video_capture):
 	center_set = False
@@ -174,7 +178,6 @@ def align_robot_a(video_capture):
 				ang = (90-ang)*-1
 			if w_min > h_min and ang < 0:
 				ang = 90 + ang	  
-
 			print(x_min)
 			setpoint = 350
 			error = int(x_min - setpoint) 
@@ -186,10 +189,10 @@ def align_robot_a(video_capture):
 			cv2.putText(image,str(error),(10, 320), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 			cv2.line(image, (int(x_min),200 ), (int(x_min),250 ), (255,0,0),3)
 
-			if (ang > 89 or ang < -89) and (error < 15 or error > 15) and count == 0:
-				count += 1
-				return
-
+			# if (ang > 89 or ang < -89) and (error < 15 or error > 15) and count == 0:
+			# 	count += 1
+			# 	return
+				
 			ang_buf.append(ang)
 			err_buff.append(error)
 			if len(ang_buf) > 55:
