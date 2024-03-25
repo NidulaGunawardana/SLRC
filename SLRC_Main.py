@@ -657,16 +657,32 @@ def rightJunct():
     global base_speed
     global colour_junction
 
-    goForward(base_speed)
-    sleep(1.6)
-
-    turnRight(39)
-    sleep(1.85)
+    while sensor_LEFT == 1 and sensor_RIGHT == 1:
+        goForward(base_speed)
+        sleep(0.05)
     stop()
-    # box_existance()
-    if colour_junction:
-        align_robot()
-        colour_junction = False
+
+    if sensor_FRONT == 1:
+        while sensor_FRONT == 1:
+            turnRight(base_speed)
+            sleep(0.05)
+        stop()
+    else:
+        while sensor_FRONT == 0:
+            turnRight(base_speed)
+            sleep(0.05)
+        turnRight(base_speed)
+        sleep(0.1)
+
+        while sensor_FRONT == 1:
+            turnRight(base_speed)
+            sleep(0.05)
+        stop()
+
+    # # box_existance()
+    # if colour_junction:
+    #     align_robot()
+    #     colour_junction = False
     right_turn = False
 
 
@@ -694,16 +710,32 @@ def leftJunct():
     global base_speed
     global colour_junction
 
-    goForward(base_speed)
-    sleep(1.8)
-
-    turnLeft(39)
-    sleep(2.1)
+    while sensor_LEFT == 1 and sensor_RIGHT == 1:
+        goForward(base_speed)
+        sleep(0.05)
     stop()
-    if colour_junction:
-        align_robot()
-        colour_junction = False
-    # box_existance()
+
+    if sensor_FRONT == 1:
+        while sensor_FRONT == 1:
+            turnLeft(base_speed)
+            sleep(0.05)
+        stop()
+    else:
+        while sensor_FRONT == 0:
+            turnLeft(base_speed)
+            sleep(0.05)
+        turnRight(base_speed)
+        sleep(0.1)
+
+        while sensor_FRONT == 1:
+            turnLeft(base_speed)
+            sleep(0.05)
+        stop()
+
+    # if colour_junction:
+    #     align_robot()
+    #     colour_junction = False
+    # # box_existance()
     left_turn = False
 
 
@@ -727,10 +759,16 @@ def turn180():
 
     global turn_180
 
-    turnLeft(39)
-    sleep(3.9)
+    while sensor_FRONT == 0:
+        turnLeft(base_speed)
+        sleep(0.05)
+    turnRight(base_speed)
+    sleep(0.1)
+
+    while sensor_FRONT == 1:
+        turnLeft(base_speed)
+        sleep(0.05)
     stop()
-    # box_existance()
 
     turn_180 = False
 
