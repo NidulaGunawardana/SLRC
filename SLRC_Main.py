@@ -737,6 +737,7 @@ def leftJunct():
     #     colour_junction = False
     # # box_existance()
     left_turn = False
+    
 
 
 def leftJunctBox():
