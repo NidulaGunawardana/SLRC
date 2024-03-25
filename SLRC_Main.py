@@ -401,7 +401,7 @@ def servo_init():
     for i in range(20, -40, -1):
         servo_1_rotate(i)
         sleep(0.01)
-
+    blink()
 
 blink()
 servo_init()
@@ -661,28 +661,35 @@ def rightJunct():
         goForward(base_speed)
         sleep(0.05)
     stop()
-    goForward(base_speed)
-    sleep(0.2)
+    # goForward(base_speed)
+    # sleep(0.2)
 
-    if sensor_FRONT() == 1:
-        while sensor_FRONT() == 1:
-            turnRight(base_speed)
-            sleep(0.05)
+    # if sensor_FRONT() == 1:
+    #     while sensor_FRONT() == 1:
+    #         turnRight(base_speed)
+    #         sleep(0.05)
+    #     turnRight(base_speed)
+    #     sleep(0.5)
+    #     stop()
+    # else:
+    #     while sensor_FRONT() == 0:
+    #         turnRight(base_speed)
+    #         sleep(0.05)
+    #     turnRight(base_speed)
+    #     sleep(0.1)
+
+    #     while sensor_FRONT() == 1:
+    #         turnRight(base_speed)
+    #         sleep(0.05)
+    #     stop()
+    
+    turnRight(base_speed)
+    sleep(0.3)
+
+    while sensor_FRONT() == 1:
         turnRight(base_speed)
-        sleep(0.5)
-        stop()
-    else:
-        while sensor_FRONT() == 0:
-            turnRight(base_speed)
-            sleep(0.05)
-        turnRight(base_speed)
-        sleep(0.1)
-
-        while sensor_FRONT() == 1:
-            turnRight(base_speed)
-            sleep(0.05)
-        stop()
-
+        sleep(0.05)
+    stop()
     # # box_existance()
     # if colour_junction:
     #     align_robot()
@@ -717,7 +724,6 @@ def leftJunct():
     while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
         goForward(base_speed)
         sleep(0.05)
-    sleep(0.2)
     stop()
 
     # if sensor_FRONT() == 1:
@@ -738,10 +744,11 @@ def leftJunct():
     #     sleep(0.5)
     #     stop()
 
-    while sensor_LEFT() == 0:
-        turnLeft(base_speed)
-        sleep(0.05)
-    sleep(0.1)
+    # while sensor_LEFT() == 0:
+    #     turnLeft(base_speed)
+    #     sleep(0.05)
+    turnLeft(base_speed)
+    sleep(0.3)
 
     while sensor_LEFT() == 1:
         turnLeft(base_speed)
@@ -776,15 +783,16 @@ def turn180():
 
     global turn_180
 
-    while sensor_FRONT() == 0:
-        turnLeft(base_speed)
-        sleep(0.05)
+    # while sensor_FRONT() == 0:
+    #     turnLeft(base_speed)
+    #     sleep(0.05)
     turnRight(base_speed)
-    sleep(0.1)
+    sleep(0.3)
 
     while sensor_FRONT() == 1:
         turnLeft(base_speed)
         sleep(0.05)
+    sleep(0.2)
     stop()
 
     turn_180 = False
