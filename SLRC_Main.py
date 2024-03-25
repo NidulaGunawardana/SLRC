@@ -720,23 +720,34 @@ def leftJunct():
     sleep(0.2)
     stop()
 
-    if sensor_FRONT() == 1:
-        while sensor_FRONT() == 1:
-            turnLeft(base_speed)
-            sleep(0.05)
-        sleep(0.5)
-        stop()
-    else:
-        while sensor_FRONT() == 0:
-            turnLeft(base_speed)
-            sleep(0.05)
-        sleep(0.1)
+    # if sensor_FRONT() == 1:
+    #     while sensor_FRONT() == 1:
+    #         turnLeft(base_speed)
+    #         sleep(0.05)
+    #     sleep(0.5)
+    #     stop()
+    # else:
+    #     while sensor_FRONT() == 0:
+    #         turnLeft(base_speed)
+    #         sleep(0.05)
+    #     sleep(0.1)
 
-        while sensor_FRONT() == 1:
-            turnLeft(base_speed)
-            sleep(0.05)
-        sleep(0.5)
-        stop()
+    #     while sensor_FRONT() == 1:
+    #         turnLeft(base_speed)
+    #         sleep(0.05)
+    #     sleep(0.5)
+    #     stop()
+
+    while sensor_LEFT() == 0:
+        turnLeft(base_speed)
+        sleep(0.05)
+    sleep(0.1)
+
+    while sensor_LEFT() == 1:
+        turnLeft(base_speed)
+        sleep(0.05)
+    sleep(0.5)
+    stop()
 
     # if colour_junction:
     #     align_robot()
