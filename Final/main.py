@@ -46,7 +46,7 @@ servo_2_rotate(32)
 for i in range(-42, 20, 1):
     servo_1_rotate(i)
     sleep(0.01)
-    
+
 servo_1_rotate(25)
 sleep(1)
 
@@ -54,7 +54,8 @@ sleep(1)
 for i in range(20, -42, -1):
     servo_1_rotate(i)
     sleep(0.01)
-    
+
+
 def box_existance():
     global box_existing
     distance, tof = tof1Readings()
@@ -198,8 +199,8 @@ def v_feed(video_capture):
     width = int(640)
     height = int(480)
 
-    dimentions = (width,height)
-    frame = cv2.resize(frame,dimentions,interpolation=cv2.INTER_AREA)
+    dimentions = (width, height)
+    frame = cv2.resize(frame, dimentions, interpolation=cv2.INTER_AREA)
 
     # Crop the image
     crop_img = frame[120:400, 0:640]
@@ -262,7 +263,7 @@ def box_detection():
     print("Went forward")
     stop()
     gripper_close()
-    isMetal = checkMetal()    
+    isMetal = checkMetal()
     if isMetal == 1:
         gripper_up()
         cam_ang = -30
@@ -350,32 +351,32 @@ def lineFollowing():
                 stop()
         else:
 
-            if cross_count == 2 :
+            if cross_count == 2:
                 distance, tof = tof1Readings()
                 print(distance)
-                
+
                 if box_existing:
                     if distance < 100:
                         if box_count <= 2:
                             box_detection()
                             turn_180_a = True
-                                # box_count += 1
+                            # box_count += 1
                         break
                 else:
                     if box_count == 0:
                         right_turn = True
-                        box_count +=1
+                        box_count += 1
                         break
                     elif box_count == 1:
                         turn_180 = True
-                        box_count +=1
+                        box_count += 1
                         box_existing = True
                         break
-                    
+
             row, column, ex = junction_matrix(frame, thresh, 8)
 
             temp = junction_detection(row, column, ex)
-            print(cross_count,box_count)
+            print(cross_count, box_count)
 
             if temp != None:  # print if there is a pre defined junction
                 print(temp)
@@ -427,12 +428,12 @@ def lineFollowing():
                         stop()
                         if box_count == 1:
                             left_turn = True
-                            
+
                         elif box_count == 2:
                             goForward(30)
                             sleep(0.5)
                             box_existance()
-                            
+
                         break
 
                     elif cross_count == 3:
@@ -516,6 +517,7 @@ def rightJunct():
     stop()
     right_turn = False
 
+
 def rightJunctBox():
     global right_turn_box
     global base_speed
@@ -538,6 +540,7 @@ def leftJunct():
     sleep(1.8)
     stop()
     left_turn = False
+
 
 def leftJunctBox():
     global left_turn_box
@@ -583,7 +586,7 @@ while True:
             box_existance()
     elif right_turn_box:
         rightJunctBox()
-       
+
     elif left_turn_box:
         leftJunctBox()
 
@@ -599,8 +602,6 @@ while True:
             sleep(2.6)
             stop()
             # align_robot()
-    
-
 
     lineFollowing()
     if 0xFF == ord("q"):
