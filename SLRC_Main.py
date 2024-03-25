@@ -976,3 +976,63 @@ def button_pressed():
         blink()
         servo_init()
     button += 1
+
+
+####################################################################### Main loop ##############################################################################
+while True and finish == False:
+    if push_button() == 0:
+        sleep(0.2)
+        button_pressed()
+    if running:
+        print(wall_color)
+
+        servo_3_rotate(cam_ang)  # Setting the camera angle
+        servo_2_rotate(arm_h)  # Setting the gripper height
+
+        if left_turn:
+            leftJunct()
+            if box_count == 1:
+                box_existance()
+        elif right_turn:
+            rightJunct()
+            if box_count == 1:
+                box_existance()
+        elif right_turn_box:
+            rightJunctBox()
+
+        elif left_turn_box:
+            leftJunctBox()
+
+        elif turn_180:
+            turn180()
+            if box_count == 2 and cross_count == 2:
+                box_existance()
+
+        elif turn_180_b:
+            turn180_b()
+            if box_grabbed:
+                goBackward(30)
+                sleep(2.7)
+                stop()
+                align_robot()
+
+        elif turn_180_a:
+            turn180_a()
+            if cross_count == 3 or cross_count == 2:
+                goBackward(30)
+                sleep(2.6)
+                stop()
+                align_robot()
+            if tt == True:
+                align_robot()
+                tt == False
+
+            elif cross_count == 5:
+                goBackward(30)
+                sleep(1)
+                stop()
+                # cross_count = 4
+
+        lineFollowing()
+        if 0xFF == ord("q"):
+            break
