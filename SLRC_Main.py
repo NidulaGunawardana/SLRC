@@ -12,6 +12,7 @@ from Raveen.ledAndPushButtons import *
 from Neo.Colorcircleidentify import *
 from Neo.align import *
 from Neo.hole import *
+from Nidula.irSensors import *
 
 base_speed = 33  # Setting the base speed of the robot
 kp = 0.12  # Setting the Kp value of the robot
@@ -45,6 +46,98 @@ th = 155
 # Setting servos
 cam_ang = -47  # Setting the camera angle -30 to box normal -47
 arm_h = 32  # Setting the gripper height
+
+def button_pressed():
+    pass
+
+
+def push_button():
+    pass
+
+def servo_3_rotate(angle):
+    pass
+
+def servo_2_rotate(height):
+    pass
+
+def lineFollowing():
+    pass
+
+def blink():
+    pass
+
+def servo_1_rotate(angle):
+    pass
+
+def led_on(color):
+    pass
+
+def led_off(color):
+    pass
+
+def sleep(duration):
+    pass
+
+def servo_init():
+    pass
+
+def box_existance():
+    pass
+
+def tof1Readings():
+    pass
+
+def checkMetal():
+    pass
+
+def goForward(speed):
+    pass
+
+def stop():
+    pass
+
+def gripper_close():
+    pass
+
+def goBackward(speed):
+    pass
+
+def turnRight(angle):
+    pass
+
+def turnLeft(angle):
+    pass
+
+def junction_now(video_capture):
+    pass
+
+def box_detection():
+    pass
+
+def rightJunct():
+    pass
+
+def rightJunctBox():
+    pass
+
+def leftJunct():
+    pass
+
+def leftJunctBox():
+    pass
+
+def turn180():
+    pass
+
+def turn180_a():
+    pass
+
+def turn180_b():
+    pass
+
+def button_pressed():
+    pass
+
 
 
 ####################################################################### Main loop
