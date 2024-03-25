@@ -308,11 +308,12 @@ def lineFollowing():
 
                         elif cross_count == 5:
                             stop()
-                            goForward(30)
-                            sleep(2.4)
-                            stop()
+                            # goForward(30)
+                            # sleep(2.4)
+                            # stop()
                             left_turn = True
                             break
+                        
                     elif temp == "T junction":
                         stop()
                         # turn_180 = True
