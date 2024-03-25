@@ -14,8 +14,9 @@ from Neo.align import *
 from Neo.hole import *
 from Nidula.irSensors import *
 
-base_speed = 33  # Setting the base speed of the robot
-kp = 0.12  # Setting the Kp value of the robot
+base_speed = 39  # Setting the base speed of the robot
+kp = 0.12 # Setting the Kp value of the robot  0.13 
+kd = 0.01  # Setting the Kd value of the robot
 
 # Setting the states of the turns
 left_turn = False
@@ -36,6 +37,7 @@ cross_count = 0
 box_count = 0
 box_existing = False
 colour_junction = False
+prev_error = 0
 
 # Setting the threshold for balck and white
 th = 155
@@ -63,6 +65,9 @@ def lineFollowing():
     global cam_ang
     global running
     global colour_junction
+    global prev_error
+    global kp
+    global kd
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -302,8 +307,10 @@ def lineFollowing():
                     continue
 
                 # PID control
+                
                 error = 640 / 2 - cx + 60
-                speed = error * kp
+                speed = error * kp +(prev_error - error)*kd
+                prev_error = error
                 left_speed = base_speed - speed
                 right_speed = base_speed + speed
 
@@ -377,13 +384,10 @@ def servo_init():
     servo_1_rotate(25)
     sleep(1)
 
-    for i in range(20, -40, -1):
+    for i in range(20, -39, -1):
         servo_1_rotate(i)
         sleep(0.01)
     blink()
-
-blink()
-servo_init()
 
 
 def box_existance():
@@ -613,7 +617,7 @@ def box_detection():
     isMetal = checkMetal()
     if isMetal == 1:
         gripper_up()
-        cam_ang = -30
+        cam_ang = -27
         box_grabbed = True
         cross_count += 1
     else:
@@ -634,15 +638,15 @@ def rightJunct():
     global colour_junction
 
     while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
-        goForward(base_speed)
+        goForward(33)
         sleep(0.05)
     stop()
     
-    turnRight(base_speed)
+    turnRight(33)
     sleep(0.3)
 
     while sensor_FRONT() == 1:
-        turnRight(base_speed)
+        turnRight(33)
         sleep(0.05)
     stop()
     # # box_existance()
@@ -659,15 +663,15 @@ def leftJunct():
     global colour_junction
 
     while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
-        goForward(base_speed)
+        goForward(33)
         sleep(0.05)
     stop()
 
-    turnLeft(base_speed)
+    turnLeft(33)
     sleep(0.3)
 
     while sensor_LEFT() == 1:
-        turnLeft(base_speed)
+        turnLeft(33)
         sleep(0.05)
     sleep(0.5)
     stop()
@@ -676,36 +680,40 @@ def leftJunct():
 
 
 def turn180():
-    """Turning 180 v1"""
+    """Turning 180"""
 
     global turn_180
 
-    turnRight(base_speed)
-    sleep(0.3)
+    while sensor_FRONT() == 0:
+        turnLeft(33)
+        sleep(0.05)
+    turnLeft(33)
+    sleep(0.1)
 
     while sensor_FRONT() == 1:
-        turnLeft(base_speed)
+        turnLeft(33)
         sleep(0.05)
     sleep(0.5)
     stop()
 
     turn_180 = False
+    
 
 def rightJunctCol():
     global right_turn_col
     global base_speed
     global colour_junction
 
-    goForward(base_speed)
+    goForward(33)
     sleep(1.6)
 
     turnRight(39)
     sleep(1.8)
     stop()
 
-    if colour_junction:
-        align_robot()
-        colour_junction = False
+    # if colour_junction:
+    #     align_robot()
+    #     colour_junction = False
     right_turn_col = False
 
 
@@ -714,15 +722,15 @@ def leftJunctCol():
     global base_speed
     global colour_junction
 
-    goForward(base_speed)
+    goForward(33)
     sleep(1.6)
 
     turnLeft(39)
     sleep(1.8)
     stop()
-    if colour_junction:
-        align_robot()
-        colour_junction = False
+    # if colour_junction:
+    #     align_robot()
+    #     colour_junction = False
 
     left_turn_col = False
 
@@ -792,6 +800,8 @@ def button_pressed():
 
 
 ####################################################################### Main loop ##############################################################################
+# blink()
+servo_init()
 while finish == False:
     if push_button() == 0:
         sleep(0.2)
@@ -819,17 +829,17 @@ while finish == False:
             if box_count == 2 and cross_count == 2:
                 box_existance()
 
-            if box_grabbed:
+            if box_grabbed or cross_count == 3 or cross_count == 2:
                 goBackward(30)
                 sleep(2.7)
                 stop()
                 # align_robot()
 
-            if cross_count == 3 or cross_count == 2:
-                goBackward(30)
-                sleep(2.6)
-                stop()
-                # align_robot()
+            # elif :
+            #     goBackward(30)
+            #     sleep(2.6)
+            #     stop()
+            #     # align_robot()
 
             elif cross_count == 5:
                 goBackward(30)
