@@ -4,8 +4,6 @@ import statistics
 dev = 0.1 #constant deviation
 
 tof2 = VL53L0X.VL53L0X(tca9548a_num=0, tca9548a_addr=0x70) # tof initialize
-
-
 tof2.open()
 tof2.start_ranging(VL53L0X.Vl53l0xAccuracyMode.BETTER)  #start ranging
 
@@ -26,16 +24,16 @@ def tof2Readings():
     return distance2  
 
 #identify the cylinder or box
-def cylinder():
-    distance = []
-    tot = 0
-    for i in range(20):         #insert distance readings to the distance array
-        dist = tof2Readings()
-        distance.append(dist)
-        #tot += dist
-        sleep(0.5)
+def cylinder(distance):
+    # distance = []
+    # tot = 0
+    # for i in range(20):         #insert distance readings to the distance array
+    #     dist = tof2Readings()
+    #     distance.append(dist)
+    #     #tot += dist
+    #     sleep(0.5)
+    # #avg_dist = tot/20
 
-    #avg_dist = tot/20
     deviation = statistics.stdev(distance)    #get the deviation of the array
     if(deviation<=dev):
         return "cylinder"

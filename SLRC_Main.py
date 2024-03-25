@@ -8,6 +8,7 @@ from Raveen.servo_COntrol_rasberry import *
 from Raveen.tofsensorreadings import tof1Readings
 from Raveen.metal_BOX_Identification import *
 from Raveen.ledAndPushButtons import *
+from Raveen.cuboidToF import *
 
 from Neo.Colorcircleidentify import *
 from Neo.align import *
@@ -24,6 +25,8 @@ left_turn_col = False
 right_turn = False
 right_turn_col = False
 turn_180 = False
+go_around_circle = False
+mid_object = None
 
 box_grabbed = False
 hole_detected = False
@@ -34,6 +37,7 @@ running = False
 
 # Setting the state to 0
 cross_count = 0
+t_count = 0
 box_count = 0
 box_existing = False
 colour_junction = False
@@ -68,6 +72,9 @@ def lineFollowing():
     global prev_error
     global kp
     global kd
+    global go_around_circle
+    global t_count
+    global mid_object
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -226,6 +233,20 @@ def lineFollowing():
                             wall_color = capture_wall_color(video_capture)
                         break
 
+                        if t_count == 1:
+                            left_turn = True
+                            go_around_circle = False
+                            mid_object = cylinder(distance_samples)
+                            t_count += 1
+                            break
+
+                    elif temp == "circle out":
+                        left_turn = True
+                        go_around_circle = False
+                        mid_object = cylinder(distance_samples)
+                        t_count += 1
+                        break
+
                     elif temp == "cross junction":
                         stop()
                         if cross_count == 0:
@@ -290,8 +311,15 @@ def lineFollowing():
                             break
                     elif temp == "T junction":
                         stop()
-                        turn_180 = True
+                        # turn_180 = True
+                        left_turn = True
+                        go_around_circle = True
+                        t_count += 1
                         break
+
+            
+            if go_around_circle:
+                distance_samples.append(tof2Readings)
 
             # Find the biggest contour (if detected)
             if len(contours) > 0:
@@ -309,7 +337,7 @@ def lineFollowing():
                 # PID control
                 
                 error = 640 / 2 - cx + 60
-                speed = error * kp +(prev_error - error)*kd
+                speed = error * kp + (prev_error - error)*kd
                 prev_error = error
                 left_speed = base_speed - speed
                 right_speed = base_speed + speed
@@ -497,6 +525,11 @@ def junction_detection(x_mat, y_mat, ex_mat):
     if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1:
         return "Junction ahead"
     elif (
+        sensor_LEFT == 0 
+        and t_count == 1
+    ):
+        return "circle out"
+    elif (
         x_mat[1:6] == [1, 1, 1, 1, 1]
         and y_mat[1:5] == [1, 1, 1, 1]
         and ex_mat[0:2] == [0, 0]
@@ -512,7 +545,7 @@ def junction_detection(x_mat, y_mat, ex_mat):
         x_mat[0:3] == [1, 1, 1]
         and y_mat[1:5] == [1, 1, 1, 1]
         and ex_mat[0:2] == [0, 0]
-        and wall_color == None
+        # and wall_color == None
     ):
         return "T junction left"  # T junction left
     elif (
@@ -808,6 +841,7 @@ while finish == False:
         button_pressed()
     if running:
         print(wall_color)
+        print(mid_object)
 
         servo_3_rotate(cam_ang)  # Setting the camera angle
         servo_2_rotate(arm_h)  # Setting the gripper height
