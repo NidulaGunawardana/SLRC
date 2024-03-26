@@ -18,8 +18,8 @@ def align_robot():
 	angle_set = False
 	count = 0
 
-	ang_buf = list()
-	err_buff = list()
+	ang_buf = []
+	err_buff = []
     # video_capture = cv2.VideoCapture(0)
 	video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
 	video_capture.set(4, 480)  # Set the height of the frame
@@ -53,7 +53,7 @@ def align_robot():
 				ang = (90-ang)*-1
 			if w_min > h_min and ang < 0:
 				ang = 90 + ang	  
-			print(x_min)
+    
 			setpoint = 350
 			error = int(x_min - setpoint) 
 			ang = int(ang)	 
@@ -117,9 +117,9 @@ def align_robot():
 			# 			break
 	
 			if len(ang_buf) == 55 and len(err_buff) == 55:
-				if all(i > 89 for i in ang_buf) or all(i < -89 for i in ang_buf):
+				if min(ang_buf)!=90 and  max(ang_buf)!=90:
 					angle_set = False
-				if all(i < 15 and i > -15 for i in err_buff):
+				if min(err_buff)!=15 and  max(err_buff)!=15:
 					center_set = False
 				if center_set and angle_set:
 					stop()
