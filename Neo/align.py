@@ -117,9 +117,9 @@ def align_robot():
 			# 			break
 	
 			if len(ang_buf) == 55 and len(err_buff) == 55:
-				if min(ang_buf)!=90 and  max(ang_buf)!=90:
+				if all(i > 89 for i in ang_buf) or all(i < -89 for i in ang_buf):
 					angle_set = False
-				if min(err_buff)!=15 and  max(err_buff)!=15:
+				if all(i < 15 and i > -15 for i in err_buff):
 					center_set = False
 				if center_set and angle_set:
 					stop()

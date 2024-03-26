@@ -86,7 +86,7 @@ def lineFollowing():
     video_capture.set(4, 480)  # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
@@ -402,7 +402,7 @@ def servo_init():
 
     global cam_ang
     servo_3_rotate(cam_ang)
-    servo_2_rotate(32)
+    servo_2_rotate(33)
     sleep(2)
     servo_2_rotate(37)
     sleep(2)
@@ -410,16 +410,16 @@ def servo_init():
     sleep(2.2)
     servo_2_rotate(35)
     sleep(1.4)
-    servo_2_rotate(32)
+    servo_2_rotate(33)
 
-    for i in range(-40, 20, 1):
+    for i in range(-70, 90, 1):
         servo_1_rotate(i)
         sleep(0.01)
 
     servo_1_rotate(25)
     sleep(1)
 
-    for i in range(20, -39, -1):
+    for i in range(90, -70, -1):
         servo_1_rotate(i)
         sleep(0.01)
     blink()
@@ -866,8 +866,8 @@ def button_pressed():
 
 
 ####################################################################### Main loop ##############################################################################
-# blink()
-servo_init()
+blink()
+# servo_init()
 while finish == False:
     if push_button() == 0:
         sleep(0.2)
