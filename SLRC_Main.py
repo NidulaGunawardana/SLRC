@@ -33,7 +33,7 @@ mid_object = None
 box_grabbed = False
 hole_detected = False
 finish = False
-wall_color = None #"green"
+wall_color = None  # "green"
 button = 0
 running = False
 
@@ -656,7 +656,7 @@ def box_detection():
         cam_ang = -30
         box_grabbed = True
         cross_count += 1
-        
+
     else:
         gripper_open()
         box_count += 1
@@ -713,7 +713,7 @@ def leftJunct():
         turnLeft(33)
     sleep(0.3)
     stop()
-    
+
     if t_count == 1:
         goForward(33)
         sleep(0.3)
@@ -740,7 +740,8 @@ def turn180():
     stop()
 
     turn_180 = False
-    
+
+
 def turn180_double():
     """Turning 180 double"""
 
@@ -774,7 +775,7 @@ def rightJunctCol():
     turnRight(39)
     sleep(1.8)
     stop()
-    
+
     align_robot()
     # if colour_junction:
     #     align_robot()
@@ -793,7 +794,7 @@ def leftJunctCol():
     turnLeft(39)
     sleep(1.8)
     stop()
-    
+
     align_robot()
     # if colour_junction:
     #     align_robot()
@@ -869,6 +870,7 @@ def button_pressed():
 ####################################################################### Main loop ##############################################################################
 blink()
 # servo_init()
+offLed()
 while finish == False:
     if push_button() == 0:
         sleep(0.2)
