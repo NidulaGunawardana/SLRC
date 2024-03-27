@@ -242,6 +242,10 @@ def lineFollowing():
                             left_turn = True
                             go_around_circle = False
                             mid_object = cylinder(distance_samples)
+                            if mid_object == "cylinder":
+                                cylinderLed()
+                            elif mid_object == "box":
+                                boxLed()
                             t_count += 1
                         break
 
@@ -251,6 +255,10 @@ def lineFollowing():
                         print(distance_samples)
 
                         mid_object = cylinder(distance_samples)
+                        if mid_object == "cylinder":
+                            cylinderLed()
+                        elif mid_object == "box":
+                            boxLed()
                         t_count += 1
                         break
 
@@ -839,6 +847,7 @@ def button_pressed():
         # Setting servos
         global cam_ang  # Setting the camera angle -30 to box normal -47
         global arm_h  # Setting the gripper height
+        global t_count
 
         left_turn = False
         left_turn_col = False
@@ -854,6 +863,7 @@ def button_pressed():
         # running = False
         cross_count = 0
         box_count = 0
+        t_count = 0
         box_existing = False
 
         # Setting the threshold for balck and white
@@ -864,6 +874,7 @@ def button_pressed():
         arm_h = 32  # Setting the gripper height
         blink()
         servo_init()
+        offLed()
     button += 1
 
 
@@ -878,10 +889,7 @@ while finish == False:
     if running:
         print(wall_color)
         print(mid_object)
-        if mid_object == "cylinder":
-            cylinderLed()
-        elif mid_object == "box":
-            boxLed()
+
 
         servo_3_rotate(cam_ang)  # Setting the camera angle
         servo_2_rotate(arm_h)  # Setting the gripper height
