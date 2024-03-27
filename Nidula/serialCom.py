@@ -37,10 +37,10 @@ def offLed():
     line = ser.readline().decode("utf-8").rstrip()
 
 
-while True:
-    cylinderLed()
-    boxLed()
-    midLed()
-    highLed()
-    lowLed()
-    offLed()
+# while True:
+#     cylinderLed()
+#     boxLed()
+#     midLed()
+#     highLed()
+#     lowLed()
+#     offLed()
