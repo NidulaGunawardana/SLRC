@@ -5,7 +5,27 @@ from Raveen.servo_COntrol_rasberry import *
 from Neo.align import *
 import cv2
 import numpy as np
+from PIL import Image
+import math
 
+def get_limits(color):
+    c = np.uint8([[color]])  # BGR values
+    hsvC = cv2.cvtColor(c, cv2.COLOR_BGR2HSV)
+
+    hue = hsvC[0][0][0]  # Get the hue value
+
+    # Handle red hue wrap-around
+    if hue >= 165:  # Upper limit for divided red hue
+        lowerLimit = np.array([hue - 10, 100, 100], dtype=np.uint8)
+        upperLimit = np.array([180, 255, 255], dtype=np.uint8)
+    elif hue <= 15:  # Lower limit for divided red hue
+        lowerLimit = np.array([0, 100, 100], dtype=np.uint8)
+        upperLimit = np.array([hue + 10, 255, 255], dtype=np.uint8)
+    else:
+        lowerLimit = np.array([hue - 10, 100, 100], dtype=np.uint8)
+        upperLimit = np.array([hue + 10, 255, 255], dtype=np.uint8)
+
+    return lowerLimit, upperLimit
 
 def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True):
    
@@ -175,55 +195,29 @@ def find_white(sensor, distance_right, distance_left, baseSpeed):
         if cv2.waitKey(10) & 0xFF == ord("q"):
             break
 
-
-front_dis, left_dis, right_dis, length, width = init_measure()
-width_cons = width
-length_cons = length
-right_cons = right_dis
-left_cons = left_dis
-ob_direction = wall_follow("sensor_right",right_dis,left_dis,40)
+front_dis = None
+left_dis = None
+right_dis = None
+length = None
+width = None
+width_cons = None
+length_cons = None
+right_cons = None
+left_cons = None
+ob_direction = None
 orientation = None
-if ob_direction == "left":
-    front_dis, left_dis, right_dis, length, width = init_measure()
-    goForward(40)
-    sleep(1.2)
-    stop()
-    
-    turnLeft(40) # Turn 90 degrees left
-    sleep(1.95)
-    stop()
-    
-    # while tof1Readings() < (left_dis - 100):
-    #     goRight(40)
-    #     sleep(0.01)
-    orientation = 180
-    
-    servo_3_rotate(0)
-    front_dis, left_dis, right_dis, length, width = init_measure()
-    find_white("sensor_right",right_dis, left_dis,40)
-    # align_robot()
-    sleep(3)
-    
-    # front_dis, left_dis, right_dis, length, width = init_measure()
-    # while tof1Readings() < width_cons - (left_dis + 140):
-    #     turnRight(40)
-    #     sleep(0.5)
-    turnLeft(40)
-    sleep(3.9)
-    stop()
+
+def yard():
+    global front_dis, left_dis, right_dis, length, width, width_cons, length_cons, right_cons, left_cons, ob_direction, orientation
     
     front_dis, left_dis, right_dis, length, width = init_measure()
-    ob_direction = wall_follow("sensor_left",right_dis,left_dis,40,False)
-    
-    if ob_direction == "forward":
-        stop()
-        turnLeft(40)
-        sleep(1.95)
-        stop()
-        
-    front_dis, left_dis, right_dis, length, width = init_measure()
-    ob_direction = wall_follow("sensor_right",right_dis,left_dis,40)
+    width_cons = width
+    length_cons = length
+    right_cons = right_dis
+    left_cons = left_dis
+    ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40)
     orientation = None
+    
     if ob_direction == "left":
         front_dis, left_dis, right_dis, length, width = init_measure()
         goForward(40)
@@ -241,39 +235,132 @@ if ob_direction == "left":
         
         servo_3_rotate(0)
         front_dis, left_dis, right_dis, length, width = init_measure()
-        find_white("sensor_right",right_dis, left_dis,40)
+        find_white("sensor_right", right_dis, left_dis, 40)
         # align_robot()
         sleep(3)
         
+        # front_dis, left_dis, right_dis, length, width = init_measure()
+        # while tof1Readings() < width_cons - (left_dis + 140):
+        #     turnRight(40)
+        #     sleep(0.5)
         turnLeft(40)
         sleep(3.9)
         stop()
         
         front_dis, left_dis, right_dis, length, width = init_measure()
-        ob_direction = wall_follow("sensor_left",right_dis,left_dis,40,False)
+        ob_direction = wall_follow("sensor_left", right_dis, left_dis, 40, False)
         
         if ob_direction == "forward":
             stop()
-            turnRight(40)
+            turnLeft(40)
             sleep(1.95)
             stop()
-        
-        servo_3_rotate(-47)
+            
         front_dis, left_dis, right_dis, length, width = init_measure()
-        find_white("sensor_left",right_dis, left_dis,40)
-        stop()
+        ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40)
+        orientation = None
         
+        if ob_direction == "left":
+            front_dis, left_dis, right_dis, length, width = init_measure()
+            goForward(40)
+            sleep(1.2)
+            stop()
+            
+            turnLeft(40) # Turn 90 degrees left
+            sleep(1.95)
+            stop()
+            
+            # while tof1Readings() < (left_dis - 100):
+            #     goRight(40)
+            #     sleep(0.01)
+            orientation = 180
+            
+            servo_3_rotate(0)
+            front_dis, left_dis, right_dis, length, width = init_measure()
+            find_white("sensor_right", right_dis, left_dis, 40)
+            # align_robot()
+            sleep(3)
+            
+            turnLeft(40)
+            sleep(3.9)
+            stop()
+            
+            front_dis, left_dis, right_dis, length, width = init_measure()
+            ob_direction = wall_follow("sensor_left", right_dis, left_dis, 40, False)
+            
+            if ob_direction == "forward":
+                stop()
+                turnRight(40)
+                sleep(1.95)
+                stop()
+            
+            servo_3_rotate(-47)
+            front_dis, left_dis, right_dis, length, width = init_measure()
+            find_white("sensor_left", right_dis, left_dis, 40)
+            stop()
+        
+    elif ob_direction == "right":
+        turnRight(40) # Turn 90 degrees right
+        sleep(1.9)
+        orientation = 90
     
+    stop()
+    align_robot()
+
+    # while tof1Readings() < 100:
+    #     goForward(30)
+    #     sleep(0.05)
+    # stop()
+
+def findHeight():
     
-elif ob_direction == "right":
-    turnRight(40) # Turn 90 degrees right
-    sleep(1.9)
-    orientation = 90
-stop()
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    video_capture.set(4, 480)  # Set the height of the frame
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 120)
+    
+    servo_ang = -20
+    while True:
+        
+        servo_3_rotate(servo_ang)
+        
+        ret, frame = video_capture.read()
+        frame = cv2.flip(frame,0)
+        frame = cv2.flip(frame,1)
+        width = int(640)
+        height = int(480)
+        
+        dimensions = (width,height)
+        frame = cv2.resize(frame,dimensions,interpolation=cv2.INTER_AREA)
 
-# while tof1Readings() < 100:
-#     goForward(30)
-#     sleep(0.05)
-# stop()
+        white = [255, 255, 255]  # white in BGR colorspace
 
+        hsvImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
+        lowerLimit_white, upperLimit_white = get_limits(white)
+
+        mask_white = cv2.inRange(hsvImage, lowerLimit_white, upperLimit_white)
+
+        mask_white_ = Image.fromarray(mask_white)
+
+        bbox_white = mask_white_.getbbox()
+
+        if bbox_white is not None:
+            x1, y1, x2, y2 = bbox_white
+            frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
+        
+            servo_ang += 2
+
+            if y1 < 240:
+                dis = tof1Readings()
+                if servo_ang > 0:
+                    return math.tan(math.radians(servo_ang)) * dis + 130
+                else:
+                    return 130 - math.tan(math.radians(-servo_ang)) * dis 
+            
+            cv2.imshow("frame", frame)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                return None
+               
+findHeight()
