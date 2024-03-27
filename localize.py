@@ -47,20 +47,24 @@ def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True
                 return "left"
             elif tof2Readings() < (distance_right - 100):
                 return  "right"
+        if ob_detect == False:
+            if tof1Readings() <= right_cons:
+                return "forward"
 
 def wall_follow_back(sensor, distance_right, distance_left, baseSpeed, ob_detect=True):
    
-    kp = 0.4
+    kp = 0.1
     kd = 0.4
     last_error = 0
+    global right_cons
     
     while True:
         if sensor == "sensor_right":
             instant_distance = tof2Readings()
             error = instant_distance - distance_right
  
-            leftSpeed = baseSpeed + (error * kp + (last_error - error) * kd)
-            rightSpeed = baseSpeed - (error * kp + (last_error - error) * kd)
+            leftSpeed = baseSpeed - (error * kp + (last_error - error) * kd)
+            rightSpeed = baseSpeed + (error * kp + (last_error - error) * kd)
 
             last_error = error
 
@@ -82,12 +86,16 @@ def wall_follow_back(sensor, distance_right, distance_left, baseSpeed, ob_detect
         if leftSpeed < 0:
             leftSpeed = 0
 
-        leftrightMotor_Forward(leftSpeed, rightSpeed)
+        leftrightMotor_Backward(rightSpeed,leftSpeed)
         if ob_detect == True:
             if tof3Readings() < (distance_left - 100):
                 return "left"
             elif tof2Readings() < (distance_right - 100):
                 return  "right"
+            
+        if ob_detect == False:
+            if tof1Readings() <= right_cons:
+                return "forward"
 
 
 def init_measure():
@@ -167,11 +175,12 @@ def find_white(sensor, distance_right, distance_left, baseSpeed):
         if cv2.waitKey(10) & 0xFF == ord("q"):
             break
 
-wall_follow_back("sensor_right", 100, 100, 40)
-"""
+
 front_dis, left_dis, right_dis, length, width = init_measure()
 width_cons = width
 length_cons = length
+right_cons = right_dis
+left_cons = left_dis
 ob_direction = wall_follow("sensor_right",right_dis,left_dis,40)
 orientation = None
 if ob_direction == "left":
@@ -195,11 +204,65 @@ if ob_direction == "left":
     # align_robot()
     sleep(3)
     
-    front_dis, left_dis, right_dis, length, width = init_measure()
-    while tof1Readings() < width_cons - (left_dis + 140):
-        turnRight(40)
-        sleep(0.5)
+    # front_dis, left_dis, right_dis, length, width = init_measure()
+    # while tof1Readings() < width_cons - (left_dis + 140):
+    #     turnRight(40)
+    #     sleep(0.5)
+    turnLeft(40)
+    sleep(3.9)
     stop()
+    
+    front_dis, left_dis, right_dis, length, width = init_measure()
+    ob_direction = wall_follow("sensor_left",right_dis,left_dis,40,False)
+    
+    if ob_direction == "forward":
+        stop()
+        turnLeft(40)
+        sleep(1.95)
+        stop()
+        
+    front_dis, left_dis, right_dis, length, width = init_measure()
+    ob_direction = wall_follow("sensor_right",right_dis,left_dis,40)
+    orientation = None
+    if ob_direction == "left":
+        front_dis, left_dis, right_dis, length, width = init_measure()
+        goForward(40)
+        sleep(1.2)
+        stop()
+        
+        turnLeft(40) # Turn 90 degrees left
+        sleep(1.95)
+        stop()
+        
+        # while tof1Readings() < (left_dis - 100):
+        #     goRight(40)
+        #     sleep(0.01)
+        orientation = 180
+        
+        servo_3_rotate(0)
+        front_dis, left_dis, right_dis, length, width = init_measure()
+        find_white("sensor_right",right_dis, left_dis,40)
+        # align_robot()
+        sleep(3)
+        
+        turnLeft(40)
+        sleep(3.9)
+        stop()
+        
+        front_dis, left_dis, right_dis, length, width = init_measure()
+        ob_direction = wall_follow("sensor_left",right_dis,left_dis,40,False)
+        
+        if ob_direction == "forward":
+            stop()
+            turnRight(40)
+            sleep(1.95)
+            stop()
+        
+        servo_3_rotate(-47)
+        front_dis, left_dis, right_dis, length, width = init_measure()
+        find_white("sensor_left",right_dis, left_dis,40)
+        stop()
+        
     
     
 elif ob_direction == "right":
@@ -212,5 +275,5 @@ stop()
 #     goForward(30)
 #     sleep(0.05)
 # stop()
-"""
+
 

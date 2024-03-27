@@ -91,7 +91,7 @@ servo_init()
     
 def box_existance():
     global box_existing
-    distance, tof = tof1Readings()
+    distance = tof1Readings()
     if distance < 500:
         box_existing = True
     else:
