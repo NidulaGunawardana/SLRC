@@ -14,6 +14,7 @@ from Neo.Colorcircleidentify import *
 from Neo.align import *
 from Neo.hole import *
 from Nidula.irSensors import *
+from Nidula.serialCom import *
 
 base_speed = 37  # Setting the base speed of the robot
 kp = 0.13  # Setting the Kp value of the robot  0.13
@@ -875,6 +876,10 @@ while finish == False:
     if running:
         print(wall_color)
         print(mid_object)
+        if mid_object == "cylinder":
+            cylinderLed()
+        elif mid_object == "box":
+            boxLed()
 
         servo_3_rotate(cam_ang)  # Setting the camera angle
         servo_2_rotate(arm_h)  # Setting the gripper height
