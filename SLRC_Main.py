@@ -153,7 +153,7 @@ def lineFollowing():
             else:
 
                 if cross_count == 2:
-                    distance, tof = tof1Readings()
+                    distance = tof1Readings()
                     print(distance)
 
                     if box_existing:
@@ -439,7 +439,7 @@ def box_existance():
 
     global box_existing
 
-    distance, tof = tof1Readings()
+    distance = tof1Readings()
     if distance < 500:
         box_existing = True
     else:

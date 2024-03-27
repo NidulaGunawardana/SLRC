@@ -269,3 +269,22 @@ def leftrightMotor_Forward(dutyLeft,dutyRight):
     pwm2.ChangeDutyCycle(dutyLeft)
     pwm3.ChangeDutyCycle(dutyRight)
     pwm4.ChangeDutyCycle(dutyLeft)
+    
+    
+def front_left_right(duty_left,duty_right,base_speed):
+    GPIO.output(rightFront1,GPIO.LOW)
+    GPIO.output(rightFront2,GPIO.HIGH)
+
+    GPIO.output(leftBack2,GPIO.HIGH)
+    GPIO.output(leftBack1,GPIO.LOW)
+
+    GPIO.output(rightBack1,GPIO.LOW)
+    GPIO.output(rightBack2,GPIO.HIGH)
+
+    GPIO.output(leftFront1,GPIO.LOW)
+    GPIO.output(leftFront22,GPIO.HIGH)
+
+    pwm1.ChangeDutyCycle(base_speed+duty_right)
+    pwm2.ChangeDutyCycle(base_speed+duty_left)
+    pwm3.ChangeDutyCycle(base_speed+duty_left)
+    pwm4.ChangeDutyCycle(base_speed+duty_right) 

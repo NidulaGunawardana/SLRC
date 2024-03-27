@@ -34,7 +34,7 @@ def tof1Readings():
     else:
         distance1 = 0
   
-    return distance1,tof1
+    return distance1
 
 def tof3Readings():
     # global tof3
@@ -45,7 +45,7 @@ def tof3Readings():
     else:
         distance2 = 0
       
-    return distance2, tof3
+    return distance2
 
 # x = 0
 # # tof = 0
