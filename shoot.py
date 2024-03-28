@@ -160,34 +160,34 @@ def counter_align(box_num):
     global video_capture
     counter_set_height()
     box_abs = abs(box_num)
-    # for i in range(0,box_abs):
-    #     while counter_exist() == "notexist":
-    #         if box_num < 0:
-    #             turnLeft(25)
-    #         else:
-    #             turnRight(25)
-    #         sleep(0.05)
-    #     sleep(0.1)
-    #     stop()
-    #     print("box behind")
-
-    #     while counter_exist() == "exist":
-    #         if box_num < 0:
-    #             turnLeft(25)
-    #         else:
-    #             turnRight(25)
-    #         sleep(0.05)
-    #     sleep(0.1)
-    #     stop()
-    #     print("box aligned")
-    #     print(i)
-        
-    while counter_exist() == "exist":
-        if box_num < 0:
-            turnLeft(25)
-        else:
-            turnRight(25)
+    for i in range(0,box_abs):
+        while counter_exist() == "exist":
+            if box_num < 0:
+                turnLeft(25)
+            else:
+                turnRight(25)
             sleep(0.05)
+        sleep(0.1)
+        stop()
+        print("box behind")
+
+        while counter_exist() == "notexist":
+            if box_num < 0:
+                turnLeft(25)
+            else:
+                turnRight(25)
+            sleep(0.05)
+        sleep(0.1)
+        stop()
+        print("box aligned")
+        print(i)
+        
+    # while counter_exist() == "exist":
+    #     if box_num < 0:
+    #         turnLeft(25)
+    #     else:
+    #         turnRight(25)
+    #         sleep(0.05)
     stop()
     print("box behind")
 
@@ -271,7 +271,7 @@ def counter_exist():
     dimensions = (width, height)
     frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
     
-    frame = frame[0:480, 180:460]
+    frame = frame[0:480, 200:440]
 
     # Convert to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
