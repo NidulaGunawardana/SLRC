@@ -5,7 +5,7 @@ import cv2
 
 from Raveen.motorRotating import *
 from Raveen.servo_COntrol_rasberry import *
-from Raveen.tofsensorreadings import tof1Readings
+from Raveen.tofsensorreadings import tof1Readings,tof4Readings
 from Raveen.metal_BOX_Identification import *
 from Raveen.ledAndPushButtons import *
 from Raveen.cuboidToF import *
@@ -333,7 +333,7 @@ def lineFollowing():
                         break
 
             if go_around_circle:
-                dis_temp = tof2Readings()
+                dis_temp = tof4Readings()
                 if dis_temp < 300:
                     distance_samples.append(dis_temp)
 
