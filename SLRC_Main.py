@@ -664,7 +664,7 @@ def box_detection():
         gripper_open()
         box_count += 1
 
-    servo_2_rotate(32)
+    servo_2_rotate(-12)
     goBackward(30)
     sleep(1)
     stop()
