@@ -14,22 +14,23 @@ video_capture.set(3, 640)  # Set the width of the frame
 video_capture.set(4, 480)  # Set the height of the frame
 
 video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
 # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
 count = 0
+kp = 0.13
+kd = 0.01
+prev_error = 0 
+servo_3_rotate(-47)
 
 while True:
-
-    if sensor_LEFT == 0 and sensor_RIGHT == 0:
+    print(count)
+    if sensor_LEFT() == 0 and sensor_RIGHT() == 0:
         if count == 0:
             stop()
             turnLeft(40)
-            sleep(1)
-            while sensor_LEFT == 0 and sensor_RIGHT == 0:
-                turnLeft(40)
-                sleep(0.05)
-            stop()
+            sleep(1.95)
+            
             count += 1
         if count == 1:
             goForward(37)
@@ -41,16 +42,19 @@ while True:
             break
         
     if tof1Readings() < 40 and count == 1:
+        print("near wall")
         stop()
         gripper_up()
         gripper_open()
         while tof1Readings() < 30:
+            print("near ball")
             goForward(25)
             sleep(0.05)
         stop()
         gripper_full_close()
+        print("ball grabbed")
         turnLeft(40)
-        sleep(3.9)
+        sleep(3.9) 
         stop()
 
     ret, frame = video_capture.read()
@@ -70,7 +74,7 @@ while True:
 
     # Color thresholding
     ret, thresh = cv2.threshold(
-        blur, th, 255, cv2.THRESH_BINARY
+        blur, 150, 255, cv2.THRESH_BINARY
     )  # For the white line
 
     # Find the contours of the frame
@@ -114,6 +118,11 @@ while True:
             cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
             cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
             cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
+            
+            cv2.imshow("frame", frame)
+            cv2.imshow("threshold", thresh)
+            if cv2.waitKey(10) & 0xFF == ord("q"):
+                break
 
     else:
         pass
