@@ -49,11 +49,11 @@ def tof3Readings():
 
 # x = 0
 # # tof = 0
-# while(True):
-#     read1,tof = tof3Readings()
-#     print(read1)
-#     time.sleep(timing2/10000000.00)
-#     x+=1
+while(True):
+    read1 = tof3Readings()
+    print(read1)
+    time.sleep(timing2/10000000.00)
+    # x+=1
     
 # tof.stop_ranging()
 # tof.close()

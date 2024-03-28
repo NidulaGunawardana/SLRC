@@ -141,7 +141,7 @@ def find_white(sensor, distance_right, distance_left, baseSpeed):
     video_capture.set(4, 480)  # Set the height of the frame
     video_capture.set(3, 640)  # Set the width of the frame
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 120)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 150)
     while True:
         ret, image = video_capture.read()
         image = cv2.flip(image, 0)
@@ -189,18 +189,21 @@ def find_white(sensor, distance_right, distance_left, baseSpeed):
   	
         if len(contours_blk) > 0:
 
-            # c = max(contours_blk, key=cv2.contourArea)
+            c = max(contours_blk, key=cv2.contourArea)
 
-            # M= cv2.moments(c)
+            M = cv2.moments(c)
 
-            # try:
-            #     cx = int(M["m10"] / M["m00"])
-            #     cy = int(M["m01"] / M["m00"])
-            # except:
-            #     continue
-            
-            # if cy < 100 :   
-            #     break
+            try:
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+            except:
+                continue
+            print(cy)
+            if cy < 160: 
+                goForward(40)
+                sleep(0.2)   
+                stop()
+                break
             
             return 0
         
@@ -222,6 +225,7 @@ orientation = None
 
 def yard():
     global front_dis, left_dis, right_dis, length, width, width_cons, length_cons, right_cons, left_cons, ob_direction, orientation
+    servo_3_rotate(-40)
     
     front_dis, left_dis, right_dis, length, width = init_measure()
     width_cons = width
@@ -333,7 +337,7 @@ def findHeight():
     video_capture.set(4, 480)  # Set the height of the frame
     video_capture.set(3, 640)  # Set the width of the frame
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 100)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 180)
     
     servo_ang = -20
     while True:
@@ -394,10 +398,13 @@ def findHeight():
                     # else:
                     #     return 130 - math.tan(math.radians(-servo_ang)) * dis 
                     if servo_ang < 20 :
+                        servo_3_rotate(-40)
                         return "10cm"
                     elif servo_ang < 40:
+                        servo_3_rotate(-40)
                         return "15cm"
                     else:
+                        servo_3_rotate(-40)
                         return "20cm"
                 
                 cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)

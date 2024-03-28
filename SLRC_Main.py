@@ -51,7 +51,7 @@ th = 155
 
 # Setting servos
 cam_ang = -47  # Setting the camera angle -30 to box normal -47
-arm_h = 32  # Setting the gripper height
+arm_h = -12  # Setting the gripper height
 
 
 def lineFollowing():
@@ -392,18 +392,13 @@ def blink():
     "Starting sequence"
 
     for i in range(3):
-        led_on("green")
-        sleep(0.1)
-        led_off("green")
-        sleep(0.1)
-        led_on("blue")
-        sleep(0.1)
-        led_off("blue")
-        sleep(0.1)
-    led_on("green")
-    sleep(1)
-    led_off("green")
-    sleep(1)
+        cylinderLed()
+        boxLed()
+        cylinderLed()
+        boxLed()
+        cylinderLed()
+        boxLed()
+    offLed()
 
 
 def servo_init():
@@ -411,21 +406,21 @@ def servo_init():
 
     global cam_ang
     servo_3_rotate(cam_ang)
-    servo_2_rotate(33)
+    servo_2_rotate(-12)
     sleep(2)
-    servo_2_rotate(37)
-    sleep(2)
-    servo_2_rotate(28)
+    servo_2_rotate(-9)
+    sleep(3)
+    servo_2_rotate(-15)
     sleep(2.2)
-    servo_2_rotate(35)
-    sleep(1.4)
-    servo_2_rotate(33)
+    servo_2_rotate(-9)
+    sleep(0.5)
+    servo_2_rotate(-12)
 
     for i in range(-70, 90, 1):
         servo_1_rotate(i)
         sleep(0.01)
 
-    servo_1_rotate(25)
+    servo_1_rotate(90)
     sleep(1)
 
     for i in range(90, -70, -1):
@@ -871,7 +866,7 @@ def button_pressed():
 
         # Setting servos
         cam_ang = -47  # Setting the camera angle -30 to box normal -47
-        arm_h = 32  # Setting the gripper height
+        arm_h = -12  # Setting the gripper height
         blink()
         servo_init()
         offLed()
@@ -880,7 +875,7 @@ def button_pressed():
 
 ####################################################################### Main loop ##############################################################################
 blink()
-# servo_init()
+servo_init()
 offLed()
 while finish == False:
     if push_button() == 0:
