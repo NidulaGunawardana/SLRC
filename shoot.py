@@ -156,10 +156,29 @@ def grab_ball():
         else:
             pass
 
-def counter_align():
-    global viddeo_capture
+def counter_align(box_num):
+    global video_capture
     counter_set_height()
-    
+    box_abs = abs(box_num)
+    for i in range(0,box_abs):
+        while counter_exist() == "notexist":
+            if box_num < 0:
+                turnLeft(25)
+            else:
+                turnRight(25)
+            sleep(0.05)
+        sleep(0.1)
+        stop()
+
+        while counter_exist() == "exist":
+            if box_num < 0:
+                turnLeft(25)
+            else:
+                turnRight(25)
+            sleep(0.05)
+        sleep(0.1)
+        stop()
+        
     
 
 def counter_set_height():
@@ -230,5 +249,58 @@ def counter_set_height():
         cv2.imshow("threshold", thresh)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             return None   
+
+def counter_exist():
+    global video_capture
+    ret, frame = video_capture.read()
+    frame = cv2.flip(frame, 0)
+    frame = cv2.flip(frame, 1)
+    width = int(640)
+    height = int(480)
+
+    dimensions = (width, height)
+    frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
+    
+    frame = frame[0:480, 140:500]
+
+    # Convert to grayscale
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # Gaussian blur
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # Color thresholding
+    ret, thresh = cv2.threshold(
+        blur, 80, 255, cv2.THRESH_BINARY
+    )  # For the white line
+
+    # Find the contours of the frame
+    contours, hierarchy = cv2.findContours(
+    thresh.copy(), 1, cv2.CHAIN_APPROX_NONE
+    )
+    
+    if len(contours) > 0:
+        return "exist"
+
+    else:
+        return "notexist"   
+        # c = max(contours, key=cv2.contourArea)
+
+        # M = cv2.moments(c)
+
+        # try:
+        #     cx = int(M["m10"] / M["m00"])
+        #     cy = int(M["m01"] / M["m00"])
+        # except:
+        #     continue
+
+        cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
+        cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
+        cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
+            
+    cv2.imshow("frame", frame)
+    cv2.imshow("threshold", thresh)
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        return None  
 
 counter_align()
