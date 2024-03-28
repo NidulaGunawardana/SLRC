@@ -39,7 +39,7 @@ while True:
             count += 1
         if count == 2:
             stop()
-            break
+            # break
         
     if tof1Readings() < 40 and count == 1:
         print("near wall")
@@ -84,45 +84,45 @@ while True:
 
     if len(contours) > 0:
 
-            c = max(contours, key=cv2.contourArea)
+        c = max(contours, key=cv2.contourArea)
 
-            M = cv2.moments(c)
+        M = cv2.moments(c)
 
-            try:
-                cx = int(M["m10"] / M["m00"])
-                cy = int(M["m01"] / M["m00"])
-            except:
-                continue
+        try:
+            cx = int(M["m10"] / M["m00"])
+            cy = int(M["m01"] / M["m00"])
+        except:
+            continue
 
-            # PID control
+        # PID control
 
-            error = 640 / 2 - cx + 60
-            speed = error * kp + (prev_error - error) * kd
-            prev_error = error
-            left_speed = base_speed - speed
-            right_speed = base_speed + speed
+        error = 640 / 2 - cx + 60
+        speed = error * kp + (prev_error - error) * kd
+        prev_error = error
+        left_speed = base_speed - speed
+        right_speed = base_speed + speed
 
-            if left_speed > 100:
-                left_speed = 100
-            elif left_speed < 0:
-                left_speed = 0
+        if left_speed > 100:
+            left_speed = 100
+        elif left_speed < 0:
+            left_speed = 0
 
-            if right_speed > 100:
-                right_speed = 100
-            elif right_speed < 0:
-                right_speed = 0
+        if right_speed > 100:
+            right_speed = 100
+        elif right_speed < 0:
+            right_speed = 0
 
-            leftrightMotor_Forward(left_speed, right_speed)
+        leftrightMotor_Forward(left_speed, right_speed)
 
-            # Drawing the lines
-            cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
-            cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
-            cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
-            
-            cv2.imshow("frame", frame)
-            cv2.imshow("threshold", thresh)
-            if cv2.waitKey(10) & 0xFF == ord("q"):
-                break
+        # Drawing the lines
+        cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
+        cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
+        cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
+        
+        cv2.imshow("frame", frame)
+        cv2.imshow("threshold", thresh)
+        if cv2.waitKey(10) & 0xFF == ord("q"):
+            break
 
     else:
         pass
