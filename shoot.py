@@ -7,18 +7,25 @@ from Raveen.tofsensorreadings import *
 from Nidula.irSensors import *
 from Neo.align import *
 
+video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+video_capture.set(4, 480)  # Set the height of the frame
+video_capture.set(3, 640)  # Set the width of the frame
+video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 180)
+
 def grab_ball():
 
     base_speed = 30
 
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # video_capture = cv2.VideoCapture(0)
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(4, 480)  # Set the height of the frame
+    # video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # # video_capture = cv2.VideoCapture(0)
+    # video_capture.set(3, 640)  # Set the width of the frame
+    # video_capture.set(4, 480)  # Set the height of the frame
 
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+    # video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    # video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
+    # # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+    global video_capture
 
     count = 0
     kp = 0.13
@@ -150,14 +157,13 @@ def grab_ball():
             pass
 
 def counter_align():
-    pass
+    global viddeo_capture
+    counter_set_height()
+    
+    
 
 def counter_set_height():
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    video_capture.set(4, 480)  # Set the height of the frame
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 180)
+    global video_capture
     
     servo_ang = -45
     while True:
@@ -173,7 +179,7 @@ def counter_set_height():
         dimensions = (width, height)
         frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
         
-        frame = frame[0:480, 120:520]
+        frame = frame[0:480, 140:500]
 
         # Convert to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -183,7 +189,7 @@ def counter_set_height():
 
         # Color thresholding
         ret, thresh = cv2.threshold(
-            blur, 155, 255, cv2.THRESH_BINARY
+            blur, 80, 255, cv2.THRESH_BINARY
         )  # For the white line
 
         # Find the contours of the frame
@@ -213,14 +219,16 @@ def counter_set_height():
                 cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
                 cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
                 cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
-                servo_ang += 1
-                sleep(0.05)
                 
-                # if servo_ang > 40:
-                #     break
-    
+                
+                
+                if servo_ang > 30:
+                    break
+        servo_ang += 1
+        sleep(0.05)
         cv2.imshow("frame", frame)
+        cv2.imshow("threshold", thresh)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             return None   
 
-counter_set_height()
+counter_align()
