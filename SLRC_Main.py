@@ -416,14 +416,14 @@ def servo_init():
     sleep(0.5)
     servo_2_rotate(-12)
 
-    for i in range(-70, 90, 1):
+    for i in range(-40, 80, 1):
         servo_1_rotate(i)
         sleep(0.01)
 
     servo_1_rotate(90)
     sleep(1)
 
-    for i in range(90, -70, -1):
+    for i in range(80, -40, -1):
         servo_1_rotate(i)
         sleep(0.01)
     blink()

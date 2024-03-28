@@ -119,7 +119,7 @@ def gripper_full_close():
     
 # gripper_open()
 # # servo_1_rotate(-20)
-gripper_close()
-gripper_open()
+# gripper_close()
+# gripper_open()
 # gripper_up()
-# gripper_down()
+gripper_down()
