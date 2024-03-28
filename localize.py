@@ -187,9 +187,20 @@ def find_white(sensor, distance_right, distance_left, baseSpeed):
 
         leftrightMotor_Forward(leftSpeed, rightSpeed)
   	
-        if len(contours_blk) > 0:	 
-            stop()
-            return 1
+        if len(contours_blk) > 0:
+
+            c = max(contours_blk, key=cv2.contourArea)
+
+            M= cv2.moments(c)
+
+            try:
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+            except:
+                continue
+            
+            if cy < 100 :   
+                break
         
         cv2.imshow("Frame",Blackline)
         if cv2.waitKey(10) & 0xFF == ord("q"):
@@ -237,7 +248,8 @@ def yard():
         front_dis, left_dis, right_dis, length, width = init_measure()
         find_white("sensor_right", right_dis, left_dis, 40)
         # align_robot()
-        sleep(3)
+        sleep(1)
+        print(findHeight())
         
         # front_dis, left_dis, right_dis, length, width = init_measure()
         # while tof1Readings() < width_cons - (left_dis + 140):
@@ -279,7 +291,8 @@ def yard():
             front_dis, left_dis, right_dis, length, width = init_measure()
             find_white("sensor_right", right_dis, left_dis, 40)
             # align_robot()
-            sleep(3)
+            sleep(1)
+            print(findHeight())
             
             turnLeft(40)
             sleep(3.9)
@@ -318,7 +331,7 @@ def findHeight():
     video_capture.set(4, 480)  # Set the height of the frame
     video_capture.set(3, 640)  # Set the width of the frame
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 120)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 100)
     
     servo_ang = -20
     while True:
@@ -326,41 +339,78 @@ def findHeight():
         servo_3_rotate(servo_ang)
         
         ret, frame = video_capture.read()
-        frame = cv2.flip(frame,0)
-        frame = cv2.flip(frame,1)
+        frame = cv2.flip(frame, 0)
+        frame = cv2.flip(frame, 1)
         width = int(640)
         height = int(480)
+
+        dimensions = (width, height)
+        frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
         
-        dimensions = (width,height)
-        frame = cv2.resize(frame,dimensions,interpolation=cv2.INTER_AREA)
+        frame = frame[120:350, 0:640]
 
-        white = [255, 255, 255]  # white in BGR colorspace
+        # Convert to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        hsvImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        # Gaussian blur
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
 
-        lowerLimit_white, upperLimit_white = get_limits(white)
+        # Color thresholding
+        ret, thresh = cv2.threshold(
+            blur, 155, 255, cv2.THRESH_BINARY
+        )  # For the white line
 
-        mask_white = cv2.inRange(hsvImage, lowerLimit_white, upperLimit_white)
-
-        mask_white_ = Image.fromarray(mask_white)
-
-        bbox_white = mask_white_.getbbox()
-
-        if bbox_white is not None:
-            x1, y1, x2, y2 = bbox_white
-            frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
+        # Find the contours of the frame
+        contours, hierarchy = cv2.findContours(
+        thresh.copy(), 1, cv2.CHAIN_APPROX_NONE
+        )
         
-            servo_ang += 2
+        
+        if len(contours) > 0:
 
-            if y1 < 240:
-                dis = tof1Readings()
-                if servo_ang > 0:
-                    return math.tan(math.radians(servo_ang)) * dis + 130
-                else:
-                    return 130 - math.tan(math.radians(-servo_ang)) * dis 
+                c = max(contours, key=cv2.contourArea)
+
+                M = cv2.moments(c)
+
+                try:
+                    cx = int(M["m10"] / M["m00"])
+                    cy = int(M["m01"] / M["m00"])
+                except:
+                    continue
+                
+                print(cy)
+                
+                if cy > 160:
+                    
+                    dis = tof1Readings() - 15
+                    dis = dis - 30
+                    print("Distance: ", dis)
+                    print(servo_ang)
+                
+                    # if servo_ang > 0:
+                    #     return math.tan(math.radians(servo_ang)) * dis + 130
+                    # else:
+                    #     return 130 - math.tan(math.radians(-servo_ang)) * dis 
+                    if servo_ang < 20 :
+                        return "10cm"
+                    elif servo_ang < 40:
+                        return "15cm"
+                    else:
+                        return "20cm"
+                
+                cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
+                cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
+                cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
+                servo_ang += 1
+                sleep(0.05)
+                
+                # if servo_ang > 40:
+                #     break
+    
             
-            cv2.imshow("frame", frame)
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                return None
+            
+        cv2.imshow("frame", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            return None   
                
-findHeight()
+yard()
