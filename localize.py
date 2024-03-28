@@ -189,18 +189,20 @@ def find_white(sensor, distance_right, distance_left, baseSpeed):
   	
         if len(contours_blk) > 0:
 
-            c = max(contours_blk, key=cv2.contourArea)
+            # c = max(contours_blk, key=cv2.contourArea)
 
-            M= cv2.moments(c)
+            # M= cv2.moments(c)
 
-            try:
-                cx = int(M["m10"] / M["m00"])
-                cy = int(M["m01"] / M["m00"])
-            except:
-                continue
+            # try:
+            #     cx = int(M["m10"] / M["m00"])
+            #     cy = int(M["m01"] / M["m00"])
+            # except:
+            #     continue
             
-            if cy < 100 :   
-                break
+            # if cy < 100 :   
+            #     break
+            
+            return 0
         
         cv2.imshow("Frame",Blackline)
         if cv2.waitKey(10) & 0xFF == ord("q"):
