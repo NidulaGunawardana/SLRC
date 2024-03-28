@@ -58,8 +58,10 @@ def grab_ball():
                 stop()
                 count += 1
             elif count == 2:
+                goForward(30)
+                sleep(0.4)
                 stop()
-                # break
+                break
             
         if tof1Readings() < 70 and count == 1 and ball_grbbed == False:
             # print("near wall")
@@ -194,7 +196,7 @@ def counter_align(box_num):
 def counter_set_height():
     global video_capture
     
-    servo_ang = -45
+    servo_ang = -10
     while True:
         
         servo_3_rotate(servo_ang)
@@ -314,4 +316,5 @@ def counter_exist():
     if cv2.waitKey(1) & 0xFF == ord("q"):
         return None  
 
-counter_align(2)
+grab_ball()
+counter_align(1)

@@ -86,7 +86,7 @@ def Arm():
 def gripper_close():
     servo_2_rotate(-12)
     sleep(1)
-    for i in range(-50,70,1):
+    for i in range(-40,60,1):
          servo_1_rotate(i)
         #  print(i)
          sleep(0.01)
@@ -94,7 +94,7 @@ def gripper_close():
 def gripper_open():
     servo_2_rotate(-12)
     sleep(1)
-    for i in range(70,-50,-1):
+    for i in range(60,-40,-1):
          servo_1_rotate(i)
         #  print(i)
          sleep(0.01) 
@@ -112,14 +112,14 @@ def gripper_down():
 def gripper_full_close():
     servo_2_rotate(-12)
     sleep(2)
-    for i in range(-50,90,1):
+    for i in range(-40,80,1):
          servo_1_rotate(i)
         #  print(i)
          sleep(0.01)
     
 # gripper_open()
 # # servo_1_rotate(-20)
-# gripper_close()
-# gripper_open()
+gripper_close()
+gripper_open()
 # gripper_up()
 # gripper_down()
