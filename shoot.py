@@ -152,4 +152,75 @@ def grab_ball():
 def counter_align():
     pass
 
-counter_align()
+def counter_set_height():
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    video_capture.set(4, 480)  # Set the height of the frame
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 180)
+    
+    servo_ang = -45
+    while True:
+        
+        servo_3_rotate(servo_ang)
+        
+        ret, frame = video_capture.read()
+        frame = cv2.flip(frame, 0)
+        frame = cv2.flip(frame, 1)
+        width = int(640)
+        height = int(480)
+
+        dimensions = (width, height)
+        frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
+        
+        frame = frame[0:480, 120:520]
+
+        # Convert to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # Gaussian blur
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+
+        # Color thresholding
+        ret, thresh = cv2.threshold(
+            blur, 155, 255, cv2.THRESH_BINARY
+        )  # For the white line
+
+        # Find the contours of the frame
+        contours, hierarchy = cv2.findContours(
+        thresh.copy(), 1, cv2.CHAIN_APPROX_NONE
+        )
+        
+        
+        if len(contours) > 0:
+
+                c = max(contours, key=cv2.contourArea)
+
+                M = cv2.moments(c)
+
+                try:
+                    cx = int(M["m10"] / M["m00"])
+                    cy = int(M["m01"] / M["m00"])
+                except:
+                    continue
+                
+                print(cy)
+                
+                if cy > 230:
+                    print(servo_ang)
+                    break
+
+                cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
+                cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
+                cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
+                servo_ang += 1
+                sleep(0.05)
+                
+                # if servo_ang > 40:
+                #     break
+    
+        cv2.imshow("frame", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            return None   
+
+counter_set_height()
