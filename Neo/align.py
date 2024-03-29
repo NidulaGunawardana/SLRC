@@ -54,7 +54,7 @@ def align_robot():
 			if w_min > h_min and ang < 0:
 				ang = 90 + ang	  
     
-			setpoint = 350
+			setpoint = 368
 			error = int(x_min - setpoint) 
 			ang = int(ang)	 
 			box = cv2.boxPoints(blackbox)
@@ -78,11 +78,11 @@ def align_robot():
 	
 
 			if ang > 0 and ang < 89:
-				turnLeft(30)
+				turnLeft(35)
 				sleep(0.005)
 				angle_set = False
 			elif ang<0 and ang > -89:
-				turnRight(30)
+				turnRight(35)
 				sleep(0.005)
 				angle_set = False
 			else:
@@ -93,12 +93,12 @@ def align_robot():
 				# break
 			# if angle_set:
 			if error > 15:
-				goRight(30)
+				goRight(35)
 				center_set = False
 					# sleep(0.01)
 					# sleep(0.01)
 			elif error < -15:
-				goLeft(30)
+				goLeft(35)
 				center_set = False
 					# sleep(0.01)
 			else:
@@ -124,6 +124,8 @@ def align_robot():
 				if center_set and angle_set:
 					stop()
 					break
+
+				
 
 
 		cv2.imshow("orginal with line", image)
@@ -195,19 +197,19 @@ def align_robot_a(video_capture):
 				
 			ang_buf.append(ang)
 			err_buff.append(error)
-			if len(ang_buf) > 55:
+			if len(ang_buf) > 30:
 				ang_buf.pop(0)
 	
-			if len(err_buff) > 55:
+			if len(err_buff) > 30:
 				err_buff.pop(0)
 	
 
 			if ang > 0 and ang < 89:
-				turnLeft(20)
+				turnLeft(35)
 				sleep(0.005)
 				angle_set = False
 			elif ang<0 and ang > -89:
-				turnRight(20)
+				turnRight(35)
 				sleep(0.005)
 				angle_set = False
 			else:
@@ -218,12 +220,12 @@ def align_robot_a(video_capture):
 				# break
 			# if angle_set:
 			if error > 15:
-				goRight(20)
+				goRight(35)
 				center_set = False
 					# sleep(0.01)
 					# sleep(0.01)
 			elif error < -15:
-				goLeft(20)
+				goLeft(35)
 				center_set = False
 					# sleep(0.01)
 			else:
@@ -241,7 +243,7 @@ def align_robot_a(video_capture):
 			# 			stop()
 			# 			break
 	
-			if len(ang_buf) == 55 and len(err_buff) == 55:
+			if len(ang_buf) == 30 and len(err_buff) == 30:
 				if all(i > 89 for i in ang_buf) or all(i < -89 for i in ang_buf):
 					angle_set = False
 				if all(i < 15 and i > -15 for i in err_buff):
