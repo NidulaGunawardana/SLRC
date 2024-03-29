@@ -11,10 +11,9 @@ video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
 video_capture.set(4, 480)  # Set the height of the frame
 video_capture.set(3, 640)  # Set the width of the frame
 video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-video_capture.set(cv2.CAP_PROP_EXPOSURE, 180)
+video_capture.set(cv2.CAP_PROP_EXPOSURE, 70)
 
-def shoot():
-    pass
+
 
 def grab_ball():
 
@@ -318,7 +317,11 @@ def counter_exist():
     
     if cv2.waitKey(1) & 0xFF == ord("q"):
         return None  
-
+reload()
 grab_ball()
 counter_align(1)
+shoot()
+reload()
+
+# counter_set_height()
 

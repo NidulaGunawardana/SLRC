@@ -124,4 +124,25 @@ def gripper_full_close():
 # gripper_up()
 # gripper_down()
 
-servo_4_rotate(0)
+def shoot():
+    servo_2_rotate(-12)
+    servo_4_rotate(70)
+    sleep(1)
+    gripper_down()
+    for i in range(60,-10,-1):
+         servo_1_rotate(i)
+        #  print(i)
+         sleep(0.01) 
+    servo_4_rotate(-70)
+
+
+
+def reload():
+    servo_2_rotate(-12)
+    sleep(1)
+    servo_4_rotate(70)
+
+# gripper_up()
+# reload()
+# shoot()
+# reload()
