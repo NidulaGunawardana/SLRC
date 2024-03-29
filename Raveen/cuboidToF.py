@@ -6,7 +6,7 @@ dev = 20  # constant deviation
 
 tof2 = VL53L0X.VL53L0X(tca9548a_num=6, tca9548a_addr=0x70)  # tof initialize
 tof2.open()
-tof2.start_ranging(VL53L0X.Vl53l0xAccuracyMode.BETTER)  # start ranging
+tof2.start_ranging(VL53L0X.Vl53l0xAccuracyMode.BEST)  # start ranging
 
 timing2 = tof2.get_timing()
 
@@ -19,7 +19,7 @@ def tof2Readings():
     global tof2
     distance2 = tof2.get_distance()
     if distance2 > 0:
-        distance2 = distance2
+        distance2 = distance2-10
     else:
         distance2 = 0
 
