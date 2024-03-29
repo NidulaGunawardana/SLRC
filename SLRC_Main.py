@@ -349,10 +349,11 @@ def lineFollowing():
                     cy = int(M["m01"] / M["m00"])
                 except:
                     continue
+                # print(cx)
 
                 # PID control
 
-                error = 640 / 2 - cx + 60
+                error = 368 - cx 
                 speed = error * kp + (prev_error - error) * kd
                 prev_error = error
                 left_speed = base_speed - speed
@@ -391,7 +392,7 @@ def lineFollowing():
 def blink():
     "Starting sequence"
 
-    for i in range(3):
+    for i in range(2):
         cylinderLed()
         boxLed()
         cylinderLed()
@@ -877,6 +878,8 @@ def button_pressed():
 blink()
 servo_init()
 offLed()
+reload()
+
 while finish == False:
     if push_button() == 0:
         sleep(0.2)
