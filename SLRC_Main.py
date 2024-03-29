@@ -425,6 +425,8 @@ def center_detect():
     row, column, ex = junction_matrix(frame, thresh, 8)
     if column[0] == 1:
         return True
+    else:
+        return False
 
 def blink():
     "Starting sequence"
@@ -754,6 +756,7 @@ def leftJunct():
     # while sensor_LEFT() == 1:
     while center_detect() == False:
         turnLeft(33)
+        sleep(0.05)
     sleep(0.3)
     stop()
 
