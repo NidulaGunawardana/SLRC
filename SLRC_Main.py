@@ -196,7 +196,7 @@ def lineFollowing():
                     gripper_up()
                     gripper_full_close()
                     goForward(30)
-                    sleep(0.9)
+                    sleep(1.1)
                     goBackward(30)
                     sleep(2.3)
                     stop()
