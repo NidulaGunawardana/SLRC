@@ -5,7 +5,7 @@ import cv2
 
 from Raveen.motorRotating import *
 from Raveen.servo_COntrol_rasberry import *
-from Raveen.tofsensorreadings import tof1Readings,tof4Readings
+from Raveen.tofsensorreadings import tof1Readings, tof4Readings
 from Raveen.metal_BOX_Identification import *
 from Raveen.ledAndPushButtons import *
 from Raveen.cuboidToF import *
@@ -354,7 +354,7 @@ def lineFollowing():
 
                 # PID control
 
-                error = 368 - cx 
+                error = 368 - cx
                 speed = error * kp + (prev_error - error) * kd
                 prev_error = error
                 left_speed = base_speed - speed
@@ -389,6 +389,7 @@ def lineFollowing():
         else:
             break
 
+
 def center_detect(video_capture):
     """Get the video feed and return the values of the row of the matrix"""
 
@@ -422,13 +423,14 @@ def center_detect(video_capture):
     else:
         return False
 
+
 def blink():
     "Starting sequence"
 
     for i in range(2):
         cylinderLed()
         boxLed()
-        
+
     offLed()
 
 
@@ -696,8 +698,8 @@ def box_detection():
         box_count += 1
 
     servo_2_rotate(-12)
-    goBackward(30)
-    sleep(1)
+    goForward(30)
+    sleep(2)
     stop()
 
 
@@ -812,6 +814,7 @@ def turn180():
 
     turn_180 = False
 
+
 def turn180_double():
     """Turning 180 double"""
 
@@ -829,10 +832,10 @@ def turn180_double():
 
     for i in range(2):
         # while sensor_FRONT() == 0:
-    #     turnLeft(33)
-    #     sleep(0.05)
-    # turnLeft(33)
-    # sleep(0.1)
+        #     turnLeft(33)
+        #     sleep(0.05)
+        # turnLeft(33)
+        # sleep(0.1)
 
         turnLeft(33)
         sleep(0.3)
@@ -847,6 +850,7 @@ def turn180_double():
     turn_180 = False
 
     turn_180_double = False
+
 
 def rightJunctCol():
     global right_turn_col
@@ -968,7 +972,6 @@ while finish == False:
         print(wall_color)
         print(mid_object)
 
-
         servo_3_rotate(cam_ang)  # Setting the camera angle
         servo_2_rotate(arm_h)  # Setting the gripper height
 
@@ -989,11 +992,11 @@ while finish == False:
             if box_count == 2 and cross_count == 2:
                 box_existance()
 
-            if box_grabbed or cross_count == 3 or cross_count == 2:
-                goBackward(30)
-                sleep(2)
-                stop()
-                # align_robot()
+            # if box_grabbed or cross_count == 3 or cross_count == 2:
+            #     goBackward(30)
+            #     sleep(2)
+            #     stop()
+            #     # align_robot()
 
             # elif :
             #     goBackward(30)
