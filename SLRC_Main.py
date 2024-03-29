@@ -104,6 +104,8 @@ def lineFollowing():
 
             dimensions = (width, height)
             frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
+            
+            frame = frame[150:480, 0:640]
 
             # Convert to grayscale
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -213,9 +215,13 @@ def lineFollowing():
                 if temp != None:  # print if there is a pre defined junction
                     print(temp)
                     if temp == "Junction ahead":
+                        stop()
                         while junction_now(video_capture) == None:
                             goForward(30)
                             sleep(0.05)
+                        
+                        stop()
+                        break
 
                     if temp == "left right angle":
                         stop()
@@ -395,10 +401,6 @@ def blink():
     for i in range(2):
         cylinderLed()
         boxLed()
-        cylinderLed()
-        boxLed()
-        cylinderLed()
-        boxLed()
     offLed()
 
 
@@ -450,11 +452,11 @@ def junction_matrix(disp, image, size):
     y_mat = list()
     ex_mat = list()
 
-    i = 140
-    while i <= 620:
+    i = 128
+    while i <= 608:
         # Top-left and bottom-right coordinates of the rectangle
-        start_point = (i - size, 240 - size)
-        end_point = (i + size, 240 + size)
+        start_point = (i - size, 165 - size)
+        end_point = (i + size, 165 + size)
 
         crop_img = image[240 - size : 240 + size, i - size : i + size]
 
@@ -471,12 +473,12 @@ def junction_matrix(disp, image, size):
 
         i += 80
 
-    j = 60
-    while j <= 420:
-        if j != 240:
+    j = 45
+    while j <= 285:
+        if j != 165:
             # Top-left and bottom-right coordinates of the rectangle
-            start_point = (380 - size, j - size)
-            end_point = (380 + size, j + size)
+            start_point = (368 - size, j - size)
+            end_point = (368 + size, j + size)
 
             crop_img = image[j - size : j + size, 380 - size : 380 + size]
 
@@ -493,34 +495,34 @@ def junction_matrix(disp, image, size):
 
         j += 60
 
-    mean_value = cv2.mean(image[10 - size : 10 + size, 20 - size : 20 + size])[0]
+    mean_value = cv2.mean(image[10 - size : 10 + size, 128 - size : 128 + size])[0]
     if mean_value < th:
         ex_mat.append(0)
         cv2.rectangle(
-            disp, (20 - size, 10 - size), (20 + size, 10 + size), (0, 0, 255), 1
+            disp, (128 - size, 10 - size), (128 + size, 10 + size), (0, 0, 255), 1
         )
     else:
         ex_mat.append(1)
         cv2.rectangle(
             disp,
-            (20 - size, 10 - size),
-            (20 + size, 10 + size),
+            (128 - size, 10 - size),
+            (128 + size, 10 + size),
             (0, 0, 255),
             thickness=cv2.FILLED,
         )
 
-    mean_value = cv2.mean(image[10 - size : 10 + size, 620 - size : 620 + size])[0]
+    mean_value = cv2.mean(image[10 - size : 10 + size, 608 - size : 608 + size])[0]
     if mean_value < th:
         ex_mat.append(0)
         cv2.rectangle(
-            disp, (620 - size, 10 - size), (620 + size, 10 + size), (0, 0, 255), 1
+            disp, (608 - size, 10 - size), (608 + size, 10 + size), (0, 0, 255), 1
         )
     else:
         ex_mat.append(1)
         cv2.rectangle(
             disp,
-            (620 - size, 10 - size),
-            (620 + size, 10 + size),
+            (608 - size, 10 - size),
+            (608 + size, 10 + size),
             (0, 0, 255),
             thickness=cv2.FILLED,
         )
@@ -530,27 +532,29 @@ def junction_matrix(disp, image, size):
 
 def junction_detection(x_mat, y_mat, ex_mat):
     """1 is referred to white color while 0 is reffered to the black color"""
+    print("x_mat", x_mat, "y_mat", y_mat, "ex_mat", ex_mat)
+    
 
     global box_existing
     global wall_color
 
-    if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1 and t_count != 1:
+    if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[3] == 1 and t_count != 1:
         return "Junction ahead"
     elif t_count == 1 and (sensor_LEFT() == 0 or x_mat[0] == 1):
         return "circle out"
     elif (
+        x_mat[0:7] == [1, 1, 1, 1, 1] and y_mat[0:4] == [0,0,1,1] and ex_mat[0:2] == [0, 0]
+    ):
+        return "T junction"  # T junction
+    elif (
         x_mat[1:6] == [1, 1, 1, 1, 1]
-        and y_mat[1:5] == [1, 1, 1, 1]
+        and y_mat[0:4] == [1, 1, 1, 1]
         and ex_mat[0:2] == [0, 0]
     ):
         return "cross junction"  # cross junction
     elif (
-        x_mat[1:6] == [1, 1, 1, 1, 1] and y_mat[0:2] == [0, 0] and ex_mat[0:2] == [0, 0]
-    ):
-        return "T junction"  # T junction
-    elif (
         x_mat[0:3] == [1, 1, 1]
-        and y_mat[1:5] == [1, 1, 1, 1]
+        and y_mat[0:4] == [1, 1, 1, 1]
         and ex_mat[0:2] == [0, 0]
         # and wall_color == None
     ):
@@ -619,6 +623,7 @@ def junction_now(video_capture):
 
     dimensions = (width, height)
     frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
+    frame = frame[150:480, 0:640]
 
     # # Crop the image
     # crop_img = frame[120:400, 0:640]
@@ -876,8 +881,8 @@ def button_pressed():
 
 ####################################################################### Main loop ##############################################################################
 blink()
-servo_init()
-offLed()
+# servo_init()
+# offLed()
 reload()
 
 while finish == False:

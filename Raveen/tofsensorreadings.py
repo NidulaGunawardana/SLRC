@@ -1,6 +1,6 @@
 import time
 import VL53L0X
-from cuboidToF import *
+# from cuboidToF import *
 
 # Create a VL53L0X object for device on TCA9548A bus 1
 tof1 = VL53L0X.VL53L0X(tca9548a_num=1, tca9548a_addr=0x70)
@@ -68,13 +68,13 @@ def tof4Readings():
 
 # x = 0
 # # tof = 0
-while(True):
-    read1 = tof1Readings()
-    read2 = tof3Readings()
-    read3 = tof4Readings()
-    read4 = tof2Readings()
-    print(read1,read2,read3,read4)
-    time.sleep(timing2/10000000.00)
+# while(True):
+#     read1 = tof1Readings()
+#     read2 = tof3Readings()
+#     read3 = tof4Readings()
+#     read4 = tof2Readings()
+#     print(read1,read2,read3,read4)
+#     time.sleep(timing2/10000000.00)
     # x+=1
     
 # tof.stop_ranging()
