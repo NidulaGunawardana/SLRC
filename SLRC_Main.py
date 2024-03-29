@@ -193,7 +193,7 @@ def lineFollowing():
                     stop()
 
                     gripper_down()
-                    gripper_up()
+                    gripper_up_box()
                     gripper_full_close()
                     goForward(30)
                     sleep(2)
@@ -216,6 +216,7 @@ def lineFollowing():
                         while junction_now(video_capture) == None:
                             goForward(30)
                             sleep(0.05)
+                        stop()
 
                     if temp == "left right angle":
                         stop()
@@ -685,7 +686,7 @@ def box_detection():
     gripper_close()
     isMetal = checkMetal()
     if isMetal == 1:
-        gripper_up()
+        gripper_up_box()
         cam_ang = -30
         box_grabbed = True
         cross_count += 1
@@ -772,8 +773,8 @@ def leftJunct():
         goForward(33)
         sleep(0.2)
         stop()
-    if cross_count == 5:
-        align_robot()
+    # if cross_count == 5:
+    #     align_robot_a(video_capture)
 
     left_turn = False
 
@@ -855,8 +856,8 @@ def rightJunctCol():
     goForward(33)
     sleep(1.6)
 
-    turnRight(39)
-    sleep(1.8)
+    turnRight(40)
+    sleep(1.95)
     stop()
 
     align_robot()
@@ -874,8 +875,8 @@ def leftJunctCol():
     goForward(33)
     sleep(1.6)
 
-    turnLeft(39)
-    sleep(1.8)
+    turnLeft(40)
+    sleep(1.95)
     stop()
 
     align_robot()
@@ -955,7 +956,7 @@ def button_pressed():
 
 ####################################################################### Main loop ##############################################################################
 blink()
-# servo_init()
+servo_init()
 offLed()
 reload()
 

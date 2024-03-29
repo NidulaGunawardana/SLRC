@@ -40,9 +40,9 @@ def cylinder(distance):
     deviation = statistics.stdev(distance)  # get the deviation of the array
     print(deviation)
     if deviation > dev:
-        return "cylinder"
-    else:
         return "box"
+    else:
+        return "cylinder"
 
 
 # while True:

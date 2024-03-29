@@ -104,6 +104,12 @@ def gripper_up():
     sleep(2)
     servo_2_rotate(-12)
     
+def gripper_up_box():
+    servo_2_rotate(-9)
+    sleep(1)
+    servo_2_rotate(-12)
+    sleep(2)
+
 def gripper_down():
     servo_2_rotate(-15)
     sleep(2.1)
