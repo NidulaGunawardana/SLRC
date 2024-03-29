@@ -5,7 +5,7 @@ import cv2
 
 from Raveen.motorRotating import *
 from Raveen.servo_COntrol_rasberry import *
-from Raveen.tofsensorreadings import tof1Readings, tof4Readings
+from Raveen.tofsensorreadings import tof1Readings,tof4Readings
 from Raveen.metal_BOX_Identification import *
 from Raveen.ledAndPushButtons import *
 from Raveen.cuboidToF import *
@@ -15,6 +15,7 @@ from Neo.align import *
 from Neo.hole import *
 from Nidula.irSensors import *
 from Nidula.serialCom import *
+from localize import yard
 
 base_speed = 37  # Setting the base speed of the robot
 kp = 0.13  # Setting the Kp value of the robot  0.13
@@ -36,6 +37,7 @@ finish = False
 wall_color = None  # "green"
 button = 0
 running = False
+trash_yard = False
 
 # Setting the state to 0
 cross_count = 0
@@ -80,6 +82,7 @@ def lineFollowing():
     global t_count
     global mid_object
     global distance_samples
+    global trash_yard
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -122,7 +125,12 @@ def lineFollowing():
             )
 
             colour_junct = capture_circle_pattern(video_capture)
-
+            if sensor_FRONT() == 1 and cross_count == 7:
+                goForward(30)
+                sleep(0.5)
+                trash_yard = True
+                break
+                
             if colour_junct != None:
                 colour_junction = True
                 if colour_junct[2] == "blue":
@@ -154,7 +162,7 @@ def lineFollowing():
 
                 if cross_count == 2:
                     distance = tof1Readings()
-                    print(distance)
+                    # print(distance)
 
                     if box_existing:
                         if distance < 100:
@@ -193,7 +201,7 @@ def lineFollowing():
                     stop()
 
                     gripper_down()
-                    gripper_up_box()
+                    gripper_up()
                     gripper_full_close()
                     goForward(30)
                     sleep(2)
@@ -216,7 +224,6 @@ def lineFollowing():
                         while junction_now(video_capture) == None:
                             goForward(30)
                             sleep(0.05)
-                        stop()
 
                     if temp == "left right angle":
                         stop()
@@ -271,25 +278,24 @@ def lineFollowing():
                             cross_count += 1
                             break
                         elif cross_count == 1:
-                            goForward(30)
-                            sleep(0.2)
+                            # goForward(30)
+                            # sleep(0.2)
                             stop()
                             box_existance()
                             cross_count += 1
-
                             break
 
                         elif cross_count == 2:
-                            goForward(30)
-                            sleep(0.1)
+                            # goForward(30)
+                            # sleep(0.1)
                             stop()
                             if box_count == 1:
                                 left_turn = True
                                 # box_existance()
 
                             elif box_count == 2:
-                                goForward(30)
-                                sleep(0.5)
+                                # goForward(30)
+                                # sleep(0.5)
                                 box_existance()
 
                             # left_turn = True
@@ -298,8 +304,8 @@ def lineFollowing():
                             break
 
                         elif cross_count == 3:
-                            goForward(30)
-                            sleep(0.1)
+                            # goForward(30)
+                            # sleep(0.1)
                             stop()
                             if box_count == 0:
                                 goForward(30)
@@ -319,11 +325,19 @@ def lineFollowing():
                             break
 
                         elif cross_count == 5:
-                            stop()
-                            goForward(30)
-                            sleep(2.4)
+                            # stop()
+                            # goForward(30)
+                            # sleep(2.4)
                             stop()
                             left_turn = True
+                            cross_count += 1
+                            break
+                        elif cross_count == 6 or cross_count == 7: #going forward in both cross junctions  
+                            stop()
+                            # left_turn = True
+                            goForward(30)  
+                            sleep(0.2)
+                            cross_count += 1
                             break
                     elif temp == "T junction":
                         stop()
@@ -354,7 +368,7 @@ def lineFollowing():
 
                 # PID control
 
-                error = 368 - cx
+                error = 368 - cx 
                 speed = error * kp + (prev_error - error) * kd
                 prev_error = error
                 left_speed = base_speed - speed
@@ -389,9 +403,16 @@ def lineFollowing():
         else:
             break
 
-
-def center_detect(video_capture):
+def center_detect():
     """Get the video feed and return the values of the row of the matrix"""
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # video_capture = cv2.VideoCapture(0)
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(4, 480)  # Set the height of the frame
+
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     global th
 
@@ -417,12 +438,8 @@ def center_detect(video_capture):
     ret, thresh = cv2.threshold(blur, th, 255, cv2.THRESH_BINARY)  # For the white line
 
     row, column, ex = junction_matrix(frame, thresh, 8)
-    print(column)
     if column[0] == 1:
         return True
-    else:
-        return False
-
 
 def blink():
     "Starting sequence"
@@ -430,7 +447,10 @@ def blink():
     for i in range(2):
         cylinderLed()
         boxLed()
-
+        cylinderLed()
+        boxLed()
+        cylinderLed()
+        boxLed()
     offLed()
 
 
@@ -688,7 +708,7 @@ def box_detection():
     gripper_close()
     isMetal = checkMetal()
     if isMetal == 1:
-        gripper_up_box()
+        gripper_up()
         cam_ang = -30
         box_grabbed = True
         cross_count += 1
@@ -698,8 +718,8 @@ def box_detection():
         box_count += 1
 
     servo_2_rotate(-12)
-    goForward(30)
-    sleep(2)
+    goBackward(30)
+    sleep(1)
     stop()
 
 
@@ -710,15 +730,6 @@ def rightJunct():
     global base_speed
     global colour_junction
 
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # video_capture = cv2.VideoCapture(0)
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(4, 480)  # Set the height of the frame
-
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
-
     while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
         goForward(33)
         sleep(0.05)
@@ -728,10 +739,10 @@ def rightJunct():
     sleep(0.3)
 
     # while sensor_FRONT() == 1:
-    while center_detect(video_capture) == False:
+    while center_detect() == False:
         turnRight(33)
         sleep(0.05)
-
+    sleep(0.3)
     stop()
     # # box_existance()
     # if colour_junction:
@@ -747,15 +758,6 @@ def leftJunct():
     global base_speed
     global colour_junction
 
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # video_capture = cv2.VideoCapture(0)
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(4, 480)  # Set the height of the frame
-
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
-
     while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
         goForward(33)
         sleep(0.05)
@@ -765,18 +767,17 @@ def leftJunct():
     sleep(0.3)
 
     # while sensor_LEFT() == 1:
-    while center_detect(video_capture) == False:
+    while center_detect() == False:
         turnLeft(33)
-        sleep(0.05)
-    # sleep(0.3)
+    sleep(0.3)
     stop()
 
     if t_count == 1:
         goForward(33)
         sleep(0.2)
         stop()
-    # if cross_count == 5:
-    #     align_robot_a(video_capture)
+    if cross_count == 5:
+        align_robot()
 
     left_turn = False
 
@@ -786,15 +787,6 @@ def turn180():
 
     global turn_180
     global box_count
-
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # video_capture = cv2.VideoCapture(0)
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(4, 480)  # Set the height of the frame
-
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     # while sensor_FRONT() == 0:
     #     turnLeft(33)
@@ -806,14 +798,13 @@ def turn180():
     sleep(0.3)
 
     # while sensor_FRONT() == 1:
-    while center_detect(video_capture) == False:
+    while center_detect() == False:
         turnLeft(33)
         sleep(0.05)
-    # sleep(0.3)
+    sleep(0.3)
     stop()
 
     turn_180 = False
-
 
 def turn180_double():
     """Turning 180 double"""
@@ -821,36 +812,26 @@ def turn180_double():
     global turn_180_double
     global box_count
 
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # video_capture = cv2.VideoCapture(0)
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(4, 480)  # Set the height of the frame
-
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
-
     for i in range(2):
         # while sensor_FRONT() == 0:
-        #     turnLeft(33)
-        #     sleep(0.05)
-        # turnLeft(33)
-        # sleep(0.1)
+    #     turnLeft(33)
+    #     sleep(0.05)
+    # turnLeft(33)
+    # sleep(0.1)
 
         turnLeft(33)
         sleep(0.3)
 
         # while sensor_FRONT() == 1:
-        while center_detect(video_capture) == False:
+        while center_detect() == False:
             turnLeft(33)
             sleep(0.05)
-        # sleep(0.3)
+        sleep(0.3)
         stop()
 
     turn_180 = False
 
     turn_180_double = False
-
 
 def rightJunctCol():
     global right_turn_col
@@ -860,8 +841,8 @@ def rightJunctCol():
     goForward(33)
     sleep(1.6)
 
-    turnRight(40)
-    sleep(1.95)
+    turnRight(39)
+    sleep(1.8)
     stop()
 
     align_robot()
@@ -879,8 +860,8 @@ def leftJunctCol():
     goForward(33)
     sleep(1.6)
 
-    turnLeft(40)
-    sleep(1.95)
+    turnLeft(39)
+    sleep(1.8)
     stop()
 
     align_robot()
@@ -972,6 +953,7 @@ while finish == False:
         print(wall_color)
         print(mid_object)
 
+
         servo_3_rotate(cam_ang)  # Setting the camera angle
         servo_2_rotate(arm_h)  # Setting the gripper height
 
@@ -992,11 +974,11 @@ while finish == False:
             if box_count == 2 and cross_count == 2:
                 box_existance()
 
-            # if box_grabbed or cross_count == 3 or cross_count == 2:
-            #     goBackward(30)
-            #     sleep(2)
-            #     stop()
-            #     # align_robot()
+            if box_grabbed or cross_count == 3 or cross_count == 2:
+                goBackward(30)
+                sleep(2)
+                stop()
+                # align_robot()
 
             # elif :
             #     goBackward(30)
@@ -1012,6 +994,9 @@ while finish == False:
             align_robot()
         elif turn_180_double:
             turn180_double()
+        elif trash_yard: #going to trash yard
+            yard()
+            trash_yard = False
 
         lineFollowing()
         if 0xFF == ord("q"):
