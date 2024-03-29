@@ -21,7 +21,7 @@ def servo_3_rotate(angle):
     servo3.angle = angle
         
 def servo_4_rotate(angle):
-    servo4.angle = angle-90
+    servo4.angle = angle
 
 servo_2_rotate(-12)
 # servo_3_rotate(-53)
@@ -122,4 +122,6 @@ def gripper_full_close():
 # gripper_close()
 # gripper_open()
 # gripper_up()
-gripper_down()
+# gripper_down()
+
+servo_4_rotate(0)

@@ -13,6 +13,9 @@ video_capture.set(3, 640)  # Set the width of the frame
 video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
 video_capture.set(cv2.CAP_PROP_EXPOSURE, 180)
 
+def shoot():
+    pass
+
 def grab_ball():
 
     base_speed = 30
@@ -318,3 +321,4 @@ def counter_exist():
 
 grab_ball()
 counter_align(1)
+
