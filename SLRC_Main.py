@@ -388,16 +388,8 @@ def lineFollowing():
         else:
             break
 
-def center_detect():
+def center_detect(video_capture):
     """Get the video feed and return the values of the row of the matrix"""
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # video_capture = cv2.VideoCapture(0)
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(4, 480)  # Set the height of the frame
-
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     global th
 
@@ -715,6 +707,15 @@ def rightJunct():
     global base_speed
     global colour_junction
 
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # video_capture = cv2.VideoCapture(0)
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(4, 480)  # Set the height of the frame
+
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+
     while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
         goForward(33)
         sleep(0.05)
@@ -724,7 +725,7 @@ def rightJunct():
     sleep(0.3)
 
     # while sensor_FRONT() == 1:
-    while center_detect() == False:
+    while center_detect(video_capture) == False:
         turnRight(33)
         sleep(0.05)
 
@@ -743,6 +744,15 @@ def leftJunct():
     global base_speed
     global colour_junction
 
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # video_capture = cv2.VideoCapture(0)
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(4, 480)  # Set the height of the frame
+
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+
     while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
         goForward(33)
         sleep(0.05)
@@ -752,7 +762,7 @@ def leftJunct():
     sleep(0.3)
 
     # while sensor_LEFT() == 1:
-    while center_detect() == False:
+    while center_detect(video_capture) == False:
         turnLeft(33)
         sleep(0.05)
     # sleep(0.3)
@@ -774,6 +784,15 @@ def turn180():
     global turn_180
     global box_count
 
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # video_capture = cv2.VideoCapture(0)
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(4, 480)  # Set the height of the frame
+
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+
     # while sensor_FRONT() == 0:
     #     turnLeft(33)
     #     sleep(0.05)
@@ -784,7 +803,7 @@ def turn180():
     sleep(0.3)
 
     # while sensor_FRONT() == 1:
-    while center_detect() == False:
+    while center_detect(video_capture) == False:
         turnLeft(33)
         sleep(0.05)
     # sleep(0.3)
@@ -798,6 +817,15 @@ def turn180_double():
     global turn_180_double
     global box_count
 
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # video_capture = cv2.VideoCapture(0)
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(4, 480)  # Set the height of the frame
+
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+
     for i in range(2):
         # while sensor_FRONT() == 0:
     #     turnLeft(33)
@@ -809,7 +837,7 @@ def turn180_double():
         sleep(0.3)
 
         # while sensor_FRONT() == 1:
-        while center_detect() == False:
+        while center_detect(video_capture) == False:
             turnLeft(33)
             sleep(0.05)
         # sleep(0.3)
