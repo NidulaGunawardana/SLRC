@@ -423,6 +423,7 @@ def center_detect():
     ret, thresh = cv2.threshold(blur, th, 255, cv2.THRESH_BINARY)  # For the white line
 
     row, column, ex = junction_matrix(frame, thresh, 8)
+    print(column)
     if column[0] == 1:
         return True
     else:
@@ -434,10 +435,7 @@ def blink():
     for i in range(2):
         cylinderLed()
         boxLed()
-        cylinderLed()
-        boxLed()
-        cylinderLed()
-        boxLed()
+        
     offLed()
 
 
@@ -729,7 +727,7 @@ def rightJunct():
     while center_detect() == False:
         turnRight(33)
         sleep(0.05)
-    sleep(0.3)
+
     stop()
     # # box_existance()
     # if colour_junction:
@@ -757,7 +755,7 @@ def leftJunct():
     while center_detect() == False:
         turnLeft(33)
         sleep(0.05)
-    sleep(0.3)
+    # sleep(0.3)
     stop()
 
     if t_count == 1:
@@ -789,7 +787,7 @@ def turn180():
     while center_detect() == False:
         turnLeft(33)
         sleep(0.05)
-    sleep(0.3)
+    # sleep(0.3)
     stop()
 
     turn_180 = False
@@ -814,7 +812,7 @@ def turn180_double():
         while center_detect() == False:
             turnLeft(33)
             sleep(0.05)
-        sleep(0.3)
+        # sleep(0.3)
         stop()
 
     turn_180 = False
@@ -929,7 +927,7 @@ def button_pressed():
 
 ####################################################################### Main loop ##############################################################################
 blink()
-servo_init()
+# servo_init()
 offLed()
 reload()
 
