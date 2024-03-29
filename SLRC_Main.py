@@ -127,7 +127,7 @@ def lineFollowing():
                 colour_junction = True
                 if colour_junct[2] == "blue":
                     goForward(30)
-                    sleep(0.3)
+                    sleep(0.6)
                     stop()
                     if wall_color == "blue":
                         left_turn_col = True
@@ -179,10 +179,10 @@ def lineFollowing():
                     and colour_junct == None
                     and cross_count == 5
                 ):
-                    goBackward(30)
-                    sleep(0.3)
-                    stop()
-                    align_robot_a(video_capture)
+                    # goBackward(30)
+                    # sleep(0.3)
+                    # stop()
+                    # align_robot_a(video_capture)
 
                     goForward(30)
                     sleep(1.8)
@@ -196,9 +196,9 @@ def lineFollowing():
                     gripper_up()
                     gripper_full_close()
                     goForward(30)
-                    sleep(1.1)
+                    sleep(2)
                     goBackward(30)
-                    sleep(2.3)
+                    sleep(1.5)
                     stop()
 
                     turn_180 = True
@@ -388,6 +388,43 @@ def lineFollowing():
         else:
             break
 
+def center_detect():
+    """Get the video feed and return the values of the row of the matrix"""
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # video_capture = cv2.VideoCapture(0)
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(4, 480)  # Set the height of the frame
+
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+
+    global th
+
+    ret, frame = video_capture.read()
+    frame = cv2.flip(frame, 0)
+    frame = cv2.flip(frame, 1)
+    width = int(640)
+    height = int(480)
+
+    dimentions = (width, height)
+    frame = cv2.resize(frame, dimentions, interpolation=cv2.INTER_AREA)
+
+    # Crop the image
+    crop_img = frame[120:400, 0:640]
+
+    # Convert to grayscale
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # Gaussian blur
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # Color thresholding
+    ret, thresh = cv2.threshold(blur, th, 255, cv2.THRESH_BINARY)  # For the white line
+
+    row, column, ex = junction_matrix(frame, thresh, 8)
+    if column[0] == 1:
+        return True
 
 def blink():
     "Starting sequence"
@@ -450,8 +487,8 @@ def junction_matrix(disp, image, size):
     y_mat = list()
     ex_mat = list()
 
-    i = 140
-    while i <= 620:
+    i = 128
+    while i <= 608:
         # Top-left and bottom-right coordinates of the rectangle
         start_point = (i - size, 240 - size)
         end_point = (i + size, 240 + size)
@@ -475,8 +512,8 @@ def junction_matrix(disp, image, size):
     while j <= 420:
         if j != 240:
             # Top-left and bottom-right coordinates of the rectangle
-            start_point = (380 - size, j - size)
-            end_point = (380 + size, j + size)
+            start_point = (368 - size, j - size)
+            end_point = (368 + size, j + size)
 
             crop_img = image[j - size : j + size, 380 - size : 380 + size]
 
@@ -493,34 +530,34 @@ def junction_matrix(disp, image, size):
 
         j += 60
 
-    mean_value = cv2.mean(image[10 - size : 10 + size, 20 - size : 20 + size])[0]
+    mean_value = cv2.mean(image[10 - size : 10 + size, 128 - size : 128 + size])[0]
     if mean_value < th:
         ex_mat.append(0)
         cv2.rectangle(
-            disp, (20 - size, 10 - size), (20 + size, 10 + size), (0, 0, 255), 1
+            disp, (128 - size, 10 - size), (128 + size, 10 + size), (0, 0, 255), 1
         )
     else:
         ex_mat.append(1)
         cv2.rectangle(
             disp,
-            (20 - size, 10 - size),
-            (20 + size, 10 + size),
+            (128 - size, 10 - size),
+            (128 + size, 10 + size),
             (0, 0, 255),
             thickness=cv2.FILLED,
         )
 
-    mean_value = cv2.mean(image[10 - size : 10 + size, 620 - size : 620 + size])[0]
+    mean_value = cv2.mean(image[10 - size : 10 + size, 608 - size : 608 + size])[0]
     if mean_value < th:
         ex_mat.append(0)
         cv2.rectangle(
-            disp, (620 - size, 10 - size), (620 + size, 10 + size), (0, 0, 255), 1
+            disp, (608 - size, 10 - size), (608 + size, 10 + size), (0, 0, 255), 1
         )
     else:
         ex_mat.append(1)
         cv2.rectangle(
             disp,
-            (620 - size, 10 - size),
-            (620 + size, 10 + size),
+            (608 - size, 10 - size),
+            (608 + size, 10 + size),
             (0, 0, 255),
             thickness=cv2.FILLED,
         )
@@ -686,7 +723,8 @@ def rightJunct():
     turnRight(33)
     sleep(0.3)
 
-    while sensor_FRONT() == 1:
+    # while sensor_FRONT() == 1:
+    while center_detect() == False:
         turnRight(33)
         sleep(0.05)
     sleep(0.3)
@@ -713,15 +751,19 @@ def leftJunct():
     turnLeft(33)
     sleep(0.3)
 
-    while sensor_LEFT() == 1:
+    # while sensor_LEFT() == 1:
+    while center_detect() == False:
         turnLeft(33)
     sleep(0.3)
     stop()
 
     if t_count == 1:
         goForward(33)
-        sleep(0.3)
+        sleep(0.2)
         stop()
+    if cross_count == 5:
+        align_robot()
+
     left_turn = False
 
 
@@ -731,20 +773,23 @@ def turn180():
     global turn_180
     global box_count
 
-    while sensor_FRONT() == 0:
-        turnLeft(33)
-        sleep(0.05)
-    turnLeft(33)
-    sleep(0.1)
+    # while sensor_FRONT() == 0:
+    #     turnLeft(33)
+    #     sleep(0.05)
+    # turnLeft(33)
+    # sleep(0.1)
 
-    while sensor_FRONT() == 1:
+    turnLeft(33)
+    sleep(0.3)
+
+    # while sensor_FRONT() == 1:
+    while center_detect() == False:
         turnLeft(33)
         sleep(0.05)
     sleep(0.3)
     stop()
 
     turn_180 = False
-
 
 def turn180_double():
     """Turning 180 double"""
@@ -753,20 +798,25 @@ def turn180_double():
     global box_count
 
     for i in range(2):
-        while sensor_FRONT() == 0:
-            turnLeft(33)
-            sleep(0.05)
-        turnLeft(33)
-        sleep(0.1)
+        # while sensor_FRONT() == 0:
+    #     turnLeft(33)
+    #     sleep(0.05)
+    # turnLeft(33)
+    # sleep(0.1)
 
-        while sensor_FRONT() == 1:
+        turnLeft(33)
+        sleep(0.3)
+
+        # while sensor_FRONT() == 1:
+        while center_detect() == False:
             turnLeft(33)
             sleep(0.05)
-        sleep(0.5)
+        sleep(0.3)
         stop()
 
-    turn_180_double = False
+    turn_180 = False
 
+    turn_180_double = False
 
 def rightJunctCol():
     global right_turn_col
@@ -911,7 +961,7 @@ while finish == False:
 
             if box_grabbed or cross_count == 3 or cross_count == 2:
                 goBackward(30)
-                sleep(2.7)
+                sleep(2)
                 stop()
                 # align_robot()
 

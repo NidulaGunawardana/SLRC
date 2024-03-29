@@ -51,7 +51,7 @@ def capture_hole(video_capture):
     else:
         return None
 
-    if y2 < 440:
+    if y2 < 100:
         return "hole"
 
 def capture_wall_color(video_capture):
