@@ -123,7 +123,7 @@ def grab_ball(video_capture):
 
             # PID control
 
-            error = 640 / 2 - cx + 60
+            error = 368 - cx
             speed = error * kp + (prev_error - error) * kd
             prev_error = error
             left_speed = base_speed - speed
