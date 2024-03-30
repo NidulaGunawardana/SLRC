@@ -62,7 +62,11 @@ arm_h = -12  # Setting the gripper height
 def lineonly():
     global exp
     global th
-    
+    global kp
+    global kd
+    global base_speed
+    global prev_error
+
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
     video_capture.set(3, 640)  # Set the width of the frame
@@ -498,53 +502,53 @@ def lineFollowing():
                     distance_samples.append(dis_temp)
 
             # Find the biggest contour (if detected)
-            if len(contours) > 0:
+            # if len(contours) > 0:
 
-                c = max(contours, key=cv2.contourArea)
+            #     c = max(contours, key=cv2.contourArea)
 
-                M = cv2.moments(c)
+            #     M = cv2.moments(c)
 
-                try:
-                    cx = int(M["m10"] / M["m00"])
-                    cy = int(M["m01"] / M["m00"])
-                except:
-                    continue
-                print(cx)
+            #     try:
+            #         cx = int(M["m10"] / M["m00"])
+            #         cy = int(M["m01"] / M["m00"])
+            #     except:
+            #         continue
+            #     print(cx)
 
-                # PID control
+            #     # PID control
 
-                error = 368 - cx
-                speed = error * kp + (prev_error - error) * kd
-                prev_error = error
-                left_speed = base_speed - speed
-                right_speed = base_speed + speed
+            #     error = 368 - cx
+            #     speed = error * kp + (prev_error - error) * kd
+            #     prev_error = error
+            #     left_speed = base_speed - speed
+            #     right_speed = base_speed + speed
 
-                if left_speed > 100:
-                    left_speed = 100
-                elif left_speed < 0:
-                    left_speed = 0
+            #     if left_speed > 100:
+            #         left_speed = 100
+            #     elif left_speed < 0:
+            #         left_speed = 0
 
-                if right_speed > 100:
-                    right_speed = 100
-                elif right_speed < 0:
-                    right_speed = 0
+            #     if right_speed > 100:
+            #         right_speed = 100
+            #     elif right_speed < 0:
+            #         right_speed = 0
 
-                leftrightMotor_Forward(left_speed, right_speed)
+            #     leftrightMotor_Forward(left_speed, right_speed)
 
-                # Drawing the lines
-                cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
-                cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
-                cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
+            #     # Drawing the lines
+            #     cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
+            #     cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
+            #     cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
 
-            else:
-                pass
+            # else:
+            #     pass
 
-            # Need to pass the frame to draw, frame to process and the size of the squares in that order
-            # Display the resulting frame
-            # cv2.imshow("frame", frame)
-            # cv2.imshow("threshold", thresh)
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
+            # # Need to pass the frame to draw, frame to process and the size of the squares in that order
+            # # Display the resulting frame
+            # # cv2.imshow("frame", frame)
+            # # cv2.imshow("threshold", thresh)
+            # if cv2.waitKey(1) & 0xFF == ord("q"):
+            #     break
         else:
             break
 
