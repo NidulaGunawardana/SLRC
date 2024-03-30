@@ -18,8 +18,8 @@ from Nidula.serialCom import *
 # from localize import yard
 # from shoot import *
 
-base_speed = 36  # Setting the base speed of the robot
-kp = 0.12  # Setting the Kp value of the robot  0.13
+base_speed = 37  # Setting the base speed of the robot
+kp = 0.13  # Setting the Kp value of the robot  0.13
 kd = 0.01  # Setting the Kd value of the robot
 
 # Setting the states of the turns
@@ -59,95 +59,6 @@ exp = 260
 cam_ang = -47  # Setting the camera angle -30 to box normal -47
 arm_h = -12  # Setting the gripper height
 
-def lineonly():
-    global exp
-    global th
-    global kp
-    global kd
-    global base_speed
-    global prev_error
-
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # video_capture = cv2.VideoCapture(0)
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(4, 480)  # Set the height of the frame
-
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, exp)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
-
-    ret, frame = video_capture.read()
-    frame = cv2.flip(frame, 0)
-    frame = cv2.flip(frame, 1)
-    width = int(640)
-    height = int(480)
-
-    dimensions = (width, height)
-    frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
-
-    # Convert to grayscale
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    # Gaussian blur
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-
-    # Color thresholding
-    ret, thresh = cv2.threshold(
-        blur, th, 255, cv2.THRESH_BINARY
-    )  # For the white line
-
-    # Find the contours of the frame
-    contours, hierarchy = cv2.findContours(
-        thresh.copy(), 1, cv2.CHAIN_APPROX_NONE
-    )
-
-    if len(contours) > 0:
-
-        c = max(contours, key=cv2.contourArea)
-
-        M = cv2.moments(c)
-
-        try:
-            cx = int(M["m10"] / M["m00"])
-            cy = int(M["m01"] / M["m00"])
-        except:
-            continue
-        print(cx)
-
-        # PID control
-
-        error = 368 - cx
-        speed = error * kp + (prev_error - error) * kd
-        prev_error = error
-        left_speed = base_speed - speed
-        right_speed = base_speed + speed
-
-        if left_speed > 100:
-            left_speed = 100
-        elif left_speed < 0:
-            left_speed = 0
-
-        if right_speed > 100:
-            right_speed = 100
-        elif right_speed < 0:
-            right_speed = 0
-
-        leftrightMotor_Forward(left_speed, right_speed)
-
-        # Drawing the lines
-        cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
-        cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
-        cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
-
-    else:
-        pass
-
-    # Need to pass the frame to draw, frame to process and the size of the squares in that order
-    # Display the resulting frame
-    # cv2.imshow("frame", frame)
-    # cv2.imshow("threshold", thresh)
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
 
 def lineFollowing():
     global th
@@ -502,53 +413,53 @@ def lineFollowing():
                     distance_samples.append(dis_temp)
 
             # Find the biggest contour (if detected)
-            # if len(contours) > 0:
+            if len(contours) > 0:
 
-            #     c = max(contours, key=cv2.contourArea)
+                c = max(contours, key=cv2.contourArea)
 
-            #     M = cv2.moments(c)
+                M = cv2.moments(c)
 
-            #     try:
-            #         cx = int(M["m10"] / M["m00"])
-            #         cy = int(M["m01"] / M["m00"])
-            #     except:
-            #         continue
-            #     print(cx)
+                try:
+                    cx = int(M["m10"] / M["m00"])
+                    cy = int(M["m01"] / M["m00"])
+                except:
+                    continue
+                print(cx)
 
-            #     # PID control
+                # PID control
 
-            #     error = 368 - cx
-            #     speed = error * kp + (prev_error - error) * kd
-            #     prev_error = error
-            #     left_speed = base_speed - speed
-            #     right_speed = base_speed + speed
+                error = 368 - cx
+                speed = error * kp + (prev_error - error) * kd
+                prev_error = error
+                left_speed = base_speed - speed
+                right_speed = base_speed + speed
 
-            #     if left_speed > 100:
-            #         left_speed = 100
-            #     elif left_speed < 0:
-            #         left_speed = 0
+                if left_speed > 100:
+                    left_speed = 100
+                elif left_speed < 0:
+                    left_speed = 0
 
-            #     if right_speed > 100:
-            #         right_speed = 100
-            #     elif right_speed < 0:
-            #         right_speed = 0
+                if right_speed > 100:
+                    right_speed = 100
+                elif right_speed < 0:
+                    right_speed = 0
 
-            #     leftrightMotor_Forward(left_speed, right_speed)
+                leftrightMotor_Forward(left_speed, right_speed)
 
-            #     # Drawing the lines
-            #     cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
-            #     cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
-            #     cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
+                # Drawing the lines
+                cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
+                cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
+                cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
 
-            # else:
-            #     pass
+            else:
+                pass
 
-            # # Need to pass the frame to draw, frame to process and the size of the squares in that order
-            # # Display the resulting frame
-            # # cv2.imshow("frame", frame)
-            # # cv2.imshow("threshold", thresh)
-            # if cv2.waitKey(1) & 0xFF == ord("q"):
-            #     break
+            # Need to pass the frame to draw, frame to process and the size of the squares in that order
+            # Display the resulting frame
+            cv2.imshow("frame", frame)
+            cv2.imshow("threshold", thresh)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
         else:
             break
 

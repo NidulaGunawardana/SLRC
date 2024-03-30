@@ -320,10 +320,12 @@ def lineFollowing():
 
                         elif cross_count == 5:
                             stop()
-                            goForward(30)
-                            sleep(2.4)
-                            stop()
+                            # goForward(30)
+                            # sleep(0.5)
+                            # stop()
                             left_turn = True
+                            cross_count += 1
+                            
                             break
                     elif temp == "T junction":
                         stop()
@@ -961,8 +963,10 @@ def button_pressed():
 ####################################################################### Main loop ##############################################################################
 blink()
 servo_init()
-offLed()
 reload()
+# offLed()
+blink()
+
 
 while finish == False:
     if push_button() == 0:
@@ -1006,7 +1010,7 @@ while finish == False:
 
             elif cross_count == 5:
                 goBackward(30)
-                sleep(1)
+                sleep(1.3)
                 stop()
 
             align_robot()
