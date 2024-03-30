@@ -317,11 +317,13 @@ def counter_exist():
     
     if cv2.waitKey(1) & 0xFF == ord("q"):
         return None  
-reload()
-grab_ball()
-counter_align(1)
-shoot()
-reload()
+    
+def shoot():
+    reload()
+    grab_ball()
+    counter_align(1)
+    shoot()
+    reload()
 
 # counter_set_height()
 

@@ -53,6 +53,38 @@ def capture_hole(video_capture):
 
     if y2 < 100:
         return "hole"
+    
+def capture_hole_red(video_capture):
+
+    ret, frame = video_capture.read()
+    frame = cv2.flip(frame,0)
+    frame = cv2.flip(frame,1)
+    width = int(640)
+    height = int(480)
+    
+    dimensions = (width,height)
+    frame = cv2.resize(frame,dimensions,interpolation=cv2.INTER_AREA)
+
+    red = [0, 0, 255]  # green in BGR colorspace
+
+    hsvImage = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    lowerLimit_red, upperLimit_red = get_limits(red)
+
+    mask_red = cv2.inRange(hsvImage, lowerLimit_red, upperLimit_red)
+
+    mask_red_ = Image.fromarray(mask_red)
+
+    bbox_red = mask_red_.getbbox()
+
+    if bbox_red is not None:
+        x1, y1, x2, y2 = bbox_red
+        frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
+    else:
+        return None
+
+    if y2 < 100:
+        return "hole"
 
 def capture_wall_color(video_capture):
     

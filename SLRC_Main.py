@@ -16,6 +16,7 @@ from Neo.hole import *
 from Nidula.irSensors import *
 from Nidula.serialCom import *
 from localize import yard
+from shoot import *
 
 base_speed = 37  # Setting the base speed of the robot
 kp = 0.13  # Setting the Kp value of the robot  0.13
@@ -38,6 +39,7 @@ wall_color = None  # "green"
 button = 0
 running = False
 trash_yard = False
+shooting = False
 
 # Setting the state to 0
 cross_count = 0
@@ -83,6 +85,7 @@ def lineFollowing():
     global mid_object
     global distance_samples
     global trash_yard
+    global shooting
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -183,10 +186,12 @@ def lineFollowing():
                             break
 
                 if (
-                    capture_hole(video_capture) != None
+                    (capture_hole(video_capture) != None
                     and box_grabbed == True
                     and colour_junct == None
-                    and cross_count == 5
+                    and cross_count == 5) or (capture_hole_red(video_capture) != None
+                    and box_grabbed == True
+                    and cross_count == 11)
                 ):
                     # goBackward(30)
                     # sleep(0.3)
@@ -364,6 +369,31 @@ def lineFollowing():
                             # center_line(video_capture, "T junction left")
                             # cross_count += 1
                             break
+                        elif cross_count == 10:
+                            # goForward(30)
+                            # sleep(0.1)
+                            stop()
+                            if box_count == 0:
+                                goForward(30)
+                                sleep(0.5)
+                            elif box_count == 1:
+                                left_turn = True
+                            elif box_count == 2:
+                                right_turn = True
+
+                            cross_count += 1
+                            break
+                        elif cross_count == 11:
+                            goForward(30)
+                            sleep(0.4)
+                            cross_count += 1
+                            break
+                        elif cross_count == 12:
+                            stop()
+                            right_turn = True
+                            cross_count += 1
+                            break
+                            
                     elif temp == "T junction":
                         stop()
                         # turn_180 = True
@@ -969,6 +999,7 @@ def button_pressed():
         global cam_ang  # Setting the camera angle -30 to box normal -47
         global arm_h  # Setting the gripper height
         global t_count
+        global shooting
 
         left_turn = False
         left_turn_col = False
@@ -987,6 +1018,7 @@ def button_pressed():
         t_count = 0
         box_existing = False
         trash_yard = False
+        shooting = False
         # Setting the threshold for balck and white
         th = 155
 
@@ -1056,6 +1088,8 @@ while finish == False:
         elif trash_yard:  # going to trash yard
             yard()
             trash_yard = False
+        elif shooting:
+            shoot
 
         lineFollowing()
         if 0xFF == ord("q"):
