@@ -51,6 +51,7 @@ distance_samples = []
 
 # Setting the threshold for balck and white
 th = 155
+exp = 280
 
 # Setting servos
 cam_ang = -47  # Setting the camera angle -30 to box normal -47
@@ -85,6 +86,7 @@ def lineFollowing():
     global mid_object
     global distance_samples
     global gem_count
+    global exp
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -92,7 +94,7 @@ def lineFollowing():
     video_capture.set(4, 480)  # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, exp)
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
@@ -592,7 +594,7 @@ def junction_detection(x_mat, y_mat, ex_mat):
     ):
         return "cross junction"  # cross junction
     elif (
-        x_mat[1:6] == [1, 1, 1, 1, 1] and y_mat[0:2] == [0, 0] and ex_mat[0:2] == [0, 0]
+        x_mat[1:6] == [1, 1, 1, 1, 1] and y_mat[0:2] == [0, 0] and ex_mat[0:2] == [0, 0] and t_count != 1
     ):
         return "T junction"  # T junction
     elif (
@@ -704,7 +706,7 @@ def box_detection():
     isMetal = checkMetal()
     if isMetal == 1:
         gripper_up_box()
-        cam_ang = -35
+        cam_ang = -25
         servo_3_rotate(cam_ang)
         box_grabbed = True
         cross_count += 1
@@ -725,6 +727,7 @@ def rightJunct():
     global right_turn
     global base_speed
     global colour_junction
+    global exp
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -732,7 +735,7 @@ def rightJunct():
     video_capture.set(4, 480)  # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, exp)
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
@@ -762,6 +765,7 @@ def leftJunct():
     global left_turn
     global base_speed
     global colour_junction
+    global exp
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -769,7 +773,7 @@ def leftJunct():
     video_capture.set(4, 480)  # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, exp)
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while sensor_LEFT() == 1 and sensor_RIGHT() == 1:
@@ -802,6 +806,7 @@ def turn180():
 
     global turn_180
     global box_count
+    global exp
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # video_capture = cv2.VideoCapture(0)
@@ -809,7 +814,7 @@ def turn180():
     video_capture.set(4, 480)  # Set the height of the frame
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, exp)
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     # while sensor_FRONT() == 0:
