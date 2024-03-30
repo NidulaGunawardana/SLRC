@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import math
+from Nidula.irSensors import *
 
 def get_limits(color):
     c = np.uint8([[color]])  # BGR values
@@ -67,9 +68,13 @@ def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True
                 return "left"
             elif tof2Readings() < (distance_right - 100):
                 return  "right"
-        if ob_detect == False:
+            elif tof1Readings() <= 150:
+                return "end"
+        elif ob_detect == False:
             if tof1Readings() <= right_cons:
                 return "forward"
+        
+
 
 def wall_follow_back(sensor, distance_right, distance_left, baseSpeed, ob_detect=True):
    
@@ -226,18 +231,28 @@ orientation = None
 def yard():
     global front_dis, left_dis, right_dis, length, width, width_cons, length_cons, right_cons, left_cons, ob_direction, orientation
     servo_3_rotate(-40)
+
+    height_list = [10]
     
-    front_dis, left_dis, right_dis, length, width = init_measure()
+    front_dis, left_dis, right_dis, length, width = init_measure() # Getting the initial measurements of the yard
+
+    # Defining the initial measurements
     width_cons = width
     length_cons = length
     right_cons = right_dis
     left_cons = left_dis
-    ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40)
+
+    ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40) # Giving the direction of the object
     orientation = None
     
-    if ob_direction == "left":
-        front_dis, left_dis, right_dis, length, width = init_measure()
-        goForward(40)
+    if ob_direction == "end":
+        turnLeft(40)
+        sleep(3.85)
+        stop()
+    elif ob_direction == "left": # If the object is placed left
+        # front_dis, left_dis, right_dis, length, width = init_measure() 
+
+        goForward(40) # Moving forward to align with the object
         sleep(1.2)
         stop()
         
@@ -245,27 +260,20 @@ def yard():
         sleep(1.95)
         stop()
         
-        # while tof1Readings() < (left_dis - 100):
-        #     goRight(40)
-        #     sleep(0.01)
-        orientation = 180
+        # orientation = 180
         
-        servo_3_rotate(0)
-        front_dis, left_dis, right_dis, length, width = init_measure()
+        servo_3_rotate(0) # Setting the camera to find the tower position
+        front_dis, left_dis, right_dis, length, width = init_measure() # Getting the measurements to wall follow
         find_white("sensor_right", right_dis, left_dis, 40)
-        # align_robot()
         sleep(1)
-        print(findHeight())
-        
-        # front_dis, left_dis, right_dis, length, width = init_measure()
-        # while tof1Readings() < width_cons - (left_dis + 140):
-        #     turnRight(40)
-        #     sleep(0.5)
-        turnLeft(40)
+
+        height_list.append(findHeight()) # Finding the height of the object
+ 
+        turnLeft(40) # Turning 180 degrees
         sleep(3.9)
         stop()
         
-        front_dis, left_dis, right_dis, length, width = init_measure()
+        front_dis, left_dis, right_dis, length, width = init_measure() # Getting the measurements to wall follow
         ob_direction = wall_follow("sensor_left", right_dis, left_dis, 40, False)
         
         if ob_direction == "forward":
@@ -274,11 +282,19 @@ def yard():
             sleep(1.95)
             stop()
             
+        goForward(30)
+        sleep(0.5)
+        stop()
+            
         front_dis, left_dis, right_dis, length, width = init_measure()
         ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40)
         orientation = None
-        
-        if ob_direction == "left":
+
+        if ob_direction == "end":
+            turnLeft(40)
+            sleep(3.85)
+            stop()
+        elif ob_direction == "left":
             front_dis, left_dis, right_dis, length, width = init_measure()
             goForward(40)
             sleep(1.2)
@@ -298,7 +314,7 @@ def yard():
             find_white("sensor_right", right_dis, left_dis, 40)
             # align_robot()
             sleep(1)
-            print(findHeight())
+            height_list.append(findHeight())
             
             turnLeft(40)
             sleep(3.9)
@@ -313,23 +329,36 @@ def yard():
                 sleep(1.95)
                 stop()
             
-            servo_3_rotate(-47)
-            front_dis, left_dis, right_dis, length, width = init_measure()
-            find_white("sensor_left", right_dis, left_dis, 40)
-            stop()
+            # servo_3_rotate(-47)
+            # front_dis, left_dis, right_dis, length, width = init_measure()
+            # find_white("sensor_left", right_dis, left_dis, 40)
+            # stop()
+
+        servo_3_rotate(-47)
+        front_dis, left_dis, right_dis, length, width = init_measure()
+        find_white("sensor_left", right_dis, left_dis, 40)
+        stop()
         
-    elif ob_direction == "right":
-        turnRight(40) # Turn 90 degrees right
-        sleep(1.9)
-        orientation = 90
+    # elif ob_direction == "right":
+    #     turnRight(40) # Turn 90 degrees right
+    #     sleep(1.9)
+    #     orientation = 90
+    servo_3_rotate(-47)
+    front_dis, left_dis, right_dis, length, width = init_measure()
+    find_white("sensor_left", right_dis, left_dis, 40)
+    stop()
     
     stop()
     align_robot()
 
-    # while tof1Readings() < 100:
-    #     goForward(30)
-    #     sleep(0.05)
-    # stop()
+    max_height = max(height_list)
+    if max_height == 10:
+        return 10
+    elif max_height == 15:
+        return 20
+    elif max_height == 20:
+        return 30
+
 
 def findHeight():
     
@@ -399,13 +428,13 @@ def findHeight():
                     #     return 130 - math.tan(math.radians(-servo_ang)) * dis 
                     if servo_ang < 20 :
                         servo_3_rotate(-40)
-                        return "10cm"
+                        return 10
                     elif servo_ang < 40:
                         servo_3_rotate(-40)
-                        return "15cm"
+                        return 15
                     else:
                         servo_3_rotate(-40)
-                        return "20cm"
+                        return 20
                 
                 cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
                 cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
@@ -421,5 +450,104 @@ def findHeight():
         cv2.imshow("frame", frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             return None   
+        
+def go_yard():
+    base_speed = 37
+
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # video_capture = cv2.VideoCapture(0)
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(4, 480)  # Set the height of the frame
+
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
+    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+    count = 0
+    kp = 0.13
+    kd = 0.01
+    prev_error = 0 
+    servo_3_rotate(-47)
+    gripper_down()
+
+    while True:
+        if sensor_LEFT() == 0 and sensor_RIGHT() == 0:
+            # print("junction detected")
+            if count == 0 or count == 1:
+                goForward(37)
+                sleep(1)      
+                count += 1
+
+        ret, frame = video_capture.read()
+        frame = cv2.flip(frame, 0)
+        frame = cv2.flip(frame, 1)
+        width = int(640)
+        height = int(480)
+
+        dimensions = (width, height)
+        frame = cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
+
+        # Convert to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # Gaussian blur
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+
+        # Color thresholding
+        ret, thresh = cv2.threshold(
+            blur, 150, 255, cv2.THRESH_BINARY
+        )  # For the white line
+
+        # Find the contours of the frame
+        contours, hierarchy = cv2.findContours(
+            thresh.copy(), 1, cv2.CHAIN_APPROX_NONE
+        )
+
+        if len(contours) > 0:
+
+            c = max(contours, key=cv2.contourArea)
+
+            M = cv2.moments(c)
+
+            try:
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+            except:
+                continue
+
+            # PID control
+
+            error = 368 - cx
+            speed = error * kp + (prev_error - error) * kd
+            prev_error = error
+            left_speed = base_speed - speed
+            right_speed = base_speed + speed
+
+            if left_speed > 100:
+                left_speed = 100
+            elif left_speed < 0:
+                left_speed = 0
+
+            if right_speed > 100:
+                right_speed = 100
+            elif right_speed < 0:
+                right_speed = 0
+
+            leftrightMotor_Forward(left_speed, right_speed)
+
+            # Drawing the lines
+            cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
+            cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
+            cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
+            
+            cv2.imshow("frame", frame)
+            cv2.imshow("threshold", thresh)
+            if cv2.waitKey(10) & 0xFF == ord("q"):
+                break
+
+        else:
+            if sensor_FRONT() == 1:
+                stop()
+                break
+
                
 yard()

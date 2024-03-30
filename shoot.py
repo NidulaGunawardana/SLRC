@@ -7,15 +7,11 @@ from Raveen.tofsensorreadings import *
 from Nidula.irSensors import *
 from Neo.align import *
 
-video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-video_capture.set(4, 480)  # Set the height of the frame
-video_capture.set(3, 640)  # Set the width of the frame
-video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-video_capture.set(cv2.CAP_PROP_EXPOSURE, 70)
 
 
 
-def grab_ball():
+
+def grab_ball(video_capture):
 
     base_speed = 30
 
@@ -27,8 +23,6 @@ def grab_ball():
     # video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
     # video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
     # # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
-    global video_capture
-
     count = 0
     kp = 0.13
     kd = 0.01
@@ -38,57 +32,7 @@ def grab_ball():
     gripper_down()
 
     while True:
-        print(tof1Readings())
-        print(count)
-        if sensor_LEFT() == 0 and sensor_RIGHT() == 0:
-            print("junction detected")
-            if count == 0:
-                stop()
-                turnLeft(40)
-                sleep(1.95)
-                stop()
-                goForward(30)
-                sleep(1)
-                stop()
-                align_robot_a(video_capture)
-                sleep(1)
-                            
-                count += 1
-            elif count == 1:
-                goForward(37)
-                sleep(1)
-                stop()
-                count += 1
-            elif count == 2:
-                goForward(30)
-                sleep(0.4)
-                stop()
-                break
-            
-        if tof1Readings() < 70 and count == 1 and ball_grbbed == False:
-            # print("near wall")
-            stop()
-            gripper_up()
-            gripper_open()
-            # while tof1Readings() < 30:
-            #     # print("near ball")
-            #     goForward(25)
-            #     sleep(0.05)
-            goForward(25)
-            sleep(0.8)
-            stop()
-            
-            gripper_full_close()
-            # print("ball grabbed")
-            servo_3_rotate(-45)
-            goBackward(25)
-            sleep(0.9)
-            stop()
-            turnLeft(40)
-            sleep(3.9) 
-            align_robot_a(video_capture)
-            ball_grbbed = True
-            stop()
+        # print(tof1Readings())
 
         ret, frame = video_capture.read()
         frame = cv2.flip(frame, 0)
@@ -129,7 +73,7 @@ def grab_ball():
 
             # PID control
 
-            error = 640 / 2 - cx + 60
+            error = 368 - cx
             speed = error * kp + (prev_error - error) * kd
             prev_error = error
             left_speed = base_speed - speed
@@ -146,7 +90,6 @@ def grab_ball():
                 right_speed = 0
 
             leftrightMotor_Forward(left_speed, right_speed)
-
             # Drawing the lines
             cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
             cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
@@ -159,13 +102,70 @@ def grab_ball():
 
         else:
             pass
+        
+            print(count)
+        if sensor_LEFT() == 0 and sensor_RIGHT() == 0:
+            print("junction detected")
+            if count == 0:
+                stop()
+                turnLeft(40)
+                sleep(1.95)
+                stop()
+                goForward(30)
+                sleep(1)
+                stop()
+                align_robot_a(video_capture)
+                sleep(1)
+                            
+                count += 1
+            elif count == 1:
+                goForward(37)
+                sleep(1)
+                stop()
+                count += 1
+            elif count == 2:
+                goForward(30)
+                sleep(0.4)
+                stop()
+                break
+            
+        if tof1Readings() < 70 and count == 1 and ball_grbbed == False:
+            # print("near wall")
+            stop()
+            gripper_up()
+            gripper_open()
+            # while tof1Readings() < 30:
+            #     # print("near ball")
+            #     goForward(25)
+            #     sleep(0.05)
+            goForward(25)
+            sleep(0.9)
+            stop()
+            
+            gripper_full_close()
+            # print("ball grabbed")
+            servo_3_rotate(-40)
+            goBackward(25)
+            sleep(0.9)
+            stop()
+            turnLeft(40)
+            sleep(3.9) 
+            stop()
+            servo_2_rotate(-13)
+            sleep(0.7)
+            align_robot_a(video_capture)
+            ball_grbbed = True
+            stop()
 
-def counter_align(box_num):
-    global video_capture
-    counter_set_height()
+
+           
+
+def counter_align(box_num,video_capture):
+
+    counter_set_height(video_capture)
     box_abs = abs(box_num)
     for i in range(0,box_abs):
-        while counter_exist() == "exist":
+        while counter_exist(video_capture) == "exist":
             if box_num < 0:
                 turnLeft(25)
             else:
@@ -175,7 +175,7 @@ def counter_align(box_num):
         stop()
         print("box behind")
 
-        while counter_exist() == "notexist":
+        while counter_exist(video_capture) == "notexist":
             if box_num < 0:
                 turnLeft(25)
             else:
@@ -195,10 +195,9 @@ def counter_align(box_num):
     stop()
     print("box behind")
 
-def counter_set_height():
-    global video_capture
+def counter_set_height(video_capture):
     
-    servo_ang = -10
+    servo_ang = -20
     while True:
         
         servo_3_rotate(servo_ang)
@@ -222,7 +221,7 @@ def counter_set_height():
 
         # Color thresholding
         ret, thresh = cv2.threshold(
-            blur, 80, 255, cv2.THRESH_BINARY
+            blur, 120, 255, cv2.THRESH_BINARY
         )  # For the white line
 
         # Find the contours of the frame
@@ -264,8 +263,8 @@ def counter_set_height():
         if cv2.waitKey(1) & 0xFF == ord("q"):
             return None   
 
-def counter_exist():
-    global video_capture
+def counter_exist(video_capture):
+
     ret, frame = video_capture.read()
     frame = cv2.flip(frame, 0)
     frame = cv2.flip(frame, 1)
@@ -317,11 +316,32 @@ def counter_exist():
     
     if cv2.waitKey(1) & 0xFF == ord("q"):
         return None  
-reload()
-grab_ball()
-counter_align(1)
-shoot()
-reload()
+
+   
+def shoot_main(gem_count):
+    align = 0
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    video_capture.set(4, 480)  # Set the height of the frame
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 280)
+    reload()
+    grab_ball(video_capture)
+    if gem_count == 20:
+        align = -2
+    elif gem_count == 30:
+        align = -1
+    elif gem_count == 40:
+        align = 1
+    elif gem_count == 50:
+        align = 2
+
+    counter_align(align,video_capture)
+    shoot()
+    reload()
 
 # counter_set_height()
+
+shoot_main(10)
+
 
