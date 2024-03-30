@@ -24,6 +24,8 @@ def servo_4_rotate(angle):
     servo4.angle = angle
 
 servo_2_rotate(-12)
+servo_4_rotate(70)
+servo_3_rotate(-47)
 # servo_3_rotate(-53)
 # # servo_1_rotate(180)    
 # while True:
@@ -86,7 +88,7 @@ def Arm():
 def gripper_close():
     servo_2_rotate(-12)
     sleep(1)
-    for i in range(-40,60,1):
+    for i in range(-40,30,1):
          servo_1_rotate(i)
         #  print(i)
          sleep(0.01)
@@ -94,7 +96,7 @@ def gripper_close():
 def gripper_open():
     servo_2_rotate(-12)
     sleep(1)
-    for i in range(60,-40,-1):
+    for i in range(30,-40,-1):
          servo_1_rotate(i)
         #  print(i)
          sleep(0.01) 
@@ -110,7 +112,7 @@ def gripper_up_to_push():
     servo_2_rotate(-12)
     
 def gripper_up_box():
-    servo_2_rotate(-9)
+    servo_2_rotate(-7)
     sleep(1)
     servo_2_rotate(-12)
     # sleep(1)
@@ -123,7 +125,7 @@ def gripper_down():
 def gripper_full_close():
     servo_2_rotate(-12)
     sleep(2)
-    for i in range(-40,80,1):
+    for i in range(-40,60,1):
          servo_1_rotate(i)
         #  print(i)
          sleep(0.01)
@@ -157,3 +159,12 @@ def reload():
 # reload()
 # shoot()
 # reload()
+
+# gripper_open()
+# sleep(1)
+# gripper_close()
+# sleep(0.5)
+# gripper_up_box()
+# sleep(0.5)
+# gripper_down()
+# gripper_open()
