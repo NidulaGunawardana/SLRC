@@ -176,7 +176,11 @@ def lineFollowing():
                     if distance < 100:
                         if box_count <= 2:
                             box_detection()
-                            turn_180 = True
+                            # turn_180 = True
+                            goLeft(40)
+                            sleep(3.9)
+                            stop()
+                            align_robot_a(video_capture)
                             break
                 else:
                     if box_count == 0:
@@ -804,17 +808,19 @@ def metalbox_red():
                 rightJunctCol()
             elif turn_180:
                 turn180()
-                if box_count == 2 and cross_count == 2:
-                    box_existance()
+                # if box_count == 2 and cross_count == 2:
+                #     box_existance()
 
-                elif cross_count == 5:
+                if cross_count == 5:
                     goBackward(30)
                     sleep(1.3)
                     stop()
 
-                align_robot()
+                # align_robot()
             elif turn_180_double:
                 turn180_double()
+                if box_count == 2 and cross_count == 2:
+                    box_existance()
 
             lineFollowing()
             if 0xFF == ord("q"):
