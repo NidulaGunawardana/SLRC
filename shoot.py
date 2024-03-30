@@ -24,7 +24,7 @@ def grab_ball(video_capture):
     # video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
     # # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
     count = 0
-    kp = 0.12
+    kp = 0.13
     kd = 0.01
     prev_error = 0 
     ball_grbbed = False
@@ -324,7 +324,7 @@ def shoot_main(gem_count):
     video_capture.set(4, 480)  # Set the height of the frame
     video_capture.set(3, 640)  # Set the width of the frame
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 280)
     reload()
     grab_ball(video_capture)
     if gem_count == 20:
