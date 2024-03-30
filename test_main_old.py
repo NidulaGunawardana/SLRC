@@ -447,6 +447,9 @@ def blink():
     for i in range(2):
         cylinderLed()
         boxLed()
+        midLed()
+        highLed()
+        lowLed()    
 
     offLed()
 
@@ -476,7 +479,7 @@ def servo_init():
     for i in range(80, -40, -1):
         servo_1_rotate(i)
         sleep(0.01)
-    blink()
+    # blink()
 
 
 def box_existance():
