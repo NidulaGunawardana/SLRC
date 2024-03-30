@@ -240,8 +240,9 @@ def yard():
 
     ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40) # Giving the direction of the object
     orientation = None
-    
-    if ob_direction == "left": # If the object is placed left
+    if sensor_FRONT <= 100:
+        pass
+    elif ob_direction == "left": # If the object is placed left
         # front_dis, left_dis, right_dis, length, width = init_measure() 
 
         goForward(40) # Moving forward to align with the object
@@ -281,8 +282,9 @@ def yard():
         front_dis, left_dis, right_dis, length, width = init_measure()
         ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40)
         orientation = None
-        
-        if ob_direction == "left":
+        if sensor_FRONT <= 100:
+            pass
+        elif ob_direction == "left":
             front_dis, left_dis, right_dis, length, width = init_measure()
             goForward(40)
             sleep(1.2)
@@ -322,21 +324,15 @@ def yard():
             # find_white("sensor_left", right_dis, left_dis, 40)
             # stop()
 
-        elif sensor_FRONT <=  100:
-            stop()
-            turnRight(40)
-            sleep(1.95)
-            stop()
-
         servo_3_rotate(-47)
         front_dis, left_dis, right_dis, length, width = init_measure()
         find_white("sensor_left", right_dis, left_dis, 40)
         stop()
         
-    elif ob_direction == "right":
-        turnRight(40) # Turn 90 degrees right
-        sleep(1.9)
-        orientation = 90
+    # elif ob_direction == "right":
+    #     turnRight(40) # Turn 90 degrees right
+    #     sleep(1.9)
+    #     orientation = 90
     
     stop()
     align_robot()

@@ -818,7 +818,7 @@ def metalbox_red():
                     sleep(1.3)
                     stop()
 
-                # align_robot()
+                align_robot()
             elif turn_180_double:
                 turn180_double()
                 if box_count == 2 and cross_count == 2:

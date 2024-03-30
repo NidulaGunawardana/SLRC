@@ -252,7 +252,7 @@ def lineFollowing():
                     # gripper_up_to_push()
                     gripper_full_close()
                     goForward(30)
-                    sleep(2)
+                    sleep(1.7)
                     goBackward(30)
                     sleep(1.5)
                     stop()
@@ -705,6 +705,7 @@ def box_detection():
     if isMetal == 1:
         gripper_up_box()
         cam_ang = -35
+        servo_3_rotate(cam_ang)
         box_grabbed = True
         cross_count += 1
 
@@ -1049,7 +1050,7 @@ while finish == False:
                 sleep(1.3)
                 stop()
 
-            # align_robot()
+            align_robot()
         elif turn_180_double:
             turn180_double()
             if box_count == 2 and cross_count == 2:
