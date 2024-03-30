@@ -17,6 +17,7 @@ from Nidula.irSensors import *
 from Nidula.serialCom import *
 from localize import *
 import box_grab_red_box as box_grab_red
+from shoot import shoot_main
 
 base_speed = 37  # Setting the base speed of the robot
 kp = 0.13  # Setting the Kp value of the robot  0.13
@@ -35,7 +36,7 @@ mid_object = None
 box_grabbed = False
 hole_detected = False
 finish = False
-wall_color = None  # "green"
+wall_color = None # "green"
 button = 0
 running = False
 
@@ -693,7 +694,7 @@ def box_detection():
     isMetal = checkMetal()
     if isMetal == 1:
         gripper_up_box()
-        cam_ang = -30
+        cam_ang = -35
         box_grabbed = True
         cross_count += 1
 
@@ -835,14 +836,14 @@ def turn180_double():
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     for i in range(2):
-        # while sensor_FRONT() == 0:
+        # while center_detect(video_capture) == True:
         #     turnLeft(33)
         #     sleep(0.05)
-        # turnLeft(33)
+        # # turnLeft(33)
         # sleep(0.1)
 
         turnLeft(33)
-        sleep(0.3)
+        sleep(0.5)
 
         # while sensor_FRONT() == 1:
         while center_detect(video_capture) == False:
@@ -851,7 +852,7 @@ def turn180_double():
         # sleep(0.3)
         stop()
 
-    turn_180 = False
+    # turn_180 = False
 
     turn_180_double = False
 
@@ -987,8 +988,10 @@ while finish == False:
                 box_existance()
             if cross_count ==6:
                 go_yard()
+                gripper_open()
                 yard()
                 box_grab_red.metalbox_red()
+                shoot_main()
                 break
         elif left_turn_col:
             leftJunctCol()

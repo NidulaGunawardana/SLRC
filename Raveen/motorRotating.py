@@ -62,8 +62,8 @@ def goLeft(duty):
 
     pwm1.ChangeDutyCycle(duty)
     pwm2.ChangeDutyCycle(duty)
-    pwm3.ChangeDutyCycle(duty)
-    pwm4.ChangeDutyCycle(duty)
+    pwm3.ChangeDutyCycle(duty + 7)
+    pwm4.ChangeDutyCycle(duty + 7)
 
     # sleep(0.05)
 
@@ -83,8 +83,8 @@ def goRight(duty):
 
     pwm1.ChangeDutyCycle(duty)
     pwm2.ChangeDutyCycle(duty)
-    pwm3.ChangeDutyCycle(duty)
-    pwm4.ChangeDutyCycle(duty)
+    pwm3.ChangeDutyCycle(duty + 7)
+    pwm4.ChangeDutyCycle(duty + 7)
 
     # sleep(0.05)
 
@@ -319,5 +319,3 @@ def leftrightMotor_Backward(dutyLeft, dutyRight):
     pwm2.ChangeDutyCycle(dutyLeft)
     pwm3.ChangeDutyCycle(dutyRight)
     pwm4.ChangeDutyCycle(dutyLeft)
-
-

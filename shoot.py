@@ -13,7 +13,7 @@ from Neo.align import *
 
 def grab_ball(video_capture):
 
-    base_speed = 30
+    base_speed = 37
 
     # video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     # # video_capture = cv2.VideoCapture(0)
@@ -24,7 +24,7 @@ def grab_ball(video_capture):
     # video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
     # # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
     count = 0
-    kp = 0.13
+    kp = 0.12
     kd = 0.01
     prev_error = 0 
     ball_grbbed = False
@@ -32,57 +32,7 @@ def grab_ball(video_capture):
     gripper_down()
 
     while True:
-        print(tof1Readings())
-        print(count)
-        if sensor_LEFT() == 0 and sensor_RIGHT() == 0:
-            print("junction detected")
-            if count == 0:
-                stop()
-                turnLeft(40)
-                sleep(1.95)
-                stop()
-                goForward(30)
-                sleep(1)
-                stop()
-                align_robot_a(video_capture)
-                sleep(1)
-                            
-                count += 1
-            elif count == 1:
-                goForward(37)
-                sleep(1)
-                stop()
-                count += 1
-            elif count == 2:
-                goForward(30)
-                sleep(0.4)
-                stop()
-                break
-            
-        if tof1Readings() < 70 and count == 1 and ball_grbbed == False:
-            # print("near wall")
-            stop()
-            gripper_up()
-            gripper_open()
-            # while tof1Readings() < 30:
-            #     # print("near ball")
-            #     goForward(25)
-            #     sleep(0.05)
-            goForward(25)
-            sleep(0.8)
-            stop()
-            
-            gripper_full_close()
-            # print("ball grabbed")
-            servo_3_rotate(-45)
-            goBackward(25)
-            sleep(0.9)
-            stop()
-            turnLeft(40)
-            sleep(3.9) 
-            align_robot_a(video_capture)
-            ball_grbbed = True
-            stop()
+        # print(tof1Readings())
 
         ret, frame = video_capture.read()
         frame = cv2.flip(frame, 0)
@@ -140,7 +90,6 @@ def grab_ball(video_capture):
                 right_speed = 0
 
             leftrightMotor_Forward(left_speed, right_speed)
-
             # Drawing the lines
             cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
             cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
@@ -153,13 +102,70 @@ def grab_ball(video_capture):
 
         else:
             pass
+        
+            print(count)
+        if sensor_LEFT() == 0 and sensor_RIGHT() == 0:
+            print("junction detected")
+            if count == 0:
+                stop()
+                turnLeft(40)
+                sleep(1.95)
+                stop()
+                goForward(30)
+                sleep(1)
+                stop()
+                align_robot_a(video_capture)
+                sleep(1)
+                            
+                count += 1
+            elif count == 1:
+                goForward(37)
+                sleep(1)
+                stop()
+                count += 1
+            elif count == 2:
+                goForward(30)
+                sleep(0.4)
+                stop()
+                break
+            
+        if tof1Readings() < 70 and count == 1 and ball_grbbed == False:
+            # print("near wall")
+            stop()
+            gripper_up()
+            gripper_open()
+            # while tof1Readings() < 30:
+            #     # print("near ball")
+            #     goForward(25)
+            #     sleep(0.05)
+            goForward(25)
+            sleep(0.9)
+            stop()
+            
+            gripper_close()
+            # print("ball grabbed")
+            servo_3_rotate(-45)
+            goBackward(25)
+            sleep(0.9)
+            stop()
+            turnLeft(40)
+            sleep(3.9) 
+            stop()
+            servo_2_rotate(-13)
+            sleep(0.7)
+            align_robot_a(video_capture)
+            ball_grbbed = True
+            stop()
+
+
+           
 
 def counter_align(box_num,video_capture):
 
-    counter_set_height()
+    counter_set_height(video_capture)
     box_abs = abs(box_num)
     for i in range(0,box_abs):
-        while counter_exist() == "exist":
+        while counter_exist(video_capture) == "exist":
             if box_num < 0:
                 turnLeft(25)
             else:
@@ -169,7 +175,7 @@ def counter_align(box_num,video_capture):
         stop()
         print("box behind")
 
-        while counter_exist() == "notexist":
+        while counter_exist(video_capture) == "notexist":
             if box_num < 0:
                 turnLeft(25)
             else:
@@ -310,18 +316,22 @@ def counter_exist(video_capture):
     
     if cv2.waitKey(1) & 0xFF == ord("q"):
         return None  
-    
+
+   
 def shoot_main():
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     video_capture.set(4, 480)  # Set the height of the frame
     video_capture.set(3, 640)  # Set the width of the frame
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 70)
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
     reload()
     grab_ball(video_capture)
     counter_align(1,video_capture)
-    shoot(video_capture)
+    shoot()
     reload()
 
 # counter_set_height()
+
+# shoot_main()
+
 

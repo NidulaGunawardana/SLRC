@@ -35,7 +35,7 @@ hole_detected = False
 finish = False
 wall_color = None  # "green"
 button = 0
-running = False
+running = True
 
 # Setting the state to 0
 cross_count = 0
@@ -192,41 +192,7 @@ def lineFollowing():
                     right_turn = True
                     break
 
-                elif temp == "T junction left":
-                    stop()
-                    left_turn = True
-                    servo_3_rotate(20)
-
-                    wall_color = capture_wall_color(video_capture)
-
-                    while wall_color == None:
-                        wall_color = capture_wall_color(video_capture)
-                    # break
-
-                    if t_count == 1:
-                        left_turn = True
-                        go_around_circle = False
-                        mid_object = cylinder(distance_samples)
-                        if mid_object == "cylinder":
-                            cylinderLed()
-                        elif mid_object == "box":
-                            boxLed()
-                        t_count += 1
-                    break
-
-                elif temp == "circle out":
-                    left_turn = True
-                    go_around_circle = False
-                    print(distance_samples)
-
-                    mid_object = cylinder(distance_samples)
-                    if mid_object == "cylinder":
-                        cylinderLed()
-                    elif mid_object == "box":
-                        boxLed()
-                    t_count += 1
-                    break
-
+        
                 elif temp == "cross junction":
                     stop()
                     if cross_count == 0:
@@ -284,7 +250,7 @@ def lineFollowing():
                         # goForward(30)
                         # sleep(0.5)
                         # stop()
-                        left_turn = True
+                        right_turn = True
                         cross_count += 1
                         
                         break
@@ -631,7 +597,7 @@ def box_detection():
     isMetal = checkMetal()
     if isMetal == 1:
         gripper_up_box()
-        cam_ang = -30
+        cam_ang = -34
         box_grabbed = True
         cross_count += 1
 
@@ -813,6 +779,8 @@ def leftJunctCol():
     left_turn_col = False
 
 def metalbox_red():
+    global finish
+    global running
     while finish == False:
         if running:
             print(wall_color)
@@ -823,17 +791,20 @@ def metalbox_red():
 
             if left_turn:
                 leftJunct()
+                if cross_count == 1:
+                    align_robot()
                 if box_count == 1:
                     box_existance()
-                if cross_count==6:
-                    running = False
-                    break
+
             elif left_turn_col:
                 leftJunctCol()
             elif right_turn:
                 rightJunct()
                 if box_count == 1:
                     box_existance()
+                if cross_count==6:
+                    running = False
+                    break
             elif right_turn_col:
                 rightJunctCol()
             elif turn_180:
@@ -853,5 +824,8 @@ def metalbox_red():
             lineFollowing()
             if 0xFF == ord("q"):
                 break
-            
+
+
+# reload()
+# gripper_open()
 # metalbox_red()

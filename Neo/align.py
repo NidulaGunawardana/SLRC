@@ -78,11 +78,11 @@ def align_robot():
 	
 
 			if ang > 0 and ang < 89:
-				turnLeft(35)
+				turnLeft(30)
 				sleep(0.005)
 				angle_set = False
 			elif ang<0 and ang > -89:
-				turnRight(35)
+				turnRight(30)
 				sleep(0.005)
 				angle_set = False
 			else:
@@ -205,11 +205,11 @@ def align_robot_a(video_capture):
 	
 
 			if ang > 0 and ang < 89:
-				turnLeft(35)
+				turnLeft(30)
 				sleep(0.005)
 				angle_set = False
 			elif ang<0 and ang > -89:
-				turnRight(35)
+				turnRight(30)
 				sleep(0.005)
 				angle_set = False
 			else:

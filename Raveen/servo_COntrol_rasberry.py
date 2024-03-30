@@ -135,7 +135,7 @@ def shoot():
     servo_4_rotate(70)
     sleep(1)
     gripper_down()
-    for i in range(60,-10,-1):
+    for i in range(60,0,-1):
          servo_1_rotate(i)
         #  print(i)
          sleep(0.01) 
