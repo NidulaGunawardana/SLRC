@@ -8,6 +8,10 @@ import numpy as np
 from PIL import Image
 import math
 from Nidula.irSensors import *
+from Raveen.ledAndPushButtons import *
+
+button = 0
+running = True
 
 def get_limits(color):
     c = np.uint8([[color]])  # BGR values
@@ -228,6 +232,9 @@ ob_direction = None
 orientation = None
 
 def yard():
+    if push_button() == 0:
+        sleep(0.2)
+        button_pressed()
     global front_dis, left_dis, right_dis, length, width, width_cons, length_cons, right_cons, left_cons, ob_direction, orientation
     servo_3_rotate(-40)
 
@@ -360,8 +367,10 @@ def findHeight():
     video_capture.set(cv2.CAP_PROP_EXPOSURE, 180)
     
     servo_ang = -20
-    while True:
-        
+    while running:
+        if push_button() == 0:
+            sleep(0.2)
+            button_pressed()
         servo_3_rotate(servo_ang)
         
         ret, frame = video_capture.read()
@@ -440,7 +449,19 @@ def findHeight():
             
         cv2.imshow("frame", frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
-            return None   
+            return None 
+def button_pressed():
+    global button
+    global running
+
+    sleep(0.2)
+    button = button % 2
+    print(button, running)
+    if button == 0:
+        running = True
+    elif button == 1:
+        running = False
+        stop()
         
 def go_yard():
     base_speed = 37
@@ -460,7 +481,10 @@ def go_yard():
     servo_3_rotate(-47)
     gripper_down()
 
-    while True:
+    while running:
+        if push_button() == 0:
+            sleep(0.2)
+            button_pressed()
         if sensor_LEFT() == 0 and sensor_RIGHT() == 0:
             # print("junction detected")
             if count == 0 or count == 1:
