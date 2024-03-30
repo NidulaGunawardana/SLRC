@@ -145,7 +145,7 @@ def shoot():
 
 def reload():
     servo_2_rotate(-12)
-    sleep(1)
+    sleep(0.5)
     servo_4_rotate(70)
 
 # gripper_up()

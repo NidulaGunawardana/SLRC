@@ -510,7 +510,7 @@ def junction_matrix(disp, image, size):
             start_point = (368 - size, j - size)
             end_point = (368 + size, j + size)
 
-            crop_img = image[j - size : j + size, 380 - size : 380 + size]
+            crop_img = image[j - size : j + size, 368 - size : 368 + size]
 
             mean_value = cv2.mean(crop_img)[0]
 

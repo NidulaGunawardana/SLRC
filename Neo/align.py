@@ -128,7 +128,7 @@ def align_robot():
 				
 
 
-		cv2.imshow("orginal with line", image)
+		# cv2.imshow("orginal with line", image)
 
 
 		key = cv2.waitKey(1) & 0xFF	
@@ -253,7 +253,7 @@ def align_robot_a(video_capture):
 					break
 
 
-		cv2.imshow("orginal with line", image)
+		# cv2.imshow("orginal with line", image)
 
 
 		key = cv2.waitKey(1) & 0xFF	

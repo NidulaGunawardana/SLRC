@@ -15,11 +15,11 @@ from Neo.align import *
 from Neo.hole import *
 from Nidula.irSensors import *
 from Nidula.serialCom import *
-from localize import yard
-from shoot import *
+# from localize import yard
+# from shoot import *
 
-base_speed = 37  # Setting the base speed of the robot
-kp = 0.13  # Setting the Kp value of the robot  0.13
+base_speed = 36  # Setting the base speed of the robot
+kp = 0.12  # Setting the Kp value of the robot  0.13
 kd = 0.01  # Setting the Kd value of the robot
 
 # Setting the states of the turns
@@ -53,7 +53,7 @@ distance_samples = []
 
 # Setting the threshold for balck and white
 th = 155
-exp = 150
+exp = 260
 
 # Setting servos
 cam_ang = -47  # Setting the camera angle -30 to box normal -47
@@ -424,7 +424,7 @@ def lineFollowing():
                     cy = int(M["m01"] / M["m00"])
                 except:
                     continue
-                # print(cx)
+                print(cx)
 
                 # PID control
 
@@ -456,8 +456,8 @@ def lineFollowing():
 
             # Need to pass the frame to draw, frame to process and the size of the squares in that order
             # Display the resulting frame
-            cv2.imshow("frame", frame)
-            cv2.imshow("threshold", thresh)
+            # cv2.imshow("frame", frame)
+            # cv2.imshow("threshold", thresh)
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
         else:
@@ -1042,9 +1042,10 @@ def button_pressed():
 
 ####################################################################### Main loop ##############################################################################
 blink()
+reload()
 servo_init()
 offLed()
-reload()
+
 
 while finish == False:
     if push_button() == 0:
@@ -1068,7 +1069,9 @@ while finish == False:
             if box_count == 1:
                 box_existance()
             if cross_count == 12:
-                shoot_main()
+                # shoot_main()
+                pass
+            
         elif right_turn_col:
             rightJunctCol()
         elif turn_180:
@@ -1099,7 +1102,8 @@ while finish == False:
         elif turn_180_double:
             turn180_double()
         elif trash_yard:  # going to trash yard
-            yard()
+            # yard()
+                        
             trash_yard = False
         elif shooting:
             shoot

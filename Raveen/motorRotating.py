@@ -165,8 +165,8 @@ def turnRight(duty):
 
     pwm1.ChangeDutyCycle(duty)
     pwm2.ChangeDutyCycle(duty)
-    pwm3.ChangeDutyCycle(duty + 5)
-    pwm4.ChangeDutyCycle(duty + 5)
+    pwm3.ChangeDutyCycle(duty + 10)
+    pwm4.ChangeDutyCycle(duty + 10)
 
 
 def turnLeft(duty):
@@ -184,8 +184,8 @@ def turnLeft(duty):
 
     pwm1.ChangeDutyCycle(duty)
     pwm2.ChangeDutyCycle(duty)
-    pwm3.ChangeDutyCycle(duty + 5)
-    pwm4.ChangeDutyCycle(duty + 5)
+    pwm3.ChangeDutyCycle(duty + 10)
+    pwm4.ChangeDutyCycle(duty + 10)
 
 
 def frontRight(duty):
