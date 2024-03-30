@@ -15,8 +15,6 @@ from Neo.align import *
 from Neo.hole import *
 from Nidula.irSensors import *
 from Nidula.serialCom import *
-from localize import *
-import box_grab_red_box as box_grab_red
 
 base_speed = 37  # Setting the base speed of the robot
 kp = 0.13  # Setting the Kp value of the robot  0.13
@@ -93,9 +91,6 @@ def lineFollowing():
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
-        if push_button() == 0:
-            sleep(0.2)
-            button_pressed()
         if running:
             # Capture the frames
             ret, frame = video_capture.read()
@@ -125,222 +120,176 @@ def lineFollowing():
 
             colour_junct = capture_circle_pattern(video_capture)
 
-            if colour_junct != None:
-                colour_junction = True
-                if colour_junct[2] == "blue":
-                    goForward(30)
-                    sleep(0.6)
-                    stop()
-                    if wall_color == "blue":
-                        left_turn_col = True
-                    else:
-                        right_turn_col = True
-                    break
+            
 
-                elif colour_junct[2] == "red":
-                    goForward(30)
-                    sleep(0.6)
-                    stop()
-                    left_turn_col = True
-                    break
-                elif colour_junct[2] == "white":
-                    goForward(30)
-                    sleep(0.6)
-                    stop()
-                    right_turn_col = True
-                    break
-                elif colour_junct[2] == "green":
-                    goForward(30)
-                    stop()
-            else:
+            if cross_count == 2:
+                distance = tof1Readings()
+                print(distance)
 
-                if cross_count == 2:
-                    distance = tof1Readings()
-                    print(distance)
-
-                    if box_existing:
-                        if distance < 100:
-                            if box_count <= 2:
-                                box_detection()
-                                turn_180 = True
-                                break
-                    else:
-                        if box_count == 0:
-                            right_turn = True
-                            box_count += 1
+                if box_existing:
+                    if distance < 100:
+                        if box_count <= 2:
+                            box_detection()
+                            turn_180 = True
                             break
-                        elif box_count == 1:
-                            turn_180_double = True
-                            box_count += 1
-                            box_existing = True
-                            break
-
-                if (
-                    capture_hole(video_capture) != None
-                    and box_grabbed == True
-                    and colour_junct == None
-                    and cross_count == 5
-                ):
-                    # goBackward(30)
-                    # sleep(0.3)
-                    # stop()
-                    # align_robot_a(video_capture)
-
-                    goForward(30)
-                    sleep(1.8)
-                    stop()
-                    gripper_open()
-                    goBackward(30)
-                    sleep(0.8)
-                    stop()
-
-                    gripper_down()
-                    gripper_up_box()
-                    gripper_full_close()
-                    goForward(30)
-                    sleep(2)
-                    goBackward(30)
-                    sleep(1.5)
-                    stop()
-
-                    turn_180 = True
-                    cam_ang = -47
-                    break
-
-                row, column, ex = junction_matrix(frame, thresh, 8)
-
-                temp = junction_detection(row, column, ex)
-                print(cross_count, box_count)
-
-                if temp != None:  # print if there is a pre defined junction
-                    print(temp)
-                    if temp == "Junction ahead":
-                        while junction_now(video_capture) == None:
-                            goForward(30)
-                            sleep(0.05)
-                        stop()
-
-                    if temp == "left right angle":
-                        stop()
-                        left_turn = True
-                        break
-
-                    elif temp == "right right angle":
-                        stop()
+                else:
+                    if box_count == 0:
                         right_turn = True
+                        box_count += 1
+                        break
+                    elif box_count == 1:
+                        turn_180_double = True
+                        box_count += 1
+                        box_existing = True
                         break
 
-                    elif temp == "T junction left":
-                        stop()
-                        left_turn = True
-                        servo_3_rotate(20)
+            if (
+                capture_hole_red(video_capture) != None
+                and box_grabbed == True
+                and cross_count == 5
+            ):
+                goForward(30)
+                sleep(1.8)
+                stop()
+                gripper_open()
+                goBackward(30)
+                sleep(0.8)
+                stop()
 
+                gripper_down()
+                gripper_up_box()
+                gripper_full_close()
+                goForward(30)
+                sleep(2)
+                goBackward(30)
+                sleep(1.5)
+                stop()
+
+                turn_180 = True
+                cam_ang = -47
+                break
+
+            row, column, ex = junction_matrix(frame, thresh, 8)
+
+            temp = junction_detection(row, column, ex)
+            print(cross_count, box_count)
+
+            if temp != None:  # print if there is a pre defined junction
+                print(temp)
+                if temp == "Junction ahead":
+                    while junction_now(video_capture) == None:
+                        goForward(30)
+                        sleep(0.05)
+                    stop()
+
+                if temp == "left right angle":
+                    stop()
+                    left_turn = True
+                    break
+
+                elif temp == "right right angle":
+                    stop()
+                    right_turn = True
+                    break
+
+                elif temp == "T junction left":
+                    stop()
+                    left_turn = True
+                    servo_3_rotate(20)
+
+                    wall_color = capture_wall_color(video_capture)
+
+                    while wall_color == None:
                         wall_color = capture_wall_color(video_capture)
+                    # break
 
-                        while wall_color == None:
-                            wall_color = capture_wall_color(video_capture)
-                        # break
-
-                        if t_count == 1:
-                            left_turn = True
-                            go_around_circle = False
-                            mid_object = cylinder(distance_samples)
-                            if mid_object == "cylinder":
-                                cylinderLed()
-                            elif mid_object == "box":
-                                boxLed()
-                            t_count += 1
-                        break
-
-                    elif temp == "circle out":
+                    if t_count == 1:
                         left_turn = True
                         go_around_circle = False
-                        print(distance_samples)
-
                         mid_object = cylinder(distance_samples)
                         if mid_object == "cylinder":
                             cylinderLed()
                         elif mid_object == "box":
                             boxLed()
                         t_count += 1
-                        break
+                    break
 
-                    elif temp == "cross junction":
+                elif temp == "circle out":
+                    left_turn = True
+                    go_around_circle = False
+                    print(distance_samples)
+
+                    mid_object = cylinder(distance_samples)
+                    if mid_object == "cylinder":
+                        cylinderLed()
+                    elif mid_object == "box":
+                        boxLed()
+                    t_count += 1
+                    break
+
+                elif temp == "cross junction":
+                    stop()
+                    if cross_count == 0:
                         stop()
-                        if cross_count == 0:
-                            stop()
-                            left_turn = True
-                            cross_count += 1
-                            break
-                        elif cross_count == 1:
-                            goForward(30)
-                            sleep(0.2)
-                            stop()
-                            box_existance()
-                            cross_count += 1
-
-                            break
-
-                        elif cross_count == 2:
-                            goForward(30)
-                            sleep(0.1)
-                            stop()
-                            if box_count == 1:
-                                left_turn = True
-                                # box_existance()
-
-                            elif box_count == 2:
-                                goForward(30)
-                                sleep(0.5)
-                                box_existance()
-
-                            # left_turn = True
-                            # center_line(video_capture, "T junction left")
-                            # cross_count += 1
-                            break
-
-                        elif cross_count == 3:
-                            goForward(30)
-                            sleep(0.1)
-                            stop()
-                            if box_count == 0:
-                                goForward(30)
-                                sleep(0.5)
-                            elif box_count == 1:
-                                left_turn = True
-                            elif box_count == 2:
-                                right_turn = True
-
-                            cross_count += 1
-                            break
-
-                        elif cross_count == 4:
-                            stop()
-                            left_turn = True
-                            cross_count += 1
-                            break
-
-                        elif cross_count == 5:
-                            stop()
-                            # goForward(30)
-                            # sleep(0.5)
-                            # stop()
-                            left_turn = True
-                            cross_count += 1
-                            
-                            break
-                    elif temp == "T junction":
-                        stop()
-                        # turn_180 = True
                         left_turn = True
-                        go_around_circle = True
-                        t_count += 1
+                        cross_count += 1
+                        break
+                    elif cross_count == 1:
+                        goForward(30)
+                        sleep(0.2)
+                        stop()
+                        box_existance()
+                        cross_count += 1
+
                         break
 
-            if go_around_circle:
-                dis_temp = tof4Readings()
-                if dis_temp < 300:
-                    distance_samples.append(dis_temp)
+                    elif cross_count == 2:
+                        goForward(30)
+                        sleep(0.1)
+                        stop()
+                        if box_count == 1:
+                            left_turn = True
+                            # box_existance()
+
+                        elif box_count == 2:
+                            goForward(30)
+                            sleep(0.5)
+                            box_existance()
+                        break
+
+                    elif cross_count == 3:
+                        goForward(30)
+                        sleep(0.1)
+                        stop()
+                        if box_count == 0:
+                            goForward(30)
+                            sleep(0.5)
+                        elif box_count == 1:
+                            left_turn = True
+                        elif box_count == 2:
+                            right_turn = True
+
+                        cross_count += 1
+                        break
+
+                    elif cross_count == 4:
+                        stop()
+                        goForward(30)
+                        sleep(0.5)
+                        cross_count += 1
+                        break
+
+                    elif cross_count == 5:
+                        stop()
+                        # goForward(30)
+                        # sleep(0.5)
+                        # stop()
+                        left_turn = True
+                        cross_count += 1
+                        
+                        break
+
+
 
             # Find the biggest contour (if detected)
             if len(contours) > 0:
@@ -428,15 +377,6 @@ def center_detect(video_capture):
         return False
 
 
-def blink():
-    "Starting sequence"
-
-    for i in range(2):
-        cylinderLed()
-        boxLed()
-
-    offLed()
-
 
 def servo_init():
     """Localizing the gripper, adjusting the gripper position"""
@@ -463,8 +403,6 @@ def servo_init():
     for i in range(80, -40, -1):
         servo_1_rotate(i)
         sleep(0.01)
-    blink()
-
 
 def box_existance():
     """Detecting the existeece of the box and setting the variable accordingly"""
@@ -798,13 +736,7 @@ def turn180():
 
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
     video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
-    # while sensor_FRONT() == 0:
-    #     turnLeft(33)
-    #     sleep(0.05)
-    # turnLeft(33)
-    # sleep(0.1)
 
     turnLeft(33)
     sleep(0.3)
@@ -835,16 +767,8 @@ def turn180_double():
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     for i in range(2):
-        # while sensor_FRONT() == 0:
-        #     turnLeft(33)
-        #     sleep(0.05)
-        # turnLeft(33)
-        # sleep(0.1)
-
         turnLeft(33)
         sleep(0.3)
-
-        # while sensor_FRONT() == 1:
         while center_detect(video_capture) == False:
             turnLeft(33)
             sleep(0.05)
@@ -869,9 +793,6 @@ def rightJunctCol():
     stop()
 
     align_robot()
-    # if colour_junction:
-    #     align_robot()
-    #     colour_junction = False
     right_turn_col = False
 
 
@@ -888,142 +809,49 @@ def leftJunctCol():
     stop()
 
     align_robot()
-    # if colour_junction:
-    #     align_robot()
-    #     colour_junction = False
 
     left_turn_col = False
 
+def metalbox_red():
+    while finish == False:
+        if running:
+            print(wall_color)
+            print(mid_object)
 
-def button_pressed():
-    """Defining button modes and accessing them"""
+            servo_3_rotate(cam_ang)  # Setting the camera angle
+            servo_2_rotate(arm_h)  # Setting the gripper height
 
-    global button
-    global running
+            if left_turn:
+                leftJunct()
+                if box_count == 1:
+                    box_existance()
+                if cross_count==6:
+                    running = False
+                    break
+            elif left_turn_col:
+                leftJunctCol()
+            elif right_turn:
+                rightJunct()
+                if box_count == 1:
+                    box_existance()
+            elif right_turn_col:
+                rightJunctCol()
+            elif turn_180:
+                turn180()
+                if box_count == 2 and cross_count == 2:
+                    box_existance()
 
-    sleep(0.2)
-    button = button % 2
-    print(button, running)
-    if button == 0:
-        running = True
-    elif button == 1:
-        running = False
-        stop()
-        global left_turn
-        global left_turn_col
-        global right_turn
-        global right_turn_col
-        global turn_180
+                elif cross_count == 5:
+                    goBackward(30)
+                    sleep(1.3)
+                    stop()
 
-        global box_grabbed
-        global hole_detected
-        global finish
-        global wall_color
-        # global button
-        # global running
-        global cross_count
-        global box_count
-        global box_existing
+                align_robot()
+            elif turn_180_double:
+                turn180_double()
 
-        # Setting the threshold for balck and white
-        global th
-
-        # Setting servos
-        global cam_ang  # Setting the camera angle -30 to box normal -47
-        global arm_h  # Setting the gripper height
-        global t_count
-
-        left_turn = False
-        left_turn_col = False
-        right_turn = False
-        right_turn_col = False
-        turn_180 = False
-
-        box_grabbed = False
-        hole_detected = False
-        finish = False
-        wall_color = None
-        # button = 0
-        # running = False
-        cross_count = 0
-        box_count = 0
-        t_count = 0
-        box_existing = False
-
-        # Setting the threshold for balck and white
-        th = 155
-
-        # Setting servos
-        cam_ang = -47  # Setting the camera angle -30 to box normal -47
-        arm_h = -12  # Setting the gripper height
-        blink()
-        servo_init()
-        offLed()
-    button += 1
-
-
-####################################################################### Main loop ##############################################################################
-blink()
-servo_init()
-reload()
-# offLed()
-blink()
-
-
-while finish == False:
-    if push_button() == 0:
-        sleep(0.2)
-        button_pressed()
-    if running:
-        print(wall_color)
-        print(mid_object)
-
-        servo_3_rotate(cam_ang)  # Setting the camera angle
-        servo_2_rotate(arm_h)  # Setting the gripper height
-
-        if left_turn:
-            leftJunct()
-            if box_count == 1:
-                box_existance()
-            if cross_count ==6:
-                go_yard()
-                yard()
-                box_grab_red.metalbox_red()
+            lineFollowing()
+            if 0xFF == ord("q"):
                 break
-        elif left_turn_col:
-            leftJunctCol()
-        elif right_turn:
-            rightJunct()
-            if box_count == 1:
-                box_existance()
-        elif right_turn_col:
-            rightJunctCol()
-        elif turn_180:
-            turn180()
-            if box_count == 2 and cross_count == 2:
-                box_existance()
-
-            # if box_grabbed or cross_count == 3 or cross_count == 2:
-            #     goBackward(30)
-            #     sleep(2)
-            #     stop()
-            #     # align_robot()
-
-            # elif :
-            #     goBackward(30)
-            #     sleep(2.6)
-            #     stop()
-            #     # align_robot()
-
-            elif cross_count == 5:
-                goBackward(30)
-                sleep(1.3)
-                stop()
-
-            align_robot()
-        elif turn_180_double:
-            turn180_double()
-
-        lineFollowing()
-        if 0xFF == ord("q"):
-            break
+            
+# metalbox_red()
