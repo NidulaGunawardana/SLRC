@@ -91,6 +91,9 @@ def lineFollowing():
     # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
     while True:
+        if push_button() == 0:
+            sleep(0.2)
+            button_pressed()
         if running:
             # Capture the frames
             ret, frame = video_capture.read()
@@ -718,29 +721,6 @@ def turn180():
 
 def turn180_double():
     """Turning 180 double"""
-
-    # global turn_180_double
-    # global box_count
-
-    # video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # # video_capture = cv2.VideoCapture(0)
-    # video_capture.set(3, 640)  # Set the width of the frame
-    # video_capture.set(4, 480)  # Set the height of the frame
-
-    # video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    # video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
-    # # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
-
-    # for i in range(2):
-    #     turnLeft(33)
-    #     sleep(0.3)
-    #     while center_detect(video_capture) == False:
-    #         turnLeft(33)
-    #         sleep(0.05)
-    #     # sleep(0.3)
-    #     stop()
-
-    # turn_180 = False
     turnLeft(40)
     sleep(3.85)
     stop()
@@ -780,10 +760,87 @@ def leftJunctCol():
     left_turn_col = False
 
 
+def button_pressed():
+    """Defining button modes and accessing them"""
+
+    global button
+    global running
+
+    sleep(0.2)
+    button = button % 2
+    print(button, running)
+    if button == 0:
+        running = True
+    elif button == 1:
+        running = False
+        stop()
+        global base_speed
+        global kp
+        global kd
+        global left_turn
+        global left_turn_col
+        global right_turn
+        global right_turn_col
+        global turn_180
+        global turn_180_double
+        global go_around_circle
+        global mid_object
+        global box_grabbed
+        global hole_detected
+        global finish
+        global wall_color
+        global cross_count
+        global t_count
+        global box_count
+        global box_existing
+        global colour_junction
+        global prev_error
+        global distance_samples
+        global cam_ang
+        global arm_h
+
+        base_speed = 37  # Setting the base speed of the robot
+        kp = 0.13  # Setting the Kp value of the robot  0.13
+        kd = 0.01  # Setting the Kd value of the robot
+
+        # Setting the states of the turns
+        left_turn = False
+        left_turn_col = False
+        right_turn = False
+        right_turn_col = False
+        turn_180 = False
+        turn_180_double = False
+        go_around_circle = False
+        mid_object = None
+
+        box_grabbed = False
+        hole_detected = False
+        finish = False
+        wall_color = None  # "green"
+
+        # Setting the state to 0
+        cross_count = 0
+        t_count = 0
+        box_count = 0
+        box_existing = False
+        colour_junction = False
+        prev_error = 0
+        distance_samples = []
+
+        # Setting servos
+        cam_ang = -47  # Setting the camera angle -30 to box normal -47
+        arm_h = -12  # Setting the gripper height
+    button += 1
+
+
 def metalbox_red():
     global finish
     global running
     while finish == False:
+        if push_button() == 0:
+            sleep(0.2)
+            button_pressed()
+            return "Stopped"
         if running:
             print(wall_color)
             print(mid_object)
@@ -806,7 +863,7 @@ def metalbox_red():
                     box_existance()
                 if cross_count == 6:
                     running = False
-                    break
+                    return "Done"
             elif right_turn_col:
                 rightJunctCol()
             elif turn_180:

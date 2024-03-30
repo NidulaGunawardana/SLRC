@@ -1044,7 +1044,9 @@ while finish == False:
                 else:
                     highLed()
                     gem_count += 30
-                box_grab_red.metalbox_red()
+                state = box_grab_red.metalbox_red()
+                if state == "Stopped":
+                    button_pressed()
                 goForward(30)
                 sleep(1)
                 stop()
