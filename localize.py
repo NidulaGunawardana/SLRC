@@ -44,8 +44,6 @@ def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True
             button_pressed()
         if sensor == "sensor_right":
             instant_distance = tof2Readings()
-            if instant_distance < (distance_right - 100):
-                instant_distance = distance_right
             error = instant_distance - distance_right
  
             leftSpeed = baseSpeed + (error * kp + (last_error - error) * kd)
@@ -55,8 +53,6 @@ def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True
 
         elif sensor == "sensor_left":
             instant_distance = tof3Readings()  # This should be tof3Readings
-            if instant_distance < (distance_left - 100):
-                instant_distance = distance_left
             error = instant_distance - distance_left
             leftSpeed = baseSpeed - error * kp
             rightSpeed = baseSpeed + error * kp
@@ -79,11 +75,12 @@ def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True
                 return "left"
             elif tof2Readings() < (distance_right - 100):
                 return  "right"
+            elif tof1Readings() <= 150:
+                return "end"
         elif ob_detect == False:
             if tof1Readings() <= right_cons:
                 return "forward"
-        elif tof1Readings <= 100:
-            return "end"
+        
 
 
 def wall_follow_back(sensor, distance_right, distance_left, baseSpeed, ob_detect=True):
@@ -264,8 +261,11 @@ def yard():
 
     ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40) # Giving the direction of the object
     orientation = None
- 
-    if ob_direction == "left": # If the object is placed left
+    if ob_direction == "end":
+        turnLeft(40)
+        sleep(3.9)
+        stop()
+    elif ob_direction == "left": # If the object is placed left
         # front_dis, left_dis, right_dis, length, width = init_measure() 
 
         goForward(40) # Moving forward to align with the object
@@ -292,9 +292,7 @@ def yard():
         front_dis, left_dis, right_dis, length, width = init_measure() # Getting the measurements to wall follow
         ob_direction = wall_follow("sensor_left", right_dis, left_dis, 40, False)
         
-        if ob_direction == "end":
-            pass
-        elif ob_direction == "forward":
+        if ob_direction == "forward":
             stop()
             turnLeft(40)
             sleep(1.95)
@@ -309,7 +307,9 @@ def yard():
         orientation = None
 
         if ob_direction == "end":
-            pass
+            turnLeft(40)
+            sleep(3.9)
+            stop()
         elif ob_direction == "left":
             front_dis, left_dis, right_dis, length, width = init_measure()
             goForward(40)
@@ -350,16 +350,17 @@ def yard():
             # find_white("sensor_left", right_dis, left_dis, 40)
             # stop()
 
-        servo_3_rotate(-47)
-        front_dis, left_dis, right_dis, length, width = init_measure()
-        find_white("sensor_left", right_dis, left_dis, 40)
-        stop()
+        
         
     # elif ob_direction == "right":
     #     turnRight(40) # Turn 90 degrees right
     #     sleep(1.9)
     #     orientation = 90
-    
+    servo_3_rotate(-47)
+    front_dis, left_dis, right_dis, length, width = init_measure()
+    find_white("sensor_left", right_dis, left_dis, 40)
+    stop()
+
     stop()
     align_robot()
 
