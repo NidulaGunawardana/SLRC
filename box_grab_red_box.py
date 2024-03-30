@@ -117,10 +117,56 @@ def lineFollowing():
             contours, hierarchy = cv2.findContours(
                 thresh.copy(), 1, cv2.CHAIN_APPROX_NONE
             )
+            # Find the biggest contour (if detected)
+            if len(contours) > 0:
+
+                c = max(contours, key=cv2.contourArea)
+
+                M = cv2.moments(c)
+
+                try:
+                    cx = int(M["m10"] / M["m00"])
+                    cy = int(M["m01"] / M["m00"])
+                except:
+                    continue
+                # print(cx)
+
+                # PID control
+
+                error = 368 - cx
+                speed = error * kp + (prev_error - error) * kd
+                prev_error = error
+                left_speed = base_speed - speed
+                right_speed = base_speed + speed
+
+                if left_speed > 100:
+                    left_speed = 100
+                elif left_speed < 0:
+                    left_speed = 0
+
+                if right_speed > 100:
+                    right_speed = 100
+                elif right_speed < 0:
+                    right_speed = 0
+
+                leftrightMotor_Forward(left_speed, right_speed)
+
+                # Drawing the lines
+                cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
+                cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
+                cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
+
+            else:
+                pass
+
+            # Need to pass the frame to draw, frame to process and the size of the squares in that order
+            # Display the resulting frame
+            cv2.imshow("frame", frame)
+            cv2.imshow("threshold", thresh)
+            if cv2.waitKey(10) & 0xFF == ord("q"):
+                break
 
             colour_junct = capture_circle_pattern(video_capture)
-
-            
 
             if cross_count == 2:
                 distance = tof1Readings()
@@ -157,7 +203,7 @@ def lineFollowing():
                 stop()
 
                 gripper_down()
-                gripper_up_to_push()
+                # gripper_up_to_push()
                 gripper_full_close()
                 goForward(30)
                 sleep(2)
@@ -192,7 +238,6 @@ def lineFollowing():
                     right_turn = True
                     break
 
-        
                 elif temp == "cross junction":
                     stop()
                     if cross_count == 0:
@@ -252,59 +297,9 @@ def lineFollowing():
                         # stop()
                         right_turn = True
                         cross_count += 1
-                        
+
                         break
 
-
-
-            # Find the biggest contour (if detected)
-            if len(contours) > 0:
-
-                c = max(contours, key=cv2.contourArea)
-
-                M = cv2.moments(c)
-
-                try:
-                    cx = int(M["m10"] / M["m00"])
-                    cy = int(M["m01"] / M["m00"])
-                except:
-                    continue
-                # print(cx)
-
-                # PID control
-
-                error = 368 - cx
-                speed = error * kp + (prev_error - error) * kd
-                prev_error = error
-                left_speed = base_speed - speed
-                right_speed = base_speed + speed
-
-                if left_speed > 100:
-                    left_speed = 100
-                elif left_speed < 0:
-                    left_speed = 0
-
-                if right_speed > 100:
-                    right_speed = 100
-                elif right_speed < 0:
-                    right_speed = 0
-
-                leftrightMotor_Forward(left_speed, right_speed)
-
-                # Drawing the lines
-                cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
-                cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)
-                cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
-
-            else:
-                pass
-
-            # Need to pass the frame to draw, frame to process and the size of the squares in that order
-            # Display the resulting frame
-            cv2.imshow("frame", frame)
-            cv2.imshow("threshold", thresh)
-            if cv2.waitKey(10) & 0xFF == ord("q"):
-                break
         else:
             break
 
@@ -343,7 +338,6 @@ def center_detect(video_capture):
         return False
 
 
-
 def servo_init():
     """Localizing the gripper, adjusting the gripper position"""
 
@@ -369,6 +363,7 @@ def servo_init():
     for i in range(80, -40, -1):
         servo_1_rotate(i)
         sleep(0.01)
+
 
 def box_existance():
     """Detecting the existeece of the box and setting the variable accordingly"""
@@ -703,7 +698,6 @@ def turn180():
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
     video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
 
-
     turnLeft(33)
     sleep(0.3)
 
@@ -778,6 +772,7 @@ def leftJunctCol():
 
     left_turn_col = False
 
+
 def metalbox_red():
     global finish
     global running
@@ -802,7 +797,7 @@ def metalbox_red():
                 rightJunct()
                 if box_count == 1:
                     box_existance()
-                if cross_count==6:
+                if cross_count == 6:
                     running = False
                     break
             elif right_turn_col:

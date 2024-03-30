@@ -245,7 +245,7 @@ def lineFollowing():
                     stop()
 
                     gripper_down()
-                    gripper_up_to_push()
+                    # gripper_up_to_push()
                     gripper_full_close()
                     goForward(30)
                     sleep(2)
@@ -821,6 +821,7 @@ def turn180():
         sleep(0.05)
     # sleep(0.3)
     stop()
+    sleep(1)
 
     turn_180 = False
 
@@ -1005,6 +1006,9 @@ while finish == False:
                     highLed()
                     gem_count += 30
                 box_grab_red.metalbox_red()
+                goForward(30)
+                sleep(1)
+                stop()
                 shoot_main(gem_count)
                 break
         elif left_turn_col:

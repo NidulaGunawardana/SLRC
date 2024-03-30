@@ -128,7 +128,7 @@ def align_robot():
 				
 
 
-		# cv2.imshow("orginal with line", image)
+		cv2.imshow("orginal with line", image)
 
 
 		key = cv2.waitKey(1) & 0xFF	
