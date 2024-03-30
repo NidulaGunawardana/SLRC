@@ -230,17 +230,21 @@ def yard():
 
     height_list = []
     
-    front_dis, left_dis, right_dis, length, width = init_measure()
+    front_dis, left_dis, right_dis, length, width = init_measure() # Getting the initial measurements of the yard
+
+    # Defining the initial measurements
     width_cons = width
     length_cons = length
     right_cons = right_dis
     left_cons = left_dis
-    ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40)
+
+    ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40) # Giving the direction of the object
     orientation = None
     
-    if ob_direction == "left":
-        front_dis, left_dis, right_dis, length, width = init_measure()
-        goForward(40)
+    if ob_direction == "left": # If the object is placed left
+        # front_dis, left_dis, right_dis, length, width = init_measure() 
+
+        goForward(40) # Moving forward to align with the object
         sleep(1.2)
         stop()
         
@@ -248,27 +252,20 @@ def yard():
         sleep(1.95)
         stop()
         
-        # while tof1Readings() < (left_dis - 100):
-        #     goRight(40)
-        #     sleep(0.01)
-        orientation = 180
+        # orientation = 180
         
-        servo_3_rotate(0)
-        front_dis, left_dis, right_dis, length, width = init_measure()
+        servo_3_rotate(0) # Setting the camera to find the tower position
+        front_dis, left_dis, right_dis, length, width = init_measure() # Getting the measurements to wall follow
         find_white("sensor_right", right_dis, left_dis, 40)
-        # align_robot()
         sleep(1)
-        height_list.append(findHeight())
-        
-        # front_dis, left_dis, right_dis, length, width = init_measure()
-        # while tof1Readings() < width_cons - (left_dis + 140):
-        #     turnRight(40)
-        #     sleep(0.5)
-        turnLeft(40)
+
+        height_list.append(findHeight()) # Finding the height of the object
+ 
+        turnLeft(40) # Turning 180 degrees
         sleep(3.9)
         stop()
         
-        front_dis, left_dis, right_dis, length, width = init_measure()
+        front_dis, left_dis, right_dis, length, width = init_measure() # Getting the measurements to wall follow
         ob_direction = wall_follow("sensor_left", right_dis, left_dis, 40, False)
         
         if ob_direction == "forward":
@@ -316,10 +313,21 @@ def yard():
                 sleep(1.95)
                 stop()
             
-            servo_3_rotate(-47)
-            front_dis, left_dis, right_dis, length, width = init_measure()
-            find_white("sensor_left", right_dis, left_dis, 40)
+            # servo_3_rotate(-47)
+            # front_dis, left_dis, right_dis, length, width = init_measure()
+            # find_white("sensor_left", right_dis, left_dis, 40)
+            # stop()
+
+        elif sensor_FRONT <=  100:
             stop()
+            turnRight(40)
+            sleep(1.95)
+            stop()
+
+        servo_3_rotate(-47)
+        front_dis, left_dis, right_dis, length, width = init_measure()
+        find_white("sensor_left", right_dis, left_dis, 40)
+        stop()
         
     elif ob_direction == "right":
         turnRight(40) # Turn 90 degrees right
@@ -337,10 +345,6 @@ def yard():
     elif max_height == 20:
         return 30
 
-    # while tof1Readings() < 100:
-    #     goForward(30)
-    #     sleep(0.05)
-    # stop()
 
 def findHeight():
     
