@@ -273,6 +273,7 @@ def lineFollowing():
                             goForward(30)
                             sleep(0.05)
                         stop()
+                        break
 
                     if temp == "left right angle":
                         stop()
@@ -696,7 +697,7 @@ def box_detection():
 
     print("Box detected")
     goForward(30)
-    sleep(1)
+    sleep(1.5)
     print("Went forward")
     stop()
     gripper_close()
@@ -825,7 +826,7 @@ def turn180():
         sleep(0.05)
     # sleep(0.3)
     stop()
-    sleep(1)
+    # sleep(1)
 
     turn_180 = False
 
@@ -833,37 +834,39 @@ def turn180():
 def turn180_double():
     """Turning 180 double"""
 
-    global turn_180_double
-    global box_count
+    # global turn_180_double
+    # global box_count
 
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # video_capture = cv2.VideoCapture(0)
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(4, 480)  # Set the height of the frame
+    # video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # # video_capture = cv2.VideoCapture(0)
+    # video_capture.set(3, 640)  # Set the width of the frame
+    # video_capture.set(4, 480)  # Set the height of the frame
 
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+    # video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    # video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    # # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
-    for i in range(2):
-        # while center_detect(video_capture) == True:
-        #     turnLeft(33)
-        #     sleep(0.05)
-        # # turnLeft(33)
-        # sleep(0.1)
+    # for i in range(2):
+    #     # while center_detect(video_capture) == True:
+    #     #     turnLeft(33)
+    #     #     sleep(0.05)
+    #     # # turnLeft(33)
+    #     # sleep(0.1)
 
-        turnLeft(33)
-        sleep(0.5)
+    #     turnLeft(33)
+    #     sleep(0.5)
 
-        # while sensor_FRONT() == 1:
-        while center_detect(video_capture) == False:
-            turnLeft(33)
-            sleep(0.05)
-        # sleep(0.3)
-        stop()
+    #     # while sensor_FRONT() == 1:
+    #     while center_detect(video_capture) == False:
+    #         turnLeft(33)
+    #         sleep(0.05)
+    #     # sleep(0.3)
+    #     stop()
 
     # turn_180 = False
-
+    turnLeft(40)
+    sleep(3.85)
+    stop()
     turn_180_double = False
 
 

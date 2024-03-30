@@ -2,8 +2,8 @@ import time
 import cv2
 import numpy as np
 
-# from Raveen.motorRotating import *
-from motorRotating import *
+from Raveen.motorRotating import *
+# from motorRotating import *
 
 
 # video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)

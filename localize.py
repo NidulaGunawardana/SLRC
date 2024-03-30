@@ -274,6 +274,10 @@ def yard():
             sleep(1.95)
             stop()
             
+        goForward(30)
+        sleep(0.5)
+        stop()
+            
         front_dis, left_dis, right_dis, length, width = init_measure()
         ob_direction = wall_follow("sensor_right", right_dis, left_dis, 40)
         orientation = None

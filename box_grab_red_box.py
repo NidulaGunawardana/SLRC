@@ -177,7 +177,7 @@ def lineFollowing():
                         if box_count <= 2:
                             box_detection()
                             # turn_180 = True
-                            goLeft(40)
+                            turnLeft(40)
                             sleep(3.9)
                             stop()
                             align_robot_a(video_capture)
@@ -718,29 +718,31 @@ def turn180():
 def turn180_double():
     """Turning 180 double"""
 
-    global turn_180_double
-    global box_count
+    # global turn_180_double
+    # global box_count
 
-    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    # video_capture = cv2.VideoCapture(0)
-    video_capture.set(3, 640)  # Set the width of the frame
-    video_capture.set(4, 480)  # Set the height of the frame
+    # video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    # # video_capture = cv2.VideoCapture(0)
+    # video_capture.set(3, 640)  # Set the width of the frame
+    # video_capture.set(4, 480)  # Set the height of the frame
 
-    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-    video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
-    # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
+    # video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    # video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
+    # # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
 
-    for i in range(2):
-        turnLeft(33)
-        sleep(0.3)
-        while center_detect(video_capture) == False:
-            turnLeft(33)
-            sleep(0.05)
-        # sleep(0.3)
-        stop()
+    # for i in range(2):
+    #     turnLeft(33)
+    #     sleep(0.3)
+    #     while center_detect(video_capture) == False:
+    #         turnLeft(33)
+    #         sleep(0.05)
+    #     # sleep(0.3)
+    #     stop()
 
-    turn_180 = False
-
+    # turn_180 = False
+    turnLeft(40)
+    sleep(3.85)
+    stop()
     turn_180_double = False
 
 
