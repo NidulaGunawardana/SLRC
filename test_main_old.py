@@ -932,12 +932,19 @@ def button_pressed():
     elif button == 1:
         running = False
         stop()
+        global exp
+        global th
+        global base_speed
+        global kp
+        global kd
         global left_turn
         global left_turn_col
         global right_turn
         global right_turn_col
         global turn_180
-
+        global turn_180_double
+        global go_around_circle
+        global mid_object
         global box_grabbed
         global hole_detected
         global finish
@@ -945,42 +952,58 @@ def button_pressed():
         # global button
         # global running
         global cross_count
+        global t_count
         global box_count
         global box_existing
+        global colour_junction
+        global prev_error
+        global distance_samples
+        global cam_ang
+        global arm_h
+        global gem_count
 
-        # Setting the threshold for balck and white
-        global th
+        base_speed = 37  # Setting the base speed of the robot
+        kp = 0.13  # Setting the Kp value of the robot  0.13
+        kd = 0.01  # Setting the Kd value of the robot
 
-        # Setting servos
-        global cam_ang  # Setting the camera angle -30 to box normal -47
-        global arm_h  # Setting the gripper height
-        global t_count
-
+        # Setting the states of the turns
         left_turn = False
         left_turn_col = False
         right_turn = False
         right_turn_col = False
         turn_180 = False
+        turn_180_double = False
+        go_around_circle = False
+        mid_object = None
 
         box_grabbed = False
         hole_detected = False
         finish = False
-        wall_color = None
+        wall_color = None  # "green"
         # button = 0
         # running = False
+
+        # Setting the state to 0
         cross_count = 0
-        box_count = 0
         t_count = 0
+        box_count = 0
         box_existing = False
+        colour_junction = False
+        prev_error = 0
+        distance_samples = []
 
         # Setting the threshold for balck and white
         th = 155
+        exp = 280
 
         # Setting servos
         cam_ang = -47  # Setting the camera angle -30 to box normal -47
         arm_h = -12  # Setting the gripper height
+        gem_count = 0
         blink()
         servo_init()
+        reload()
+        blink()
         offLed()
     button += 1
 
