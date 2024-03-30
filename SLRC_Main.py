@@ -290,8 +290,8 @@ def lineFollowing():
                             cross_count += 1
                             break
                         elif cross_count == 1:
-                            # goForward(30)
-                            # sleep(0.2)
+                            goForward(30)
+                            sleep(0.2)
                             stop()
                             box_existance()
                             cross_count += 1
@@ -299,16 +299,16 @@ def lineFollowing():
                             break
 
                         elif cross_count == 2:
-                            # goForward(30)
-                            # sleep(0.1)
+                            goForward(30)
+                            sleep(0.1)
                             stop()
                             if box_count == 1:
                                 left_turn = True
                                 # box_existance()
 
                             elif box_count == 2:
-                                # goForward(30)
-                                # sleep(0.5)
+                                goForward(30)
+                                sleep(0.5)
                                 box_existance()
 
                             # left_turn = True
@@ -317,8 +317,8 @@ def lineFollowing():
                             break
 
                         elif cross_count == 3:
-                            # goForward(30)
-                            # sleep(0.1)
+                            goForward(30)
+                            sleep(0.1)
                             stop()
                             if box_count == 0:
                                 goForward(30)
@@ -338,9 +338,9 @@ def lineFollowing():
                             break
 
                         elif cross_count == 5:
-                            # stop()
-                            # goForward(30)
-                            # sleep(2.4)
+                            stop()
+                            goForward(30)
+                            sleep(2.4)
                             stop()
                             left_turn = True
                             cross_count += 1
@@ -458,7 +458,7 @@ def lineFollowing():
             # Display the resulting frame
             cv2.imshow("frame", frame)
             cv2.imshow("threshold", thresh)
-            if cv2.waitKey(10) & 0xFF == ord("q"):
+            if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
         else:
             break
@@ -585,7 +585,7 @@ def junction_matrix(disp, image, size):
             start_point = (368 - size, j - size)
             end_point = (368 + size, j + size)
 
-            crop_img = image[j - size : j + size, 380 - size : 380 + size]
+            crop_img = image[j - size : j + size, 368 - size : 368 + size]
 
             mean_value = cv2.mean(crop_img)[0]
 
