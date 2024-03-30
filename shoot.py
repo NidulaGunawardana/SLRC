@@ -344,6 +344,6 @@ def shoot_main(gem_count):
 
 # counter_set_height()
 
-shoot_main(20)
+# shoot_main(20)
 
 
