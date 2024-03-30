@@ -1023,6 +1023,7 @@ while finish == False:
             turn180()
             if box_count == 2 and cross_count == 2:
                 box_existance()
+                
 
             # if box_grabbed or cross_count == 3 or cross_count == 2:
             #     goBackward(30)
