@@ -1032,7 +1032,9 @@ while finish == False:
             if box_count == 1:
                 box_existance()
             if cross_count == 6:
-                go_yard()
+                yardr = go_yard()
+                if yardr == "stopped":
+                    button_pressed()
                 gripper_open()
                 gems = yard()
                 if gems == 10:

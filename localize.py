@@ -573,7 +573,8 @@ def go_yard():
         else:
             if sensor_FRONT() == 1:
                 stop()
-                break
+                return "came_to_yard"
+    return "stopped"
 
                
 # yard()
