@@ -157,7 +157,7 @@ def lineFollowing():
                 stop()
 
                 gripper_down()
-                gripper_up_box()
+                gripper_up_to_push()
                 gripper_full_close()
                 goForward(30)
                 sleep(2)

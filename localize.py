@@ -227,6 +227,8 @@ orientation = None
 def yard():
     global front_dis, left_dis, right_dis, length, width, width_cons, length_cons, right_cons, left_cons, ob_direction, orientation
     servo_3_rotate(-40)
+
+    height_list = []
     
     front_dis, left_dis, right_dis, length, width = init_measure()
     width_cons = width
@@ -256,7 +258,7 @@ def yard():
         find_white("sensor_right", right_dis, left_dis, 40)
         # align_robot()
         sleep(1)
-        print(findHeight())
+        height_list.append(findHeight())
         
         # front_dis, left_dis, right_dis, length, width = init_measure()
         # while tof1Readings() < width_cons - (left_dis + 140):
@@ -299,7 +301,7 @@ def yard():
             find_white("sensor_right", right_dis, left_dis, 40)
             # align_robot()
             sleep(1)
-            print(findHeight())
+            height_list.append(findHeight())
             
             turnLeft(40)
             sleep(3.9)
@@ -326,6 +328,14 @@ def yard():
     
     stop()
     align_robot()
+
+    max_height = max(height_list)
+    if max_height == 10:
+        return 10
+    elif max_height == 15:
+        return 20
+    elif max_height == 20:
+        return 30
 
     # while tof1Readings() < 100:
     #     goForward(30)
@@ -400,13 +410,13 @@ def findHeight():
                     #     return 130 - math.tan(math.radians(-servo_ang)) * dis 
                     if servo_ang < 20 :
                         servo_3_rotate(-40)
-                        return "10cm"
+                        return 10
                     elif servo_ang < 40:
                         servo_3_rotate(-40)
-                        return "15cm"
+                        return 15
                     else:
                         servo_3_rotate(-40)
-                        return "20cm"
+                        return 20
                 
                 cv2.line(frame, (cx, 0), (cx, 480), (255, 0, 0), 1)
                 cv2.line(frame, (0, cy), (640, cy), (255, 0, 0), 1)

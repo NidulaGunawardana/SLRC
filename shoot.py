@@ -318,7 +318,8 @@ def counter_exist(video_capture):
         return None  
 
    
-def shoot_main():
+def shoot_main(gem_count):
+    align = 0
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     video_capture.set(4, 480)  # Set the height of the frame
     video_capture.set(3, 640)  # Set the width of the frame
@@ -326,7 +327,16 @@ def shoot_main():
     video_capture.set(cv2.CAP_PROP_EXPOSURE, 270)
     reload()
     grab_ball(video_capture)
-    counter_align(1,video_capture)
+    if gem_count == 20:
+        align = -2
+    elif gem_count == 30:
+        align = -1
+    elif gem_count == 40:
+        align = 1
+    elif gem_count == 50:
+        align = 2
+
+    counter_align(align,video_capture)
     shoot()
     reload()
 

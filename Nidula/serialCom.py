@@ -8,12 +8,12 @@ ser.reset_input_buffer()
 
 
 def cylinderLed():
-    ser.write(b"Cylinder\n")
+    ser.write(b"Box\n")
     line = ser.readline().decode("utf-8").rstrip()
 
 
 def boxLed():
-    ser.write(b"Box\n")
+    ser.write(b"Cylinder\n")
     line = ser.readline().decode("utf-8").rstrip()
 
 
