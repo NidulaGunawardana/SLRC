@@ -44,6 +44,8 @@ def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True
             button_pressed()
         if sensor == "sensor_right":
             instant_distance = tof2Readings()
+            if instant_distance < (distance_right - 100):
+                instant_distance = distance_right
             error = instant_distance - distance_right
  
             leftSpeed = baseSpeed + (error * kp + (last_error - error) * kd)
@@ -53,6 +55,8 @@ def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True
 
         elif sensor == "sensor_left":
             instant_distance = tof3Readings()  # This should be tof3Readings
+            if instant_distance < (distance_left - 100):
+                instant_distance = distance_left
             error = instant_distance - distance_left
             leftSpeed = baseSpeed - error * kp
             rightSpeed = baseSpeed + error * kp
