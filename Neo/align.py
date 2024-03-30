@@ -75,7 +75,7 @@ def align_robot():
 	
 			if len(err_buff) > 30:
 				err_buff.pop(0)
-	
+			print(ang_buf,err_buff)
 
 			if ang > 0 and ang < 89:
 				turnLeft(30)
