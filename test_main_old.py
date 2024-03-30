@@ -230,6 +230,12 @@ def lineFollowing():
                             box_count += 1
                             box_existing = True
                             break
+                        elif box_count == 2:
+                            left_turn = True
+                            # box_count += 1
+                            box_grabbed = True
+                            cross_count = 4
+                            break
 
                 if (
                     capture_hole(video_capture) != None
@@ -449,7 +455,7 @@ def blink():
         boxLed()
         midLed()
         highLed()
-        lowLed()    
+        lowLed()
 
     offLed()
 
@@ -597,7 +603,10 @@ def junction_detection(x_mat, y_mat, ex_mat):
     ):
         return "cross junction"  # cross junction
     elif (
-        x_mat[1:6] == [1, 1, 1, 1, 1] and y_mat[0:2] == [0, 0] and ex_mat[0:2] == [0, 0] and t_count != 1
+        x_mat[1:6] == [1, 1, 1, 1, 1]
+        and y_mat[0:2] == [0, 0]
+        and ex_mat[0:2] == [0, 0]
+        and t_count != 1
     ):
         return "T junction"  # T junction
     elif (
@@ -1066,7 +1075,6 @@ while finish == False:
             turn180()
             # if box_count == 2 and cross_count == 2:
             #     box_existance()
-
 
             # if box_grabbed or cross_count == 3 or cross_count == 2:
             #     goBackward(30)
