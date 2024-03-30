@@ -38,7 +38,10 @@ def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True
     kd = 0.4
     last_error = 0
     
-    while True:
+    while running:
+        if push_button() == 0:
+            sleep(0.2)
+            button_pressed()
         if sensor == "sensor_right":
             instant_distance = tof2Readings()
             error = instant_distance - distance_right
@@ -86,7 +89,10 @@ def wall_follow_back(sensor, distance_right, distance_left, baseSpeed, ob_detect
     last_error = 0
     global right_cons
     
-    while True:
+    while running:
+        if push_button() == 0:
+            sleep(0.2)
+            button_pressed()
         if sensor == "sensor_right":
             instant_distance = tof2Readings()
             error = instant_distance - distance_right
@@ -140,7 +146,7 @@ def init_measure():
     return front_dis, left_dis, right_dis, length, width
 
 def find_white(sensor, distance_right, distance_left, baseSpeed):
-    
+    global running
     kp = 0.4
     kd = 0.4
     last_error = 0
@@ -150,7 +156,10 @@ def find_white(sensor, distance_right, distance_left, baseSpeed):
     video_capture.set(3, 640)  # Set the width of the frame
     video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
     video_capture.set(cv2.CAP_PROP_EXPOSURE, 150)
-    while True:
+    while running:
+        if push_button() == 0:
+            sleep(0.2)
+            button_pressed()
         ret, image = video_capture.read()
         image = cv2.flip(image, 0)
         image = cv2.flip(image, 1)
@@ -232,6 +241,7 @@ ob_direction = None
 orientation = None
 
 def yard():
+    global running
     if push_button() == 0:
         sleep(0.2)
         button_pressed()
@@ -359,7 +369,7 @@ def yard():
 
 
 def findHeight():
-    
+    global running
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
     video_capture.set(4, 480)  # Set the height of the frame
     video_capture.set(3, 640)  # Set the width of the frame
@@ -464,6 +474,7 @@ def button_pressed():
         stop()
         
 def go_yard():
+    global running
     base_speed = 37
 
     video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
