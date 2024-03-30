@@ -7,15 +7,11 @@ from Raveen.tofsensorreadings import *
 from Nidula.irSensors import *
 from Neo.align import *
 
-video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
-video_capture.set(4, 480)  # Set the height of the frame
-video_capture.set(3, 640)  # Set the width of the frame
-video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
-video_capture.set(cv2.CAP_PROP_EXPOSURE, 70)
 
 
 
-def grab_ball():
+
+def grab_ball(video_capture):
 
     base_speed = 30
 
@@ -27,8 +23,6 @@ def grab_ball():
     # video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
     # video_capture.set(cv2.CAP_PROP_EXPOSURE, 250)
     # # print(video_capture.get(cv2.CAP_PROP_EXPOSURE))
-    global video_capture
-
     count = 0
     kp = 0.13
     kd = 0.01
@@ -160,8 +154,8 @@ def grab_ball():
         else:
             pass
 
-def counter_align(box_num):
-    global video_capture
+def counter_align(box_num,video_capture):
+
     counter_set_height()
     box_abs = abs(box_num)
     for i in range(0,box_abs):
@@ -195,8 +189,7 @@ def counter_align(box_num):
     stop()
     print("box behind")
 
-def counter_set_height():
-    global video_capture
+def counter_set_height(video_capture):
     
     servo_ang = -10
     while True:
@@ -264,8 +257,8 @@ def counter_set_height():
         if cv2.waitKey(1) & 0xFF == ord("q"):
             return None   
 
-def counter_exist():
-    global video_capture
+def counter_exist(video_capture):
+
     ret, frame = video_capture.read()
     frame = cv2.flip(frame, 0)
     frame = cv2.flip(frame, 1)
@@ -318,11 +311,16 @@ def counter_exist():
     if cv2.waitKey(1) & 0xFF == ord("q"):
         return None  
     
-def shoot():
+def shoot_main():
+    video_capture = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    video_capture.set(4, 480)  # Set the height of the frame
+    video_capture.set(3, 640)  # Set the width of the frame
+    video_capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # manual mode
+    video_capture.set(cv2.CAP_PROP_EXPOSURE, 70)
     reload()
-    grab_ball()
-    counter_align(1)
-    shoot()
+    grab_ball(video_capture)
+    counter_align(1,video_capture)
+    shoot(video_capture)
     reload()
 
 # counter_set_height()
