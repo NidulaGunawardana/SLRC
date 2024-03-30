@@ -41,6 +41,7 @@ running = False
 trash_yard = False
 shooting = False
 
+
 # Setting the state to 0
 cross_count = 0
 t_count = 0
@@ -186,12 +187,14 @@ def lineFollowing():
                             break
 
                 if (
-                    (capture_hole(video_capture) != None
+                    capture_hole(video_capture) != None
                     and box_grabbed == True
                     and colour_junct == None
-                    and cross_count == 5) or (capture_hole_red(video_capture) != None
+                    and cross_count == 5
+                ) or (
+                    capture_hole_red(video_capture) != None
                     and box_grabbed == True
-                    and cross_count == 11)
+                    and cross_count == 11
                 ):
                     # goBackward(30)
                     # sleep(0.3)
@@ -391,9 +394,9 @@ def lineFollowing():
                         elif cross_count == 12:
                             stop()
                             right_turn = True
-                            cross_count += 1
+                            # cross_count += 1
                             break
-                            
+
                     elif temp == "T junction":
                         stop()
                         # turn_180 = True
@@ -1058,11 +1061,15 @@ while finish == False:
             rightJunct()
             if box_count == 1:
                 box_existance()
+            if cross_count == 12:
+                shoot()
         elif right_turn_col:
             rightJunctCol()
         elif turn_180:
             turn180()
-            if( box_count == 2 and cross_count == 2) or (box_count == 2 and cross_count == 9):
+            if (box_count == 2 and cross_count == 2) or (
+                box_count == 2 and cross_count == 9
+            ):
                 box_existance()
 
             # if box_grabbed or cross_count == 3 or cross_count == 2:
