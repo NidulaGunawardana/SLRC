@@ -592,7 +592,7 @@ def junction_detection(x_mat, y_mat, ex_mat):
     global box_existing
     global wall_color
 
-    if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1:
+    if (ex_mat[0] == 1 or ex_mat[1] == 1) and y_mat[5] == 1 and t_count != 1:
         return "Junction ahead"
     elif t_count == 1 and (sensor_LEFT() == 0 or x_mat[0] == 1):
         return "circle out"
