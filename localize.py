@@ -83,54 +83,54 @@ def wall_follow(sensor, distance_right, distance_left, baseSpeed, ob_detect=True
         
 
 
-def wall_follow_back(sensor, distance_right, distance_left, baseSpeed, ob_detect=True):
+# def wall_follow_back(sensor, distance_right, distance_left, baseSpeed, ob_detect=True):
    
-    kp = 0.1
-    kd = 0.4
-    last_error = 0
-    global right_cons
+#     kp = 0.1
+#     kd = 0.4
+#     last_error = 0
+#     global right_cons
     
-    while running:
-        if push_button() == 0:
-            sleep(0.2)
-            button_pressed()
-        if sensor == "sensor_right":
-            instant_distance = tof2Readings()
-            error = instant_distance - distance_right
+#     while running:
+#         if push_button() == 0:
+#             sleep(0.2)
+#             button_pressed()
+#         if sensor == "sensor_right":
+#             instant_distance = tof2Readings()
+#             error = instant_distance - distance_right
  
-            leftSpeed = baseSpeed - (error * kp + (last_error - error) * kd)
-            rightSpeed = baseSpeed + (error * kp + (last_error - error) * kd)
+#             leftSpeed = baseSpeed - (error * kp + (last_error - error) * kd)
+#             rightSpeed = baseSpeed + (error * kp + (last_error - error) * kd)
 
-            last_error = error
+#             last_error = error
 
-        elif sensor == "sensor_left":
-            instant_distance = tof3Readings()  # This should be tof3Readings
-            error = instant_distance - distance_left
-            leftSpeed = baseSpeed - error * kp
-            rightSpeed = baseSpeed + error * kp
+#         elif sensor == "sensor_left":
+#             instant_distance = tof3Readings()  # This should be tof3Readings
+#             error = instant_distance - distance_left
+#             leftSpeed = baseSpeed - error * kp
+#             rightSpeed = baseSpeed + error * kp
 
-        else:
-            pass
+#         else:
+#             pass
 
-        if leftSpeed >= 60:
-            leftSpeed = 60 
-        if rightSpeed >= 60:
-            rightSpeed = 60 
-        if rightSpeed < 0:
-            rightSpeed = 0
-        if leftSpeed < 0:
-            leftSpeed = 0
+#         if leftSpeed >= 60:
+#             leftSpeed = 60 
+#         if rightSpeed >= 60:
+#             rightSpeed = 60 
+#         if rightSpeed < 0:
+#             rightSpeed = 0
+#         if leftSpeed < 0:
+#             leftSpeed = 0
 
-        leftrightMotor_Backward(rightSpeed,leftSpeed)
-        if ob_detect == True:
-            if tof3Readings() < (distance_left - 100):
-                return "left"
-            elif tof2Readings() < (distance_right - 100):
-                return  "right"
+#         leftrightMotor_Backward(rightSpeed,leftSpeed)
+#         if ob_detect == True:
+#             if tof3Readings() < (distance_left - 100):
+#                 return "left"
+#             elif tof2Readings() < (distance_right - 100):
+#                 return  "right"
             
-        if ob_detect == False:
-            if tof1Readings() <= right_cons:
-                return "forward"
+#         if ob_detect == False:
+#             if tof1Readings() <= right_cons:
+#                 return "forward"
 
 
 def init_measure():
@@ -249,7 +249,7 @@ def yard():
     global front_dis, left_dis, right_dis, length, width, width_cons, length_cons, right_cons, left_cons, ob_direction, orientation
     servo_3_rotate(-40)
 
-    height_list = []
+    height_list = [10]
     
     front_dis, left_dis, right_dis, length, width = init_measure() # Getting the initial measurements of the yard
 

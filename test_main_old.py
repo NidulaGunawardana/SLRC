@@ -885,6 +885,7 @@ def turn180_double():
     turnLeft(40)
     sleep(3.85)
     stop()
+    align_robot()
     turn_180_double = False
 
 
