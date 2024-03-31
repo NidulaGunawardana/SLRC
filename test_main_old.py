@@ -1019,11 +1019,11 @@ def button_pressed():
 
 
 ####################################################################### Main loop ##############################################################################
-# blink()
-# servo_init()
-# reload()
-# # offLed()
-# blink()
+blink()
+servo_init()
+reload()
+# offLed()
+blink()
 
 
 while finish == False:
