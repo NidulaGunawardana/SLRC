@@ -11,7 +11,7 @@ Our project aims to develop an autonomous robot capable of intelligent navigatio
    - **Methodology:** Developed a multi-step approach for white line tracking, starting with BGR2GRAY conversion to isolate the grayscale representation of the image. Gaussian blurring is then applied to smooth out noise and reduce pixel-level variations. A thresholding technique is employed to segment the image into binary form, isolating the white pixels representing the line. Finally, a Proportional-Integral-Derivative (PID) controller is utilized to continuously adjust the robot's orientation based on the deviation of the line's center from the camera's field of view.
    - **Algorithm:** The PID controller calculates the error as the pixel deviation of the line's center from the camera's center, adjusting motor speeds accordingly to maintain alignment with the white line.
   <br/>
-<video src="Pictures/20240316_184156.mp4">
+
 1. **Color Detection:**
    - **Methodology:** Color detection is achieved through histogram analysis and thresholding techniques. The camera captures the environment, and the image is processed to identify regions of interest based on color histograms. Thresholding is then applied to segment these regions, isolating specific colors such as those of distant walls or colored objects.
    - **Algorithm:** Algorithms are developed to analyze color distributions within these segmented regions, enabling the robot to differentiate between different colors and make informed decisions based on environmental cues.
