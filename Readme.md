@@ -49,3 +49,4 @@ Our project represents a significant advancement in autonomous robotics, leverag
 
 ![alt](Pictures/FB_IMG_1712314819809.jpg)
 ![alt](Pictures/FB_IMG_1712315006305.jpg)
+![image](https://github.com/NidulaGunawardana/SLRC/assets/166645514/3d124a15-2c38-46a5-82e5-7b1709829dc7)
